@@ -1,328 +1,477 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Прогнозы ТБ 2.5</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        :root {
-            --bg-color: var(--tg-theme-bg-color, #ffffff);
-            --text-color: var(--tg-theme-text-color, #000000);
-            --hint-color: var(--tg-theme-hint-color, #999999);
-            --button-color: var(--tg-theme-button-color, #2481cc);
-            --button-text-color: var(--tg-theme-button-text-color, #ffffff);
-            --secondary-bg: var(--tg-theme-secondary-bg-color, #f0f0f0);
-            --card-bg: var(--tg-theme-secondary-bg-color, #f4f4f5);
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-color);
-            color: var(--text-color);
-            padding: 12px 16px 100px 16px;
-            min-height: 100vh;
-        }
-        .header { text-align: center; margin-bottom: 16px; padding-top: 4px; }
-        .header h1 { font-size: 19px; font-weight: 700; margin-bottom: 2px; }
-        .header p { color: var(--hint-color); font-size: 13px; }
-        .tabs {
-            display: flex;
-            background: var(--secondary-bg);
-            border-radius: 12px;
-            padding: 4px;
-            margin-bottom: 14px;
-        }
-        .tab {
-            flex: 1;
-            text-align: center;
-            padding: 9px;
-            border-radius: 9px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: 0.2s;
-            font-weight: 500;
-        }
-        .tab.active {
-            background: var(--button-color);
-            color: var(--button-text-color);
-            font-weight: 700;
-        }
-        .card {
-            background: var(--card-bg);
-            border-radius: 14px;
-            padding: 14px;
-            margin-bottom: 10px;
-            animation: fadeIn 0.3s ease;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .card .match {
-            font-size: 15px;
-            font-weight: 700;
-            margin-bottom: 4px;
-            line-height: 1.3;
-        }
-        .card .league {
-            font-size: 12px;
-            color: var(--hint-color);
-            margin-bottom: 10px;
-        }
-        .card .row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
-            margin-top: 5px;
-        }
-        .card .label { color: var(--hint-color); }
-        .prob-badge {
-            font-weight: 700;
-            font-size: 14px;
-            padding: 2px 8px;
-            border-radius: 6px;
-            background: rgba(34, 197, 94, 0.15);
-            color: #22c55e;
-        }
-        .odd-value {
-            font-weight: 700;
-            font-size: 15px;
-            font-variant-numeric: tabular-nums;
-        }
-        .progress-bar {
-            height: 5px;
-            background: var(--bg-color);
-            border-radius: 3px;
-            margin-top: 10px;
-            overflow: hidden;
-        }
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #22c55e, #84cc16);
-            border-radius: 3px;
-            transition: width 0.5s ease;
-        }
-        .btn {
-            position: fixed;
-            bottom: 20px;
-            left: 16px;
-            right: 16px;
-            padding: 14px;
-            background: var(--button-color);
-            color: var(--button-text-color);
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-        }
-        .btn:active { opacity: 0.85; }
-        .loading {
-            text-align: center;
-            color: var(--hint-color);
-            padding: 40px 20px;
-            font-size: 14px;
-        }
-        .loading::before {
-            content: '';
-            display: block;
-            width: 32px;
-            height: 32px;
-            margin: 0 auto 12px;
-            border: 3px solid var(--secondary-bg);
-            border-top-color: var(--button-color);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .error {
-            text-align: center;
-            color: #ef4444;
-            padding: 20px;
-            font-size: 14px;
-            background: rgba(239, 68, 68, 0.1);
-            border-radius: 12px;
-        }
-        .stats-container { padding: 10px 0; }
-        .stats-big {
-            text-align: center;
-            font-size: 48px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #22c55e, #84cc16);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1.1;
-        }
-        .stats-label {
-            text-align: center;
-            color: var(--hint-color);
-            font-size: 13px;
-            margin-bottom: 24px;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 14px;
-        }
-        .stats-box {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 14px;
-            text-align: center;
-        }
-        .stats-box .num {
-            font-size: 22px;
-            font-weight: 800;
-            display: block;
-            margin-bottom: 2px;
-        }
-        .stats-box .name {
-            font-size: 12px;
-            color: var(--hint-color);
-        }
-        .stats-box.win .num { color: #22c55e; }
-        .stats-box.lose .num { color: #ef4444; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Прогнозы ТБ 2.5</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root {
+  --bg: var(--tg-theme-bg-color, #ffffff);
+  --text: var(--tg-theme-text-color, #000000);
+  --hint: var(--tg-theme-hint-color, #999999);
+  --btn: var(--tg-theme-button-color, #2481cc);
+  --btn-text: var(--tg-theme-button-text-color, #ffffff);
+  --sec-bg: var(--tg-theme-secondary-bg-color, #f0f0f0);
+  --card: var(--tg-theme-secondary-bg-color, #f4f4f5);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding: 12px 16px 100px;
+  min-height: 100vh;
+  overscroll-behavior-y: contain;
+}
+.header { text-align: center; margin-bottom: 14px; padding-top: 4px; }
+.header h1 { font-size: 19px; font-weight: 700; margin-bottom: 2px; }
+.header p { color: var(--hint); font-size: 12px; }
+.tabs {
+  display: flex;
+  background: var(--sec-bg);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 14px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  gap: 2px;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: 0 0 auto;
+  min-width: 70px;
+  text-align: center;
+  padding: 8px 12px;
+  border-radius: 9px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.tab.active { background: var(--btn); color: var(--btn-text); font-weight: 700; }
+.filters {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+.filters::-webkit-scrollbar { display: none; }
+.filter {
+  flex: 0 0 auto;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  background: var(--sec-bg);
+  color: var(--text);
+  cursor: pointer;
+  border: none;
+  font-weight: 500;
+  transition: 0.2s;
+}
+.filter.active { background: var(--btn); color: var(--btn-text); font-weight: 700; }
+.card {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 10px;
+  animation: fadeIn 0.35s ease;
+  position: relative;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.card .match { font-size: 15px; font-weight: 700; margin-bottom: 4px; line-height: 1.3; padding-right: 70px; }
+.card .league { font-size: 12px; color: var(--hint); margin-bottom: 10px; }
+.card .row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-top: 5px; }
+.card .label { color: var(--hint); }
+.prob-badge { font-weight: 700; font-size: 13px; padding: 2px 8px; border-radius: 6px; }
+.prob-high { background: rgba(34, 197, 94, 0.18); color: #22c55e; }
+.prob-mid { background: rgba(234, 179, 8, 0.18); color: #eab308; }
+.prob-low { background: rgba(148, 163, 184, 0.18); color: #94a3b8; }
+.odd-value { font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; }
+.progress-bar { height: 5px; background: var(--bg); border-radius: 3px; margin-top: 10px; overflow: hidden; }
+.progress-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+.fill-high { background: linear-gradient(90deg, #22c55e, #84cc16); }
+.fill-mid { background: linear-gradient(90deg, #eab308, #facc15); }
+.fill-low { background: linear-gradient(90deg, #94a3b8, #cbd5e1); }
+.card-actions {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 6px;
+}
+.icon-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+  opacity: 0.6;
+  transition: 0.2s;
+  color: var(--text);
+}
+.icon-btn:hover, .icon-btn.active { opacity: 1; }
+.btn {
+  position: fixed;
+  bottom: 20px;
+  left: 16px;
+  right: 16px;
+  padding: 14px;
+  background: var(--btn);
+  color: var(--btn-text);
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+.btn:active { opacity: 0.85; }
+.skeleton {
+  background: linear-gradient(90deg, var(--card) 0%, var(--sec-bg) 50%, var(--card) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 14px;
+  height: 120px;
+  margin-bottom: 10px;
+}
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+.error {
+  text-align: center;
+  color: #ef4444;
+  padding: 20px;
+  font-size: 14px;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 12px;
+}
+.stats-container { padding: 10px 0; }
+.stats-big {
+  text-align: center;
+  font-size: 52px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #22c55e, #84cc16);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.1;
+}
+.stats-label { text-align: center; color: var(--hint); font-size: 13px; margin-bottom: 24px; }
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.stats-box { background: var(--card); border-radius: 12px; padding: 14px; text-align: center; }
+.stats-box .num { font-size: 22px; font-weight: 800; display: block; margin-bottom: 2px; }
+.stats-box .name { font-size: 12px; color: var(--hint); }
+.stats-box.win .num { color: #22c55e; }
+.stats-box.lose .num { color: #ef4444; }
+.empty { text-align: center; color: var(--hint); padding: 60px 20px; font-size: 14px; }
+.empty::before { content: '📭'; font-size: 48px; display: block; margin-bottom: 12px; }
+.bonus-card {
+  background: linear-gradient(135deg, #1a365d, #0f172a);
+  border-radius: 16px;
+  padding: 24px 20px;
+  color: #ffffff;
+  margin-bottom: 12px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+}
+.bonus-card h2 { font-size: 22px; font-weight: 800; margin-bottom: 12px; text-align: center; }
+.bonus-card p { font-size: 14px; line-height: 1.5; opacity: 0.9; margin-bottom: 8px; }
+.bonus-btn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 16px;
+  text-align: center;
+  text-decoration: none;
+}
+.bonus-btn:active { opacity: 0.85; }
+.live-badge {
+  display: inline-block;
+  background: #ef4444;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+</style>
 </head>
 <body>
-    <div class="header">
-        <h1>⚽ Прогнозы ТБ 2.5</h1>
-        <p id="subtitle">Загрузка...</p>
+
+<div class="header">
+  <h1>⚽ Прогнозы ТБ 2.5</h1>
+  <p id="subtitle">Загрузка...</p>
+</div>
+
+<div class="tabs" id="tabs">
+  <div class="tab active" data-tab="matches">📈 Прогнозы</div>
+  <div class="tab" data-tab="express">🔥 Экспресс</div>
+  <div class="tab" data-tab="stats">📊 Статистика</div>
+  <div class="tab" data-tab="bonus">🎁 Бонус</div>
+</div>
+
+<div class="filters" id="filters" style="display:none;">
+  <button class="filter active" data-filter="all">📅 Все</button>
+  <button class="filter" data-filter="today">Сегодня</button>
+  <button class="filter" data-filter="tomorrow">Завтра</button>
+  <button class="filter" data-filter="later">Позже</button>
+  <button class="filter" data-filter="high">🔥 >70%</button>
+</div>
+
+<div id="content"></div>
+
+<button class="btn" onclick="loadData(true)">🔄 Обновить</button>
+
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbxkhesCYdzNhVrygfjdrsn6xnDdv5JgpprDe3nyxUAZchlSFoVBs7iet6mLvG-SC8OB/exec';
+
+let currentTab = 'matches';
+let currentFilter = 'all';
+let allMatches = [];
+let favorites = JSON.parse(localStorage.getItem('tb25_favorites') || '[]');
+
+const tg = window.Telegram?.WebApp;
+if (tg) {
+  tg.ready();
+  tg.expand();
+  const userName = tg.initDataUnsafe?.user?.first_name || 'друг';
+  document.getElementById('subtitle').textContent = `Привет, ${userName}!`;
+} else {
+  document.getElementById('subtitle').textContent = 'Открыто вне Telegram';
+}
+
+function haptic(style) {
+  if (tg?.HapticFeedback) {
+    try { tg.HapticFeedback.impactOccurred(style || 'light'); } catch (e) {}
+  }
+}
+
+document.getElementById('tabs').addEventListener('click', e => {
+  const tab = e.target.closest('.tab');
+  if (!tab) return;
+  haptic('light');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  currentTab = tab.dataset.tab;
+  document.getElementById('filters').style.display = currentTab === 'matches' ? 'flex' : 'none';
+  loadData();
+});
+
+document.getElementById('filters').addEventListener('click', e => {
+  const f = e.target.closest('.filter');
+  if (!f) return;
+  haptic('light');
+  document.querySelectorAll('.filter').forEach(x => x.classList.remove('active'));
+  f.classList.add('active');
+  currentFilter = f.dataset.filter;
+  if (currentTab === 'matches') renderMatches(allMatches);
+});
+
+async function loadData(forceRefresh) {
+  const content = document.getElementById('content');
+
+  if (!forceRefresh && currentTab === 'matches') {
+    const cached = localStorage.getItem('tb25_cache_matches');
+    if (cached) {
+      try { renderMatches(JSON.parse(cached)); } catch (e) {}
+    }
+  }
+
+  if (!content.innerHTML.trim() || content.innerHTML.includes('empty') || forceRefresh) {
+    content.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>';
+  }
+
+  if (currentTab === 'bonus') { renderBonus(); return; }
+
+  try {
+    const url = `${API_URL}?action=${currentTab}`;
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+
+    if (currentTab === 'matches') {
+      allMatches = data;
+      localStorage.setItem('tb25_cache_matches', JSON.stringify(data));
+      renderMatches(data);
+    } else if (currentTab === 'express') renderExpress(data);
+    else if (currentTab === 'stats') renderStats(data);
+  } catch (e) {
+    content.innerHTML = `<div class="error">❌ Ошибка: ${e.message}</div>`;
+  }
+}
+
+function probClass(prob) {
+  if (prob >= 65) return 'prob-high';
+  if (prob >= 60) return 'prob-mid';
+  return 'prob-low';
+}
+function fillClass(prob) {
+  if (prob >= 65) return 'fill-high';
+  if (prob >= 60) return 'fill-mid';
+  return 'fill-low';
+}
+
+function renderMatches(data) {
+  const content = document.getElementById('content');
+  let filtered = data.slice();
+
+  if (currentFilter === 'today') filtered = filtered.filter(m => m.dayKey === 'today');
+  else if (currentFilter === 'tomorrow') filtered = filtered.filter(m => m.dayKey === 'tomorrow');
+  else if (currentFilter === 'later') filtered = filtered.filter(m => m.dayKey === 'later');
+  else if (currentFilter === 'high') filtered = filtered.filter(m => m.probability >= 70);
+
+  if (!filtered.length) {
+    content.innerHTML = '<div class="empty">Нет матчей по фильтру</div>';
+    return;
+  }
+
+  const medals = ['🥇', '🥈', '🥉'];
+  let html = '';
+
+  filtered.forEach((m, i) => {
+    const prefix = i < 3 ? medals[i] : `${i + 1}.`;
+    const prob = parseInt(m.probability) || 0;
+    const trend = m.trend || '';
+    const fav = favorites.includes(`${m.home}_${m.away}`);
+    const live = String(m.result || '').includes('Live');
+
+    html += `
+      <div class="card">
+        <div class="card-actions">
+          <button class="icon-btn ${fav ? 'active' : ''}" onclick="toggleFav('${escape(m.home)}','${escape(m.away)}')">${fav ? '⭐' : '☆'}</button>
+          <button class="icon-btn" onclick="shareMatch('${escape(m.home)}','${escape(m.away)}','${m.odd}')">📤</button>
+        </div>
+        <div class="match">${prefix} ${m.home} — ${m.away} ${live ? '<span class="live-badge">LIVE</span>' : ''}</div>
+        <div class="league">🏆 ${m.league} • 🕐 ${m.time}</div>
+        <div class="row"><span class="label">📊 Тотал</span><span><b>${m.total}</b></span></div>
+        <div class="row"><span class="label">🎯 Вероятность</span><span class="prob-badge ${probClass(prob)}">${prob}%</span></div>
+        <div class="row"><span class="label">💰 Кэф</span><span class="odd-value">${m.odd} ${trend}</span></div>
+        <div class="progress-bar"><div class="progress-bar-fill ${fillClass(prob)}" style="width:${prob}%"></div></div>
+      </div>
+    `;
+  });
+
+  content.innerHTML = html;
+}
+
+function renderExpress(data) {
+  const content = document.getElementById('content');
+  if (!data || !data.matches || !data.matches.length) {
+    content.innerHTML = '<div class="empty">Экспресс ещё не собран</div>';
+    return;
+  }
+
+  let html = `
+    <div style="text-align:center; margin-bottom:14px;">
+      <div style="font-size:22px; font-weight:800;">🔥 ТОП-ЭКСПРЕСС ДНЯ</div>
+      <div style="color:var(--hint); font-size:12px; margin-top:4px;">🎯 Все события на ТБ 2.5</div>
     </div>
+  `;
 
-    <div class="tabs">
-        <div class="tab active" id="tab-matches" onclick="switchTab('matches')">📈 Прогнозы</div>
-        <div class="tab" id="tab-stats" onclick="switchTab('stats')">📊 Статистика</div>
+  data.matches.forEach((m, i) => {
+    const prob = parseInt(m.probability) || 0;
+    html += `
+      <div class="card">
+        <div class="match">${i + 1}️⃣ ${m.home} — ${m.away}</div>
+        <div class="league">🏆 ${m.league}</div>
+        <div class="row"><span class="label">📊 Тотал</span><span><b>${m.total}</b></span></div>
+        <div class="row"><span class="label">🎯 Вероятность</span><span class="prob-badge ${probClass(prob)}">${prob}%</span></div>
+        <div class="row"><span class="label">💰 Кэф</span><span class="odd-value">${m.odd}</span></div>
+      </div>
+    `;
+  });
+
+  html += `
+    <div class="card" style="background:linear-gradient(135deg,#0f172a,#1a365d); color:#fff;">
+      <div class="row" style="font-size:16px;">
+        <span>💰 Итоговый кэф:</span>
+        <span style="color:#38bdf8; font-weight:800;">${data.totalOdd}</span>
+      </div>
+      <div class="row" style="font-size:13px; opacity:0.8; margin-top:6px;">
+        <span>📊 Событий: ${data.count}</span>
+        <span>🎯 ТБ 2.5</span>
+      </div>
     </div>
+  `;
 
-    <div id="content">
-        <div class="loading">Загрузка данных</div>
+  content.innerHTML = html;
+}
+
+function renderStats(data) {
+  if (!data) {
+    document.getElementById('content').innerHTML = '<div class="empty">Статистики пока нет</div>';
+    return;
+  }
+  document.getElementById('content').innerHTML = `
+    <div class="stats-container">
+      <div class="stats-big">${data.accuracy}%</div>
+      <div class="stats-label">🎯 Точность прогнозов</div>
+      <div class="stats-grid">
+        <div class="stats-box win"><span class="num">${data.wins}</span><span class="name">✅ Зашло</span></div>
+        <div class="stats-box lose"><span class="num">${data.loses}</span><span class="name">❌ Не зашло</span></div>
+      </div>
+      <div class="stats-box"><span class="num">${data.total}</span><span class="name">📈 Всего матчей</span></div>
     </div>
+  `;
+}
 
-    <button class="btn" onclick="loadData()">🔄 Обновить</button>
+function renderBonus() {
+  document.getElementById('content').innerHTML = `
+    <div class="bonus-card">
+      <h2>🎁 БОНУС ДЛЯ ТЕБЯ!</h2>
+      <p>💎 Регистрируйся в <b>Балтбет</b> и получай приветственный бонус</p>
+      <p>🔥 Лучшие коэффициенты на ТБ 2.5</p>
+      <p>⚡ Мгновенные выплаты</p>
+      <p>🛡️ Официальный лицензированный букмекер</p>
+      <p style="margin-top:16px; padding-top:16px; border-top:1px solid rgba(255,255,255,0.2);">
+        📈 <b>Точность прогнозов — 78%</b><br>
+        💰 Средний кэф экспресса — 4.50
+      </p>
+      <a class="bonus-btn" href="https://baltbet.ru/account/register?refpromo=1221753" target="_blank">🎁 ЗАБРАТЬ БОНУС</a>
+    </div>
+  `;
+}
 
-    <script>
-        // ⚠️ ЗАМЕНИТЕ НА URL ВАШЕГО ВЕБ-ПРИЛОЖЕНИЯ APPS SCRIPT
-        const API_URL = 'https://script.google.com/macros/s/AKfycbxkhesCYdzNhVrygfjdrsn6xnDdv5JgpprDe3nyxUAZchlSFoVBs7iet6mLvG-SC8OB/exec';
+function toggleFav(home, away) {
+  haptic('medium');
+  const key = `${home}_${away}`;
+  const idx = favorites.indexOf(key);
+  if (idx >= 0) favorites.splice(idx, 1);
+  else favorites.push(key);
+  localStorage.setItem('tb25_favorites', JSON.stringify(favorites));
+  renderMatches(allMatches);
+}
 
-        let currentTab = 'matches';
+function shareMatch(home, away, odd) {
+  haptic('light');
+  const text = `⚽ ${home} — ${away}\n💰 Кэф: ${odd}\n🎯 Прогноз: ТБ 2.5\n\nОт @total25_signals_bot`;
+  if (tg?.switchInlineQuery) {
+    tg.switchInlineQuery(text, ['users', 'groups']);
+  } else {
+    alert('Скопируйте текст:\n\n' + text);
+  }
+}
 
-        // Инициализация Telegram WebApp
-        const tg = window.Telegram?.WebApp;
-        if (tg) {
-            tg.ready();
-            tg.expand();
-            const userName = tg.initDataUnsafe?.user?.first_name || 'друг';
-            document.getElementById('subtitle').textContent = `Привет, ${userName}!`;
-        } else {
-            document.getElementById('subtitle').textContent = 'Открыто вне Telegram';
-        }
+function escape(s) { return String(s).replace(/'/g, "\\'"); }
 
-        function switchTab(tab) {
-            currentTab = tab;
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.getElementById('tab-' + tab).classList.add('active');
-            loadData();
-        }
-
-        async function loadData() {
-            const content = document.getElementById('content');
-            content.innerHTML = '<div class="loading">Загрузка данных</div>';
-
-            try {
-                const url = `${API_URL}?action=${currentTab}`;
-                const resp = await fetch(url);
-                if (!resp.ok) throw new Error('HTTP ' + resp.status);
-                const data = await resp.json();
-
-                if (currentTab === 'matches') renderMatches(data);
-                else renderStats(data);
-            } catch (e) {
-                content.innerHTML = `<div class="error">❌ Ошибка: ${e.message}</div>`;
-            }
-        }
-
-        function renderMatches(data) {
-            if (!Array.isArray(data) || data.length === 0) {
-                document.getElementById('content').innerHTML = 
-                    '<div class="loading">📭 Матчей пока нет</div>';
-                return;
-            }
-
-            const medals = ['🥇', '🥈', '🥉'];
-            let html = '';
-
-            data.forEach((m, i) => {
-                const prefix = i < 3 ? medals[i] : `${i + 1}.`;
-                const prob = parseInt(m.probability) || 0;
-                const trend = m.trend || '';
-
-                html += `
-                    <div class="card">
-                        <div class="match">${prefix} ${m.home} — ${m.away}</div>
-                        <div class="league">🏆 ${m.league} • 🕐 ${m.time}</div>
-                        <div class="row">
-                            <span class="label">📊 Тотал</span>
-                            <span><b>${m.total}</b></span>
-                        </div>
-                        <div class="row">
-                            <span class="label">🎯 Вероятность</span>
-                            <span class="prob-badge">${prob}%</span>
-                        </div>
-                        <div class="row">
-                            <span class="label">💰 Кэф</span>
-                            <span class="odd-value">${m.odd} ${trend}</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-bar-fill" style="width: ${prob}%"></div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            document.getElementById('content').innerHTML = html;
-        }
-
-        function renderStats(data) {
-            if (!data) {
-                document.getElementById('content').innerHTML = 
-                    '<div class="loading">📊 Статистики пока нет</div>';
-                return;
-            }
-
-            const html = `
-                <div class="stats-container">
-                    <div class="stats-big">${data.accuracy}%</div>
-                    <div class="stats-label">🎯 Точность прогнозов</div>
-                    
-                    <div class="stats-grid">
-                        <div class="stats-box win">
-                            <span class="num">${data.wins}</span>
-                            <span class="name">✅ Зашло</span>
-                        </div>
-                        <div class="stats-box lose">
-                            <span class="num">${data.loses}</span>
-                            <span class="name">❌ Не зашло</span>
-                        </div>
-                    </div>
-
-                    <div class="stats-box">
-                        <span class="num">${data.total}</span>
-                        <span class="name">📈 Всего матчей</span>
-                    </div>
-                </div>
-            `;
-
-            document.getElementById('content').innerHTML = html;
-        }
-
-        // Автозагрузка
-        loadData();
-    </script>
+// Загружаем данные
+loadData();
+</script>
 </body>
 </html>
