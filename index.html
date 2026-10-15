@@ -956,11 +956,11 @@ document.getElementById('tabs').addEventListener('click', e => {
   loadData();
 });
 function getCache(tab) {
-  try { const r = localStorage.getItem('tb25_v30_' + tab); return r ? JSON.parse(r) : null; } catch(e){ return null; }
+  try { const r = localStorage.getItem('tb25_v31_' + tab); return r ? JSON.parse(r) : null; } catch(e){ return null; }
 }
 function setCache(tab, version, data) {
   try {
-    localStorage.setItem('tb25_v30_' + tab, JSON.stringify({ version, data, ts: Date.now() }));
+    localStorage.setItem('tb25_v31_' + tab, JSON.stringify({ version, data, ts: Date.now() }));
     localStorage.setItem('tb25_last_update', new Date().toISOString());
   } catch(e){}
 }
@@ -1036,8 +1036,12 @@ function renderMatches(data) {
     return (parseFloat(a.odd) || 0) - (parseFloat(b.odd) || 0);
   });
   let html = '';
-  sorted.forEach((m, idx) => {
+  let idx = 0;
+  sorted.forEach((m) => {
+    if (!m.home || !m.away) return;
     const prob = parseInt(m.probability) || 0;
+    if (prob < 1) return;
+    idx++;
     const live = String(m.result || '').includes('Live');
     let outcomeHtml = '';
     if (m.outcome) {
@@ -1054,12 +1058,12 @@ function renderMatches(data) {
       outcomeHtml = '<div class="outcome-line"><span class="label">🏆 Прогноз</span><span class="fav">' + mainLabel + ' · ' + best + '%</span></div><div class="outcome-line double" style="margin-bottom:0;"><span class="label">🎯 Двойной шанс</span><span class="fav">' + doubleLabel + ' · ' + bestDouble + '%</span></div>';
     }
     html += '<div class="card ' + cardClass(prob) + ' ' + (live ? 'card-live' : '') + '" style="animation-delay:' + (idx * 0.05) + 's;">';
-    html += '<div class="card-header"><span class="card-num-badge">' + (idx + 1) + '</span><div class="card-teams-block"><div class="card-team">' + m.home + '</div><div class="card-team">' + m.away + '</div></div></div>';
+    html += '<div class="card-header"><span class="card-num-badge">' + idx + '</span><div class="card-teams-block"><div class="card-team">' + m.home + '</div><div class="card-team">' + m.away + '</div></div></div>';
     html += '<div class="card-meta"><div class="meta-item league">🏆 ' + m.league + '</div><div class="meta-item">📅 ' + (m.date || '') + (m.time ? ' · ' + m.time : '') + '</div>' + (live ? '<div class="meta-item"><span class="live-badge">LIVE</span></div>' : '') + '</div>';
     html += '<div class="card-stats"><div class="stat-box blue"><div class="label">Тотал</div><div class="value">' + m.total + '</div></div><div class="stat-box green"><div class="label">Вероят.</div><div class="value" style="color:' + probColor(prob) + ';text-shadow:0 0 18px ' + probGlow(prob) + '">' + prob + '%</div></div><div class="stat-box gold"><div class="label">Кэф</div><div class="value">' + m.odd + '</div></div></div>';
     html += outcomeHtml + '</div>';
   });
-  content.innerHTML = html;
+  content.innerHTML = html || '<div class="empty">Нет матчей</div>';
 }
 function renderYesterday(data) {
   const content = document.getElementById('content');
@@ -1091,12 +1095,19 @@ function renderExpress(data) {
   const content = document.getElementById('content');
   if (!data || !data.matches || !data.matches.length) { content.innerHTML = '<div class="empty">Экспресс ещё не собран</div>'; return; }
   const todayISO = new Date().toISOString().slice(0, 10);
-  let todayMatches = data.matches.filter(m => {
+  let items = data.matches.filter(m => {
+    if (!m.home || !m.away) return false;
+    const prob = parseInt(m.probability) || 0;
+    const oddNum = parseFloat(m.odd) || 0;
+    if (prob < 1 || oddNum < 1.01) return false;
     if (!m.date) return true;
     return m.date.indexOf(todayISO) === 0;
   });
-  if (todayMatches.length === 0) todayMatches = data.matches;
-  const sortedMatches = todayMatches.slice().sort((a, b) => (parseInt(b.probability) || 0) - (parseInt(a.probability) || 0));
+  if (items.length === 0) {
+    items = data.matches.filter(m => m.home && m.away && (parseInt(m.probability) || 0) >= 1 && (parseFloat(m.odd) || 0) >= 1.01);
+  }
+  if (items.length === 0) { content.innerHTML = '<div class="empty">Экспресс ещё не собран</div>'; return; }
+  const sortedMatches = items.slice().sort((a, b) => (parseInt(b.probability) || 0) - (parseInt(a.probability) || 0));
   let totalOdd = 1;
   sortedMatches.forEach(m => { totalOdd *= (parseFloat(m.odd) || 1); });
   totalOdd = totalOdd.toFixed(2);
@@ -1115,14 +1126,19 @@ function renderExpress(data) {
 }
 function renderStats(data) {
   if (!data) { document.getElementById('content').innerHTML = '<div class="empty">Статистики пока нет</div>'; return; }
-  let html = '<div class="stats-wrap"><div class="stats-big">' + data.accuracy + '%</div><div class="stats-label">Точность прогнозов</div>';
-  html += '<div class="stats-grid"><div class="stats-box win clickable" onclick="openHistory(\'wins\')"><span class="num">' + data.wins + '</span><span class="name">✅ Зашло →</span></div><div class="stats-box lose clickable" onclick="openHistory(\'loses\')"><span class="num">' + data.loses + '</span><span class="name">❌ Не зашло →</span></div></div>';
-  html += '<div class="stats-box clickable" onclick="openHistory(\'all\')" style="margin-top:12px;"><span class="num">' + data.total + '</span><span class="name">📈 Всего матчей →</span></div>';
-  if (data.leagues && data.leagues.length) {
+  const acc = (typeof data.accuracy === 'number') ? data.accuracy : 0;
+  const wins = (typeof data.wins === 'number') ? data.wins : 0;
+  const loses = (typeof data.loses === 'number') ? data.loses : 0;
+  const total = (typeof data.total === 'number') ? data.total : 0;
+  const leagues = Array.isArray(data.leagues) ? data.leagues : [];
+  let html = '<div class="stats-wrap"><div class="stats-big">' + acc + '%</div><div class="stats-label">Точность прогнозов</div>';
+  html += '<div class="stats-grid"><div class="stats-box win clickable" onclick="openHistory(\'wins\')"><span class="num">' + wins + '</span><span class="name">✅ Зашло →</span></div><div class="stats-box lose clickable" onclick="openHistory(\'loses\')"><span class="num">' + loses + '</span><span class="name">❌ Не зашло →</span></div></div>';
+  html += '<div class="stats-box clickable" onclick="openHistory(\'all\')" style="margin-top:12px;"><span class="num">' + total + '</span><span class="name">📈 Всего матчей →</span></div>';
+  if (leagues.length) {
     html += '<div class="leagues-title">📊 ПО ЛИГАМ · НАЖМИ ДЛЯ ДЕТАЛЕЙ</div>';
-    data.leagues.forEach((lg, i) => {
+    leagues.forEach((lg, i) => {
       const safeName = String(lg.name).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-      html += '<div class="league-item" style="animation-delay:' + (i * 0.04) + 's;" onclick="openLeague(\'' + safeName + '\')"><div class="league-name">🏆 ' + lg.name + '</div><div class="league-stats"><span class="league-win">✅ ' + lg.wins + '</span><span class="league-lose">❌ ' + lg.loses + '</span><span class="league-acc">' + lg.accuracy + '%</span></div><span class="league-arrow">›</span></div>';
+      html += '<div class="league-item" style="animation-delay:' + (i * 0.04) + 's;" onclick="openLeague(\'' + safeName + '\')"><div class="league-name">🏆 ' + lg.name + '</div><div class="league-stats"><span class="league-win">✅ ' + (lg.wins || 0) + '</span><span class="league-lose">❌ ' + (lg.loses || 0) + '</span><span class="league-acc">' + (lg.accuracy || 0) + '%</span></div><span class="league-arrow">›</span></div>';
     });
   }
   html += '<div class="disclaimer"><div class="disclaimer-title">Важно</div><div class="disclaimer-text">Все прогнозы — это <strong>сбор информации и аналитика</strong>. Они <strong>не являются гарантией победы</strong>. Играйте ответственно.</div></div></div>';
