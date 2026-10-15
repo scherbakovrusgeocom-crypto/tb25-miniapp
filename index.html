@@ -161,10 +161,10 @@ html:has(body.light-theme)::before { opacity: 0.4; }
 }
 @keyframes titleShimmer { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 .header .sub { font-size: 10px; letter-spacing: 5px; color: var(--text-dim); margin-top: 6px; text-transform: uppercase; font-weight: 800; }
-.header-chips { display: flex; justify-content: center; gap: 10px; margin-top: 16px; }
+.header-chips { display: flex; justify-content: center; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
 .header-chip {
   display: flex; align-items: center; gap: 7px;
-  padding: 9px 18px;
+  padding: 9px 16px;
   background: var(--glass);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -181,6 +181,8 @@ html:has(body.light-theme)::before { opacity: 0.4; }
 .header-chip:active { transform: scale(0.94); border-color: var(--accent); }
 .header-chip.bonus-chip { background: linear-gradient(135deg, rgba(229, 185, 106, 0.14) 0%, rgba(74, 168, 216, 0.08) 50%, rgba(229, 185, 106, 0.14) 100%); border: 1px solid rgba(229, 185, 106, 0.35); }
 .header-chip.bonus-chip svg { color: var(--gold); }
+.header-chip.donate-chip { background: linear-gradient(135deg, rgba(229, 185, 106, 0.2) 0%, rgba(255, 215, 100, 0.1) 50%, rgba(229, 185, 106, 0.2) 100%); border: 1px solid rgba(229, 185, 106, 0.5); box-shadow: 0 6px 20px rgba(229, 185, 106, 0.2); }
+.header-chip.donate-chip svg { color: var(--gold); fill: var(--gold); }
 .tabs-wrap {
   position: sticky;
   top: 0;
@@ -757,6 +759,11 @@ body.light-theme .express-card-body { background: rgba(74, 168, 216, 0.04); }
   margin-top: 8px;
 }
 .modal-btn:active { transform: scale(0.96); }
+.modal-btn-gold {
+  background: linear-gradient(135deg, #f0d089, #e5b96a);
+  color: #3d2a10;
+  box-shadow: 0 10px 28px var(--gold-glow);
+}
 </style>
 </head>
 <body>
@@ -790,6 +797,12 @@ body.light-theme .express-card-body { background: rgba(74, 168, 216, 0.04); }
       </svg>
       FAQ
     </div>
+    <div class="header-chip donate-chip" onclick="openDonate()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+      <span>Поддержать</span>
+    </div>
   </div>
 </div>
 <div class="tabs-wrap">
@@ -821,6 +834,7 @@ body.light-theme .express-card-body { background: rgba(74, 168, 216, 0.04); }
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycbxW52PKcn0Mh2L6yjQ5-5IiuCdds8FksK1XzY6F_iElSnFuAH4f5Hz9JH97pEDD1hcw/exec';
 const AD_URL = 'https://baltbet.ru/account/register?refpromo=1221753';
+const BOT_URL = 'https://t.me/total25_signals_bot';
 const CACHE_TTL = 30 * 60 * 1000;
 let currentTab = 'today';
 const tg = window.Telegram?.WebApp;
@@ -850,6 +864,12 @@ function haptic(s) {
     else if (s === 'heavy') tg.HapticFeedback.impactOccurred('heavy');
     else tg.HapticFeedback.impactOccurred('light');
   } catch(e){}
+}
+function getUserId() {
+  if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) {
+    return tg.initDataUnsafe.user.id;
+  }
+  return 'guest';
 }
 function probColor(p) {
   if (p >= 75) return 'var(--success)';
@@ -882,7 +902,8 @@ function showWelcomeModal() {
       '<div class="modal-warn-title">Это НЕ букмекерская контора</div>' +
       '<div>Мы <strong>не принимаем ставки</strong> и <strong>не храним деньги</strong>. Все прогнозы носят <strong>информационный характер</strong> и <strong>не гарантируют выигрыш</strong>. Любой исход — это вероятность, а не факт.</div>' +
     '</div>' +
-    '<div class="modal-star">⭐ Если проект полезен — поддержи его <strong>звёздочкой</strong>. Это помогает развитию и бесплатной работе сервиса.</div>' +
+    '<div class="modal-star">⭐ Если проект полезен — поддержи его <strong>звёздочкой</strong> в Telegram. Это помогает развитию и бесплатной работе сервиса.</div>' +
+    '<button class="modal-btn modal-btn-gold" onclick="openDonateFromModal(this)">⭐ ПОДДЕРЖАТЬ</button>' +
     '<button class="modal-btn" onclick="closeModal(this)">ПОНЯЛ, ПОЕХАЛИ 🚀</button>' +
     '</div>';
   document.body.appendChild(modal);
@@ -893,6 +914,31 @@ function closeModal(btn) {
   overlay.style.opacity = '0';
   overlay.style.transition = 'opacity 0.25s ease';
   setTimeout(() => overlay.remove(), 250);
+}
+function openDonateFromModal(btn) {
+  closeModal(btn);
+  setTimeout(() => openDonate(), 300);
+}
+function openDonate() {
+  haptic('medium');
+  if (tg && tg.openTelegramLink) {
+    tg.openTelegramLink(BOT_URL + '?start=donate');
+  } else {
+    showDonateModal();
+  }
+}
+function showDonateModal() {
+  const modal = document.createElement('div');
+  modal.className = 'modal-overlay';
+  modal.innerHTML = '<div class="modal-box">' +
+    '<div class="modal-icon">⭐</div>' +
+    '<div class="modal-title">ПОДДЕРЖАТЬ ПРОЕКТ</div>' +
+    '<div class="modal-text">Проект работает <strong>бесплатно</strong> и без рекламы. Твои звёзды помогут покрывать расходы на API и развивать новые функции.</div>' +
+    '<div class="modal-star">⭐ Открой бота <strong>@total25_signals_bot</strong> и нажми <strong>«⭐ Поддержать»</strong> в меню, чтобы отправить любое количество звёзд.</div>' +
+    '<a class="modal-btn modal-btn-gold" href="' + BOT_URL + '?start=donate" target="_blank" style="display:block;text-align:center;text-decoration:none;">ОТКРЫТЬ БОТА ⭐</a>' +
+    '<button class="modal-btn" onclick="closeModal(this)">ЗАКРЫТЬ</button>' +
+    '</div>';
+  document.body.appendChild(modal);
 }
 function switchTabDirect(tabName) {
   haptic('medium');
@@ -910,11 +956,11 @@ document.getElementById('tabs').addEventListener('click', e => {
   loadData();
 });
 function getCache(tab) {
-  try { const r = localStorage.getItem('tb25_v29_' + tab); return r ? JSON.parse(r) : null; } catch(e){ return null; }
+  try { const r = localStorage.getItem('tb25_v30_' + tab); return r ? JSON.parse(r) : null; } catch(e){ return null; }
 }
 function setCache(tab, version, data) {
   try {
-    localStorage.setItem('tb25_v29_' + tab, JSON.stringify({ version, data, ts: Date.now() }));
+    localStorage.setItem('tb25_v30_' + tab, JSON.stringify({ version, data, ts: Date.now() }));
     localStorage.setItem('tb25_last_update', new Date().toISOString());
   } catch(e){}
 }
@@ -955,7 +1001,8 @@ async function loadData() {
     content.innerHTML = showSkeleton();
   }
   try {
-    const resp = await fetch(API_URL + '?action=' + currentTab);
+    const uid = getUserId();
+    const resp = await fetch(API_URL + '?action=' + currentTab + '&uid=' + uid);
     const result = await resp.json();
     if (result.error) throw new Error(result.error);
     const serverVersion = result.version || '1';
@@ -1086,7 +1133,8 @@ async function openLeague(leagueName) {
   const content = document.getElementById('content');
   content.innerHTML = showSkeleton();
   try {
-    const resp = await fetch(API_URL + '?action=league&name=' + encodeURIComponent(leagueName));
+    const uid = getUserId();
+    const resp = await fetch(API_URL + '?action=league&name=' + encodeURIComponent(leagueName) + '&uid=' + uid);
     const raw = await resp.json();
     const data = Array.isArray(raw) ? raw : (raw.data || []);
     let html = '<button style="margin-bottom:14px;padding:9px 18px;border-radius:22px;font-size:12px;font-weight:800;background:var(--glass);color:var(--text-dim);border:1px solid var(--border-mid);cursor:pointer;font-family:inherit;backdrop-filter:blur(12px);" onclick="switchTabDirect(\'stats\')">← Назад к статистике</button>';
@@ -1115,6 +1163,7 @@ function renderFaq() {
   '<div class="faq-section"><div class="faq-section-title">🎯 Логика прогнозов</div><div class="faq-item"><div class="faq-q"><div class="faq-q-icon">?</div>По какому принципу выбираются матчи?</div><div class="faq-a">Бот автоматически ищет матчи и применяет математическую модель:<ul><li>Анализирует <strong>силу атаки и обороны</strong></li><li>Рассчитывает ожидаемое <strong>количество голов</strong> (xG)</li><li>Применяет <strong>распределение Пуассона</strong></li><li>Отсеивает матчи с вероятностью ниже <span class="faq-stat">60%</span></li></ul><div class="faq-highlight">📈 В итоге видите <strong>самые вероятные исходы</strong> на «Тотал Больше 2.5».</div></div></div></div>' +
   '<div class="faq-section"><div class="faq-section-title">⚙️ Обновление данных</div><div class="faq-item"><div class="faq-q"><div class="faq-q-icon">?</div>Как часто обновляются прогнозы?</div><div class="faq-a">Данные обновляются <strong>автоматически</strong>:<ul><li>🔍 <strong>Поиск матчей</strong> — каждые 5 часов</li><li>📈 <strong>Кэфы</strong> — каждые 15 минут</li><li>⚽ <strong>Счёт и результаты</strong> — каждые 30 минут</li></ul></div></div></div>' +
   '<div class="faq-section"><div class="faq-section-title">🎁 Уведомления</div><div class="faq-item"><div class="faq-q"><div class="faq-q-icon">?</div>Какие уведомления я получу?</div><div class="faq-a"><ul><li>⏰ <strong>За 15 минут</strong> до матча</li><li>🎉 <strong>После завершения</strong> — результат</li><li>📊 <strong>В 9:00</strong> — утренний дайджест</li></ul></div></div></div>' +
+  '<div class="faq-section"><div class="faq-section-title">⭐ Поддержка</div><div class="faq-item"><div class="faq-q"><div class="faq-q-icon">?</div>Как поддержать проект?</div><div class="faq-a">Проект работает <strong>бесплатно</strong>. Ты можешь поддержать его <strong>звёздами Telegram</strong>:<ul><li>Открой бота <strong>@total25_signals_bot</strong></li><li>Нажми <strong>«⭐ Поддержать»</strong> в меню</li><li>Выбери количество звёзд</li></ul><div class="faq-highlight">⭐ Твои звёзды помогают покрывать расходы на API и развивать проект.</div></div></div></div>' +
   '<div class="disclaimer"><div class="disclaimer-title">Это не букмекер</div><div class="disclaimer-text">Проект — это <strong>аналитика и сбор информации</strong>. Мы <strong>не принимаем ставки</strong> и <strong>не храним деньги</strong>. Все прогнозы — <strong>информационные</strong> и <strong>не гарантируют выигрыш</strong>. Играйте ответственно.</div></div>';
 }
 async function openHistory(filter) {
@@ -1123,7 +1172,8 @@ async function openHistory(filter) {
   content.innerHTML = showSkeleton();
   const titles = { wins: '✅ ЗАШЕДШИЕ', loses: '❌ НЕЗАШЕДШИЕ', all: '📋 ВСЕ МАТЧИ' };
   try {
-    const resp = await fetch(API_URL + '?action=history&filter=' + filter);
+    const uid = getUserId();
+    const resp = await fetch(API_URL + '?action=history&filter=' + filter + '&uid=' + uid);
     const raw = await resp.json();
     const data = Array.isArray(raw) ? raw : (raw.data || []);
     let html = '<button style="margin-bottom:14px;padding:9px 18px;border-radius:22px;font-size:12px;font-weight:800;background:var(--glass);color:var(--text-dim);border:1px solid var(--border-mid);cursor:pointer;font-family:inherit;backdrop-filter:blur(12px);" onclick="switchTabDirect(\'stats\')">← Назад</button>';
