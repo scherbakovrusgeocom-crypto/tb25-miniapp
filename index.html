@@ -23,6 +23,22 @@
   --cyan: #06b6d4;
   --purple: #8b5cf6;
   --purple-bright: #a78bfa;
+  --header-bg-1: #0a2412;
+  --header-bg-2: #05140a;
+  --tabs-bg: rgba(5, 20, 10, 0.95);
+}
+body.light-theme {
+  --bg: #f0fdf4;
+  --card: #ffffff;
+  --card2: #ecfdf5;
+  --border: rgba(34, 197, 94, 0.2);
+  --border-strong: rgba(34, 197, 94, 0.4);
+  --text: #052e16;
+  --text-dim: #166534;
+  --text-mute: #16a34a;
+  --header-bg-1: #dcfce7;
+  --header-bg-2: #f0fdf4;
+  --tabs-bg: rgba(240, 253, 244, 0.95);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body {
@@ -37,6 +53,7 @@ body {
   -webkit-user-select: none;
   -moz-user-select: none;
   -webkit-touch-callout: none;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 body::before {
   content: '';
@@ -47,17 +64,45 @@ body::before {
     radial-gradient(circle at 10% 90%, rgba(34, 197, 94, 0.06) 0%, transparent 40%);
   pointer-events: none;
   z-index: 0;
+  opacity: 1;
+  transition: opacity 0.3s ease;
 }
+body.light-theme::before { opacity: 0.5; }
 
 /* ===== ШАПКА ===== */
 .header {
   position: relative;
   padding: 22px 20px 18px;
   text-align: center;
-  background: linear-gradient(180deg, #0a2412 0%, #05140a 100%);
+  background: linear-gradient(180deg, var(--header-bg-1) 0%, var(--header-bg-2) 100%);
   border-bottom: 1px solid var(--border);
   z-index: 1;
+  transition: background 0.3s ease;
 }
+.header-top {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  gap: 8px;
+  z-index: 5;
+}
+.theme-btn {
+  width: 36px;
+  height: 36px;
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  color: var(--green-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.theme-btn:active { transform: scale(0.9) rotate(20deg); }
+.theme-btn svg { width: 18px; height: 18px; stroke-width: 2; }
+
 .ball-wrap {
   position: relative;
   width: 64px;
@@ -91,6 +136,7 @@ body::before {
   color: var(--green-bright);
   text-shadow: 0 0 20px rgba(34, 197, 94, 0.6);
   font-family: 'Arial Black', 'Impact', sans-serif;
+  transition: color 0.3s ease;
 }
 .header .sub {
   font-size: 9px;
@@ -127,17 +173,9 @@ body::before {
   user-select: none;
   -webkit-user-select: none;
 }
-.header-chip svg {
-  width: 14px;
-  height: 14px;
-  stroke-width: 2.2;
-}
-.header-chip:active {
-  transform: scale(0.95);
-  background: rgba(34, 197, 94, 0.25);
-}
+.header-chip svg { width: 14px; height: 14px; stroke-width: 2.2; }
+.header-chip:active { transform: scale(0.95); background: rgba(34, 197, 94, 0.25); }
 
-/* Бонус-чип — стекло с мерцанием */
 .header-chip.bonus-chip {
   position: relative;
   overflow: hidden;
@@ -157,16 +195,9 @@ body::before {
 .header-chip.bonus-chip::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: -100%;
-  width: 60%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.35) 50%,
-    transparent 100%
-  );
+  top: 0; left: -100%;
+  width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.35) 50%, transparent 100%);
   animation: glassShimmer 6s ease-in-out infinite;
   pointer-events: none;
 }
@@ -175,27 +206,22 @@ body::before {
   85% { left: 100%; }
   100% { left: 100%; }
 }
-.header-chip.bonus-chip svg { position: relative; z-index: 1; color: #ffffff; }
+.header-chip.bonus-chip svg { position: relative; z-index: 1; }
 .header-chip.bonus-chip span { position: relative; z-index: 1; }
 
 /* ===== ТАБЫ ===== */
 .tabs-wrap {
   position: sticky;
   top: 0;
-  background: rgba(5, 20, 10, 0.95);
+  background: var(--tabs-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   padding: 10px 12px;
   z-index: 10;
   border-bottom: 1px solid var(--border);
+  transition: background 0.3s ease;
 }
-.tabs {
-  display: flex;
-  gap: 4px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  justify-content: space-between;
-}
+.tabs { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; justify-content: space-between; }
 .tabs::-webkit-scrollbar { display: none; }
 .tab {
   flex: 1 1 0;
@@ -234,23 +260,27 @@ body::before {
   padding: 16px;
   margin-bottom: 12px;
   position: relative;
-  animation: slideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: cardSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
 }
-@keyframes slideIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.card.card-hot { border-color: rgba(245, 158, 11, 0.5); }
-.card.card-mid { border-color: rgba(34, 197, 94, 0.4); }
-.card.card-live { border-color: rgba(239, 68, 68, 0.5); }
+body.light-theme .card { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); }
 
-.card-teams {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
+@keyframes cardSlideIn {
+  0% { opacity: 0; transform: translateY(20px) scale(0.96); }
+  60% { opacity: 1; transform: translateY(-2px) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
+
+.card.card-hot { border-color: rgba(245, 158, 11, 0.5); box-shadow: 0 4px 24px rgba(245, 158, 11, 0.15); }
+.card.card-mid { border-color: rgba(34, 197, 94, 0.4); }
+.card.card-live { border-color: rgba(239, 68, 68, 0.5); animation: cardSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1), livePulse 2s ease-in-out infinite; }
+@keyframes livePulse {
+  0%, 100% { box-shadow: 0 4px 20px rgba(239, 68, 68, 0.15); }
+  50% { box-shadow: 0 4px 20px rgba(239, 68, 68, 0.35); }
+}
+
+.card-teams { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding-right: 70px; }
 .team {
   flex: 1;
   font-size: 14px;
@@ -273,6 +303,7 @@ body::before {
   border-radius: 6px;
   flex-shrink: 0;
 }
+body.light-theme .vs { background: rgba(0, 0, 0, 0.06); }
 
 .card-meta {
   display: flex;
@@ -297,7 +328,9 @@ body::before {
   border-radius: 10px;
   padding: 10px 6px;
   text-align: center;
+  transition: background 0.3s ease;
 }
+body.light-theme .stat-box { background: rgba(34, 197, 94, 0.08); }
 .stat-box .label {
   font-size: 9px;
   color: var(--text-mute);
@@ -315,6 +348,9 @@ body::before {
 .stat-box.blue .value { color: #22d3ee; }
 .stat-box.green .value { color: var(--green-bright); }
 .stat-box.gold .value { color: var(--gold-bright); }
+body.light-theme .stat-box.blue .value { color: #0891b2; }
+body.light-theme .stat-box.green .value { color: #16a34a; }
+body.light-theme .stat-box.gold .value { color: #d97706; }
 
 .outcome-line {
   display: flex;
@@ -335,6 +371,37 @@ body::before {
 .outcome-line .label { color: var(--text-dim); font-weight: 700; }
 .outcome-line .fav { color: var(--green-bright); font-weight: 900; }
 .outcome-line.double .fav { color: var(--purple-bright); }
+body.light-theme .outcome-line .fav { color: #16a34a; }
+body.light-theme .outcome-line.double .fav { color: #7c3aed; }
+
+.card-actions {
+  position: absolute;
+  top: 12px; right: 12px;
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+}
+.icon-btn {
+  width: 30px; height: 30px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--text-dim);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  user-select: none;
+}
+body.light-theme .icon-btn { background: rgba(34, 197, 94, 0.1); }
+.icon-btn:active { transform: scale(0.85); }
+.icon-btn.active {
+  color: var(--gold-bright);
+  border-color: var(--gold-bright);
+  background: rgba(245, 158, 11, 0.15);
+}
 
 .live-badge {
   display: inline-block;
@@ -345,6 +412,64 @@ body::before {
   font-weight: 900;
   border-radius: 5px;
   letter-spacing: 0.5px;
+  animation: livePulse 1.5s infinite;
+}
+
+/* ===== СКЕЛЕТОНЫ ===== */
+.skeleton-card {
+  background: linear-gradient(135deg, var(--card) 0%, var(--card2) 100%);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  position: relative;
+}
+.skeleton-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%);
+  animation: skeletonShimmer 1.6s ease-in-out infinite;
+}
+@keyframes skeletonShimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+.skeleton-line {
+  height: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+body.light-theme .skeleton-line { background: rgba(34, 197, 94, 0.1); }
+.skeleton-line.w-70 { width: 70%; }
+.skeleton-line.w-50 { width: 50%; }
+.skeleton-line.w-100 { width: 100%; }
+.skeleton-line.h-16 { height: 16px; }
+.skeleton-balls {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px 0;
+}
+.skeleton-ball {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(74, 222, 128, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  animation: ballBounce 1.2s ease-in-out infinite;
+}
+.skeleton-ball:nth-child(2) { animation-delay: 0.15s; }
+.skeleton-ball:nth-child(3) { animation-delay: 0.3s; }
+@keyframes ballBounce {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50% { transform: translateY(-8px); opacity: 1; }
 }
 
 /* ===== СВОДКА ВЧЕРА ===== */
@@ -360,6 +485,7 @@ body::before {
   border-radius: 14px;
   padding: 14px 8px;
   text-align: center;
+  animation: cardSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .yesterday-stat .ys-num {
   font-size: 24px;
@@ -397,6 +523,7 @@ body::before {
   position: relative;
   overflow: hidden;
   box-shadow: 0 10px 40px rgba(217, 119, 6, 0.4);
+  animation: cardSlideIn 0.5s ease;
 }
 .express-hero-title { font-size: 18px; font-weight: 900; letter-spacing: 1px; }
 .express-hero-sub { font-size: 10px; opacity: 0.9; margin-top: 4px; }
@@ -420,6 +547,7 @@ body::before {
   border-radius: 14px;
   padding: 14px 16px;
   margin-bottom: 8px;
+  animation: cardSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .express-card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
 .express-num {
@@ -436,6 +564,7 @@ body::before {
   gap: 6px; background: rgba(0, 0, 0, 0.25);
   border-radius: 10px; padding: 10px 6px;
 }
+body.light-theme .express-card-body { background: rgba(34, 197, 94, 0.08); }
 .express-stat { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .express-stat-label { font-size: 9px; color: var(--text-mute); text-transform: uppercase; font-weight: 800; }
 .express-stat-value { font-size: 13px; font-weight: 900; }
@@ -481,12 +610,57 @@ body::before {
   border-radius: 14px;
   padding: 18px 16px;
   text-align: center;
+  animation: cardSlideIn 0.4s ease;
 }
 .stats-box.clickable:active { transform: scale(0.97); }
 .stats-box .num { font-size: 28px; font-weight: 900; display: block; margin-bottom: 4px; }
 .stats-box .name { font-size: 11px; color: var(--text-dim); font-weight: 800; }
 .stats-box.win .num { color: var(--green-bright); }
 .stats-box.lose .num { color: #f87171; }
+
+/* ===== СТАТИСТИКА ПО ЛИГАМ ===== */
+.leagues-title {
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--green-bright);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+  margin-top: 24px;
+}
+.league-item {
+  background: linear-gradient(135deg, var(--card) 0%, var(--card2) 100%);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: cardSlideIn 0.4s ease;
+}
+.league-name {
+  flex: 1;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+.league-stats {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 800;
+}
+.league-win { color: var(--green-bright); }
+.league-lose { color: #f87171; }
+.league-acc {
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--green-bright);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-variant-numeric: tabular-nums;
+}
 
 /* ===== FAQ ===== */
 .faq-header { text-align: center; padding: 16px 0 20px; }
@@ -521,6 +695,7 @@ body::before {
   border-radius: 12px;
   padding: 14px 16px;
   margin-bottom: 10px;
+  animation: cardSlideIn 0.4s ease;
 }
 .faq-q {
   font-size: 13px; font-weight: 800;
@@ -594,6 +769,7 @@ body::before {
   position: relative;
   overflow: hidden;
   box-shadow: 0 10px 40px rgba(217, 119, 6, 0.4);
+  animation: cardSlideIn 0.5s ease;
 }
 .bonus-card::before {
   content: '🎁';
@@ -630,7 +806,7 @@ body::before {
 }
 .bonus-btn:active { transform: scale(0.96); }
 
-/* ===== EMPTY / ERROR / SKELETON ===== */
+/* ===== EMPTY / ERROR ===== */
 .empty {
   text-align: center; color: var(--text-mute);
   padding: 70px 20px; font-size: 13px; font-weight: 700;
@@ -645,13 +821,6 @@ body::before {
   background: rgba(239, 68, 68, 0.08);
   border-radius: 14px; font-weight: 600;
 }
-.skeleton {
-  background: linear-gradient(90deg, var(--card) 0%, var(--card2) 50%, var(--card) 100%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s infinite;
-  border-radius: 16px; height: 130px; margin-bottom: 12px;
-}
-@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
 .winner-badge {
   display: inline-block;
@@ -662,6 +831,7 @@ body::before {
   font-size: 11px; font-weight: 800;
   margin-top: 6px;
 }
+body.light-theme .winner-badge { color: #16a34a; }
 
 .sync-line {
   text-align: center;
@@ -687,6 +857,15 @@ body::before {
 <body>
 
 <div class="header">
+  <div class="header-top">
+    <div class="theme-btn" onclick="toggleTheme()" title="Сменить тему">
+      <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"/>
+        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+      </svg>
+    </div>
+  </div>
+
   <div class="ball-wrap">
     <div class="ball-emoji">⚽</div>
   </div>
@@ -752,12 +931,40 @@ let currentTab = 'today';
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.ready(); tg.expand(); }
 
+/* ===== ТЕМА ===== */
+function initTheme() {
+  const saved = localStorage.getItem('tb25_theme') || 'dark';
+  if (saved === 'light') document.body.classList.add('light-theme');
+  updateThemeIcon(saved);
+}
+function toggleTheme() {
+  haptic('medium');
+  const isLight = document.body.classList.toggle('light-theme');
+  const theme = isLight ? 'light' : 'dark';
+  localStorage.setItem('tb25_theme', theme);
+  updateThemeIcon(theme);
+}
+function updateThemeIcon(theme) {
+  const icon = document.getElementById('themeIcon');
+  if (!icon) return;
+  if (theme === 'light') {
+    icon.innerHTML = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
+  } else {
+    icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+  }
+}
+initTheme();
+
 function haptic(s) {
-  if (tg?.HapticFeedback) try { tg.HapticFeedback.impactOccurred(s || 'light'); } catch(e){}
+  if (tg?.HapticFeedback) try {
+    if (s === 'medium') tg.HapticFeedback.impactOccurred('medium');
+    else if (s === 'heavy') tg.HapticFeedback.impactOccurred('heavy');
+    else tg.HapticFeedback.impactOccurred('light');
+  } catch(e){}
 }
 
 function switchTabDirect(tabName) {
-  haptic('light');
+  haptic('medium');
   document.querySelectorAll('.tab').forEach(t => {
     t.classList.toggle('active', t.dataset.tab === tabName);
   });
@@ -768,7 +975,7 @@ function switchTabDirect(tabName) {
 document.getElementById('tabs').addEventListener('click', e => {
   const tab = e.target.closest('.tab');
   if (!tab) return;
-  haptic('light');
+  haptic('medium');
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   tab.classList.add('active');
   currentTab = tab.dataset.tab;
@@ -776,11 +983,11 @@ document.getElementById('tabs').addEventListener('click', e => {
 });
 
 function getCache(tab) {
-  try { const r = localStorage.getItem(`tb25_v19_${tab}`); return r ? JSON.parse(r) : null; } catch(e){ return null; }
+  try { const r = localStorage.getItem(`tb25_v20_${tab}`); return r ? JSON.parse(r) : null; } catch(e){ return null; }
 }
 function setCache(tab, version, data) {
   try {
-    localStorage.setItem(`tb25_v19_${tab}`, JSON.stringify({ version, data, ts: Date.now() }));
+    localStorage.setItem(`tb25_v20_${tab}`, JSON.stringify({ version, data, ts: Date.now() }));
     localStorage.setItem('tb25_last_update', new Date().toISOString());
   } catch(e){}
 }
@@ -807,6 +1014,33 @@ function updateSyncLine() {
   } catch (e) { el.textContent = ''; }
 }
 
+function showSkeleton() {
+  return `
+    <div class="skeleton-card">
+      <div class="skeleton-balls">
+        <div class="skeleton-ball">⚽</div>
+        <div class="skeleton-ball">⚽</div>
+        <div class="skeleton-ball">⚽</div>
+      </div>
+      <div class="skeleton-line w-70 h-16"></div>
+      <div class="skeleton-line w-50"></div>
+      <div class="skeleton-line w-100"></div>
+      <div class="skeleton-line w-70"></div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton-balls">
+        <div class="skeleton-ball">⚽</div>
+        <div class="skeleton-ball">⚽</div>
+        <div class="skeleton-ball">⚽</div>
+      </div>
+      <div class="skeleton-line w-70 h-16"></div>
+      <div class="skeleton-line w-50"></div>
+      <div class="skeleton-line w-100"></div>
+      <div class="skeleton-line w-70"></div>
+    </div>
+  `;
+}
+
 async function loadData() {
   const content = document.getElementById('content');
 
@@ -820,7 +1054,7 @@ async function loadData() {
     updateSyncLine();
     if ((Date.now() - cached.ts) < CACHE_TTL) return;
   } else {
-    content.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div>';
+    content.innerHTML = showSkeleton();
   }
 
   try {
@@ -855,6 +1089,20 @@ function renderTab(tab, data) {
 
 function cardClass(p) { return p >= 70 ? 'card-hot' : p >= 65 ? 'card-mid' : ''; }
 
+/* ===== ПОДЕЛИТЬСЯ ===== */
+function shareMatch(home, away, total, prob, odd, prediction) {
+  haptic('medium');
+  const text = `⚽ ${home} — ${away}\n📊 Тотал: ${total} · Вероятность: ${prob}%\n💰 Кэф: ${odd}\n🏆 Прогноз: ${prediction}\n\n📱 От @total25_signals_bot`;
+  if (tg?.switchInlineQuery) {
+    tg.switchInlineQuery(text, ['users', 'groups']);
+  } else {
+    navigator.clipboard?.writeText(text).then(() => {
+      alert('Скопировано:\n\n' + text);
+    }).catch(() => alert(text));
+  }
+}
+
+/* ===== МАТЧИ ===== */
 function renderMatches(data) {
   const content = document.getElementById('content');
   if (!Array.isArray(data) || !data.length) {
@@ -863,11 +1111,12 @@ function renderMatches(data) {
   }
 
   let html = '';
-  data.forEach((m) => {
+  data.forEach((m, idx) => {
     const prob = parseInt(m.probability) || 0;
     const live = String(m.result || '').includes('Live');
 
     let outcomeHtml = '';
+    let predLabel = 'ТБ 2.5';
     if (m.outcome) {
       const o = m.outcome;
       const p1 = o.p1 || 0, px = o.x || 0, p2 = o.p2 || 0;
@@ -875,6 +1124,8 @@ function renderMatches(data) {
       let mainLabel = 'X';
       if (best === p1) mainLabel = 'П1';
       else if (best === p2) mainLabel = 'П2';
+      predLabel = mainLabel + ' ' + best + '%';
+
       const chance1X = p1 + px;
       const chance2X = p2 + px;
       const chance12 = p1 + p2;
@@ -882,6 +1133,7 @@ function renderMatches(data) {
       let bestDouble = chance1X;
       if (chance2X > bestDouble) { doubleLabel = '2X'; bestDouble = chance2X; }
       if (chance12 > bestDouble) { doubleLabel = '12'; bestDouble = chance12; }
+
       outcomeHtml = `
         <div class="outcome-line">
           <span class="label">🏆 Прогноз</span>
@@ -894,8 +1146,15 @@ function renderMatches(data) {
       `;
     }
 
+    const mHomeEsc = String(m.home).replace(/'/g, "\\'");
+    const mAwayEsc = String(m.away).replace(/'/g, "\\'");
+    const mPredEsc = String(predLabel).replace(/'/g, "\\'");
+
     html += `
-      <div class="card ${cardClass(prob)} ${live ? 'card-live' : ''}">
+      <div class="card ${cardClass(prob)} ${live ? 'card-live' : ''}" style="animation-delay: ${idx * 0.05}s;">
+        <div class="card-actions">
+          <button class="icon-btn" onclick="shareMatch('${mHomeEsc}','${mAwayEsc}','${m.total}','${prob}','${m.odd}','${mPredEsc}')" title="Поделиться">📤</button>
+        </div>
         <div class="card-teams">
           <div class="team">${m.home}</div>
           <div class="vs">VS</div>
@@ -971,13 +1230,13 @@ function renderYesterday(data) {
     </div>
   `;
 
-  matches.forEach(m => {
+  matches.forEach((m, idx) => {
     const emoji = m.status === 'win' ? '✅' : m.status === 'lose' ? '❌' : '⏳';
     const cls = m.status === 'win' ? 'card-win' : m.status === 'lose' ? 'card-lose' : '';
     const winnerHtml = m.winner ? `<div class="winner-badge">🏆 ${m.winner}</div>` : '';
 
     html += `
-      <div class="card ${cls}">
+      <div class="card ${cls}" style="animation-delay: ${idx * 0.05}s;">
         <div class="card-teams">
           <div class="team">${m.home}</div>
           <div class="vs">${m.score || '—'}</div>
@@ -1019,7 +1278,7 @@ function renderExpress(data) {
     const prob = parseInt(m.probability) || 0;
     const oddNum = parseFloat(m.odd) || 1;
     html += `
-      <div class="express-card">
+      <div class="express-card" style="animation-delay: ${i * 0.08}s;">
         <div class="express-card-head">
           <span class="express-num">${i + 1}</span>
           <span class="express-match">${m.home} — ${m.away}</span>
@@ -1043,9 +1302,11 @@ function renderExpress(data) {
   content.innerHTML = html;
 }
 
+/* ===== СТАТИСТИКА ===== */
 function renderStats(data) {
   if (!data) { document.getElementById('content').innerHTML = '<div class="empty">Статистики пока нет</div>'; return; }
-  document.getElementById('content').innerHTML = `
+
+  let html = `
     <div class="stats-wrap">
       <div class="stats-big">${data.accuracy}%</div>
       <div class="stats-label">Точность прогнозов</div>
@@ -1063,6 +1324,26 @@ function renderStats(data) {
         <span class="num">${data.total}</span>
         <span class="name">📈 Всего матчей →</span>
       </div>
+  `;
+
+  // Статистика по лигам
+  if (data.leagues && data.leagues.length) {
+    html += `<div class="leagues-title">📊 ПО ЛИГАМ</div>`;
+    data.leagues.forEach((lg, i) => {
+      html += `
+        <div class="league-item" style="animation-delay: ${i * 0.05}s;">
+          <div class="league-name">🏆 ${lg.name}</div>
+          <div class="league-stats">
+            <span class="league-win">✅ ${lg.wins}</span>
+            <span class="league-lose">❌ ${lg.loses}</span>
+            <span class="league-acc">${lg.accuracy}%</span>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  html += `
       <div class="disclaimer">
         <div class="disclaimer-title">Важно</div>
         <div class="disclaimer-text">
@@ -1071,6 +1352,8 @@ function renderStats(data) {
       </div>
     </div>
   `;
+
+  document.getElementById('content').innerHTML = html;
 }
 
 function renderBonus() {
@@ -1154,6 +1437,26 @@ function renderFaq() {
       </div>
     </div>
 
+    <div class="faq-section">
+      <div class="faq-section-title">📤 Поделиться</div>
+      <div class="faq-item">
+        <div class="faq-q"><div class="faq-q-icon">?</div>Как поделиться прогнозом?</div>
+        <div class="faq-a">
+          Нажмите <strong>📤</strong> на карточке матча — откроется выбор чата, куда отправить прогноз.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-section">
+      <div class="faq-section-title">🎨 Тема</div>
+      <div class="faq-item">
+        <div class="faq-q"><div class="faq-q-icon">?</div>Как сменить тему?</div>
+        <div class="faq-a">
+          Нажмите <strong>☀️/🌙</strong> в правом верхнем углу шапки — приложение переключится между светлой и тёмной темой. Выбор сохраняется.
+        </div>
+      </div>
+    </div>
+
     <div class="disclaimer">
       <div class="disclaimer-title">Дисклеймер</div>
       <div class="disclaimer-text">
@@ -1164,9 +1467,9 @@ function renderFaq() {
 }
 
 async function openHistory(filter) {
-  haptic('light');
+  haptic('medium');
   const content = document.getElementById('content');
-  content.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div>';
+  content.innerHTML = showSkeleton();
   const titles = { wins: '✅ ЗАШЕДШИЕ', loses: '❌ НЕЗАШЕДШИЕ', all: '📋 ВСЕ МАТЧИ' };
   try {
     const resp = await fetch(`${API_URL}?action=history&filter=${filter}`);
@@ -1178,11 +1481,11 @@ async function openHistory(filter) {
     if (!data.length) {
       html += '<div class="empty">Пока нет матчей</div>';
     } else {
-      data.forEach(m => {
+      data.forEach((m, idx) => {
         const emoji = m.status === 'win' ? '✅' : m.status === 'lose' ? '❌' : '⏳';
         const winnerHtml = m.winner ? `<div class="winner-badge">🏆 ${m.winner}</div>` : '';
         html += `
-          <div class="card">
+          <div class="card" style="animation-delay: ${idx * 0.05}s;">
             <div class="card-teams">
               <div class="team">${m.home}</div>
               <div class="vs">${m.score || '—'}</div>
