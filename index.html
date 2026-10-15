@@ -3,24 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Прогнозы ТБ 2.5</title>
+<title>⚽ Прогнозы ТБ 2.5</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 :root {
-  --bg: #0a0e1a;
-  --bg2: #0f1729;
-  --card: #141b2e;
-  --card2: #1a2440;
-  --border: rgba(148, 163, 184, 0.12);
+  --bg: #05140a;
+  --bg2: #0a2412;
+  --field: #0d2818;
+  --field-light: #143d24;
+  --card: #0e2916;
+  --card2: #123821;
+  --border: rgba(74, 222, 128, 0.15);
+  --border-strong: rgba(74, 222, 128, 0.35);
   --text: #ffffff;
-  --text-dim: #94a3b8;
-  --text-mute: #64748b;
-  --blue: #3b82f6;
+  --text-dim: #86efac;
+  --text-mute: #65a30d;
   --green: #22c55e;
+  --green-bright: #4ade80;
+  --green-glow: #86efac;
   --gold: #f59e0b;
+  --gold-bright: #fbbf24;
   --red: #ef4444;
-  --purple: #8b5cf6;
   --cyan: #06b6d4;
+  --white: #ffffff;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body {
@@ -32,94 +37,141 @@ body {
   overflow-x: hidden;
   position: relative;
 }
+/* Газон — фоновые полосы */
 body::before {
   content: '';
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background:
-    radial-gradient(circle at 10% 10%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 90% 20%, rgba(139, 92, 246, 0.06) 0%, transparent 40%),
-    radial-gradient(circle at 50% 90%, rgba(34, 197, 94, 0.05) 0%, transparent 40%);
+    repeating-linear-gradient(90deg,
+      rgba(34, 197, 94, 0.025) 0px,
+      rgba(34, 197, 94, 0.025) 60px,
+      transparent 60px,
+      transparent 120px),
+    radial-gradient(circle at 50% 0%, rgba(34, 197, 94, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 10% 90%, rgba(34, 197, 94, 0.08) 0%, transparent 40%);
   pointer-events: none;
   z-index: 0;
 }
 
-/* ===== ШАПКА ===== */
+/* ===== ШАПКА — ФУТБОЛЬНОЕ ПОЛЕ ===== */
 .header {
   position: relative;
-  padding: 24px 20px 20px;
+  padding: 28px 20px 24px;
   text-align: center;
-  background: linear-gradient(180deg, #0f1729 0%, #0a0e1a 100%);
-  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, #0a2412 0%, #05140a 100%);
+  border-bottom: 2px solid var(--green);
   overflow: hidden;
   z-index: 1;
+  box-shadow: 0 4px 30px rgba(34, 197, 94, 0.2);
 }
+/* Полосы газона в шапке */
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(34, 197, 94, 0.06) 0px,
+    rgba(34, 197, 94, 0.06) 40px,
+    transparent 40px,
+    transparent 80px
+  );
+  pointer-events: none;
+}
+/* Центральный круг поля */
 .header::after {
   content: '';
   position: absolute;
-  bottom: -1px; left: 10%; right: 10%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--blue), transparent);
-  opacity: 0.6;
+  top: 50%; left: 50%;
+  width: 200px; height: 200px;
+  transform: translate(-50%, -50%);
+  border: 2px solid rgba(34, 197, 94, 0.15);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: centerCircle 8s ease-in-out infinite;
+}
+@keyframes centerCircle {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+  50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.15; }
 }
 .header-logo {
-  width: 56px; height: 56px;
+  width: 62px; height: 62px;
   margin: 0 auto 10px;
   display: block;
-  filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.5));
-  animation: float 4s ease-in-out infinite;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 0 25px rgba(34, 197, 94, 0.7));
+  animation: ballSpin 12s linear infinite;
 }
-@keyframes float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-5px) rotate(5deg); }
+@keyframes ballSpin {
+  0% { transform: rotate(0deg) translateY(0); }
+  25% { transform: rotate(90deg) translateY(-3px); }
+  50% { transform: rotate(180deg) translateY(0); }
+  75% { transform: rotate(270deg) translateY(-3px); }
+  100% { transform: rotate(360deg) translateY(0); }
 }
 .header h1 {
-  font-size: 24px; font-weight: 900;
-  letter-spacing: 2px;
-  background: linear-gradient(90deg, #60a5fa, #a78bfa, #f472b6, #60a5fa);
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: shimmerText 4s linear infinite;
-  line-height: 1.1;
-}
-@keyframes shimmerText {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: var(--green-bright);
+  text-shadow:
+    0 0 20px rgba(34, 197, 94, 0.8),
+    0 0 40px rgba(34, 197, 94, 0.4),
+    2px 2px 0 rgba(0, 0, 0, 0.5);
+  position: relative;
+  z-index: 2;
+  font-family: 'Arial Black', 'Impact', sans-serif;
 }
 .header .sub {
-  font-size: 10px; letter-spacing: 4px;
-  color: var(--text-dim); margin-top: 4px;
-  text-transform: uppercase; font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: var(--text-dim);
+  margin-top: 6px;
+  text-transform: uppercase;
+  font-weight: 800;
+  position: relative;
+  z-index: 2;
 }
 .header .live-badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  margin-top: 12px;
-  padding: 4px 12px;
-  background: rgba(34, 197, 94, 0.12);
-  border: 1px solid rgba(34, 197, 94, 0.3);
-  color: var(--green);
-  font-size: 10px; font-weight: 800;
-  border-radius: 20px; letter-spacing: 1px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  padding: 5px 14px;
+  background: rgba(34, 197, 94, 0.2);
+  border: 1px solid var(--green);
+  color: var(--green-bright);
+  font-size: 10px;
+  font-weight: 900;
+  border-radius: 20px;
+  letter-spacing: 2px;
+  position: relative;
+  z-index: 2;
+  text-transform: uppercase;
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
 }
 .header .live-badge::before {
-  content: ''; width: 6px; height: 6px;
-  background: var(--green); border-radius: 50%;
-  box-shadow: 0 0 8px var(--green);
+  content: '';
+  width: 7px; height: 7px;
+  background: var(--green-bright);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--green-bright);
   animation: pulse 1.5s infinite;
 }
 @keyframes pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.8); }
+  50% { opacity: 0.4; transform: scale(0.7); }
 }
 
 /* ===== ТАБЫ ===== */
 .tabs-wrap {
-  position: sticky; top: 0;
-  background: rgba(10, 14, 26, 0.95);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  background: rgba(5, 20, 10, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   padding: 10px 12px;
   z-index: 10;
   border-bottom: 1px solid var(--border);
@@ -128,10 +180,14 @@ body::before {
 .tabs::-webkit-scrollbar { display: none; }
 .tab {
   flex: 0 0 auto;
-  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
   padding: 8px 14px;
   border-radius: 12px;
-  font-size: 10px; font-weight: 700;
+  font-size: 10px;
+  font-weight: 800;
   color: var(--text-dim);
   background: transparent;
   border: 1px solid transparent;
@@ -142,10 +198,10 @@ body::before {
 }
 .tab svg { width: 18px; height: 18px; stroke-width: 2.2; }
 .tab.active {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(139, 92, 246, 0.2));
-  border-color: rgba(59, 130, 246, 0.5);
-  color: #fff;
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.25);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.25), rgba(74, 222, 128, 0.15));
+  border-color: var(--green);
+  color: var(--green-bright);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
 }
 
 /* ===== ФИЛЬТРЫ ===== */
@@ -156,7 +212,8 @@ body::before {
   flex: 0 0 auto;
   padding: 6px 14px;
   border-radius: 18px;
-  font-size: 11px; font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   background: var(--card);
   color: var(--text-dim);
   border: 1px solid var(--border);
@@ -164,227 +221,307 @@ body::before {
   transition: all 0.2s;
 }
 .filter.active {
-  background: linear-gradient(135deg, var(--blue), var(--purple));
-  color: #fff; border-color: transparent;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  background: linear-gradient(135deg, var(--green), #16a34a);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.5);
 }
 
 /* ===== КОНТЕНТ ===== */
 #content { padding: 14px 16px; position: relative; z-index: 1; }
 
-/* ===== КАРТОЧКА МАТЧА ===== */
+/* ===== КАРТОЧКА МАТЧА — СТИЛЬ ФУТБОЛЬНОГО БИЛЕТА ===== */
 .card {
   background: linear-gradient(135deg, var(--card) 0%, var(--card2) 100%);
   border: 1px solid var(--border);
   border-radius: 18px;
   padding: 16px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   position: relative;
   overflow: hidden;
   animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
 }
 @keyframes slideIn {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
+/* Верхняя полоса — как поле */
 .card::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, var(--blue), var(--purple), var(--blue));
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--green), var(--green-bright), var(--green));
   background-size: 200% 100%;
   animation: shimmerBar 3s linear infinite;
+  box-shadow: 0 0 15px var(--green);
 }
 @keyframes shimmerBar {
   0% { background-position: 0% 50%; }
   100% { background-position: 200% 50%; }
 }
-.card.card-hot::before { background: linear-gradient(90deg, var(--gold), var(--red), var(--gold)); background-size: 200% 100%; }
-.card.card-mid::before { background: linear-gradient(90deg, var(--cyan), var(--blue)); }
-.card.card-live::before { background: linear-gradient(90deg, var(--red), #f43f5e); animation: none; }
+.card.card-hot::before { background: linear-gradient(90deg, var(--gold), var(--gold-bright), var(--gold)); background-size: 200% 100%; box-shadow: 0 0 15px var(--gold); }
+.card.card-mid::before { background: linear-gradient(90deg, var(--green), var(--cyan)); }
+.card.card-live::before { background: linear-gradient(90deg, var(--red), #f43f5e); box-shadow: 0 0 15px var(--red); animation: none; }
 
 /* Команды */
 .card-teams {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 10px; padding-right: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding-right: 44px;
 }
 .team {
-  display: flex; align-items: center; gap: 8px;
-  flex: 1; min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
 }
 .team.right { flex-direction: row-reverse; text-align: right; }
 .team-avatar {
-  width: 34px; height: 34px;
+  width: 36px; height: 36px;
   border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; font-weight: 900;
-  color: #fff; flex-shrink: 0;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.4);
-  border: 1.5px solid rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 900;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(34, 197, 94, 0.4);
+  position: relative;
 }
 .team-name {
-  font-size: 13px; font-weight: 700; line-height: 1.2;
-  overflow: hidden; text-overflow: ellipsis;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 .vs {
-  font-size: 10px; font-weight: 800;
-  color: var(--text-mute);
-  padding: 0 4px; flex-shrink: 0;
-  background: rgba(0,0,0,0.3);
-  border-radius: 6px;
-  padding: 3px 6px;
+  font-size: 10px;
+  font-weight: 900;
+  color: var(--green-bright);
+  padding: 4px 8px;
+  flex-shrink: 0;
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 8px;
+  letter-spacing: 1px;
 }
 
 /* Инфо-строка */
 .card-meta {
-  display: flex; align-items: center; gap: 12px;
-  font-size: 11px; color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  color: var(--text-dim);
   padding: 8px 0;
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   margin-bottom: 10px;
+  font-weight: 600;
 }
 .card-meta .meta-item { display: flex; align-items: center; gap: 4px; }
 
 /* Статы */
 .card-stats {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 8px; margin-bottom: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 10px;
 }
 .stat-box {
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(0, 0, 0, 0.4);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 8px 6px;
+  border-radius: 12px;
+  padding: 10px 6px;
   text-align: center;
+  position: relative;
+  overflow: hidden;
 }
+.stat-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 60%; height: 2px;
+  border-radius: 1px;
+}
+.stat-box.blue::before { background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
+.stat-box.green::before { background: var(--green); box-shadow: 0 0 8px var(--green); }
+.stat-box.gold::before { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
 .stat-box .label {
-  font-size: 9px; color: var(--text-mute);
-  text-transform: uppercase; font-weight: 700;
-  letter-spacing: 0.5px; margin-bottom: 3px;
+  font-size: 9px;
+  color: var(--text-mute);
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
 }
 .stat-box .value {
-  font-size: 15px; font-weight: 900;
+  font-size: 16px;
+  font-weight: 900;
   font-variant-numeric: tabular-nums;
 }
-.stat-box.blue .value { color: var(--cyan); }
-.stat-box.green .value { color: var(--green); }
-.stat-box.gold .value { color: var(--gold); }
+.stat-box.blue .value { color: #22d3ee; }
+.stat-box.green .value { color: var(--green-bright); }
+.stat-box.gold .value { color: var(--gold-bright); }
 
-/* Прогноз */
+/* Прогноз победителя */
 .outcome-line {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 12px;
-  background: linear-gradient(90deg, rgba(34, 197, 94, 0.1), rgba(132, 204, 22, 0.05));
-  border: 1px solid rgba(34, 197, 94, 0.25);
-  border-radius: 10px;
-  font-size: 12px; margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: linear-gradient(90deg, rgba(34, 197, 94, 0.12), rgba(74, 222, 128, 0.06));
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 12px;
+  font-size: 12px;
+  margin-bottom: 8px;
 }
-.outcome-line .label { color: var(--text-dim); font-weight: 600; }
-.outcome-line .fav { color: var(--green); font-weight: 900; }
-
-/* Прогресс */
-.progress-wrap {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 11px; color: var(--text-dim);
+.outcome-line .label {
+  color: var(--text-dim);
+  font-weight: 700;
+  letter-spacing: 0.3px;
 }
-.progress-bar {
-  flex: 1; height: 6px;
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 3px; overflow: hidden;
+.outcome-line .fav {
+  color: var(--green-bright);
+  font-weight: 900;
+  text-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
 }
-.progress-bar-fill {
-  height: 100%; border-radius: 3px;
-  position: relative;
-}
-.fill-high { background: linear-gradient(90deg, var(--green), #84cc16); }
-.fill-mid { background: linear-gradient(90deg, var(--gold), #facc15); }
-.fill-low { background: linear-gradient(90deg, #64748b, #94a3b8); }
 
 /* Действия */
 .card-actions {
-  position: absolute; top: 12px; right: 12px;
-  display: flex; gap: 6px; z-index: 2;
+  position: absolute;
+  top: 12px; right: 12px;
+  display: flex;
+  gap: 6px;
+  z-index: 2;
 }
 .icon-btn {
-  width: 30px; height: 30px;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid var(--border);
+  width: 32px; height: 32px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--border-strong);
   border-radius: 50%;
   color: var(--text-dim);
-  font-size: 14px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.2s;
 }
-.icon-btn.active { color: var(--gold); border-color: var(--gold); background: rgba(245, 158, 11, 0.15); }
+.icon-btn.active {
+  color: var(--gold-bright);
+  border-color: var(--gold-bright);
+  background: rgba(245, 158, 11, 0.2);
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+}
 .icon-btn:active { transform: scale(0.9); }
 
 .live-badge {
-  display: inline-flex; align-items: center; gap: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   padding: 3px 8px;
   background: var(--red);
   color: #fff;
-  font-size: 9px; font-weight: 900;
-  border-radius: 6px; letter-spacing: 0.5px;
+  font-size: 9px;
+  font-weight: 900;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 10px var(--red);
 }
 
-/* ===== ЭКСПРЕСС ===== */
+/* ===== ЭКСПРЕСС — КУБОК ===== */
 .express-hero {
   background: linear-gradient(135deg, #78350f 0%, #b45309 50%, #d97706 100%);
   border-radius: 22px;
-  padding: 26px 20px;
-  color: #fff; text-align: center;
+  padding: 28px 20px;
+  color: #fff;
+  text-align: center;
   margin-bottom: 20px;
-  position: relative; overflow: hidden;
-  box-shadow: 0 12px 40px rgba(217, 119, 6, 0.4);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 50px rgba(217, 119, 6, 0.5);
+  border: 1px solid rgba(251, 191, 36, 0.3);
 }
 .express-hero::before {
   content: '';
   position: absolute;
   top: -50%; left: -50%;
   width: 200%; height: 200%;
-  background: radial-gradient(circle, rgba(255,255,255,0.25) 0%, transparent 60%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.25) 0%, transparent 60%);
   animation: rotate 12s linear infinite;
 }
 @keyframes rotate { to { transform: rotate(360deg); } }
+.express-hero::after {
+  content: '🏆';
+  position: absolute;
+  top: 12px; right: 16px;
+  font-size: 40px;
+  opacity: 0.4;
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
 .express-hero-title {
-  font-size: 20px; font-weight: 900;
-  letter-spacing: 1px; position: relative; z-index: 1;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
 }
 .express-hero-sub {
-  font-size: 11px; opacity: 0.9;
-  margin-top: 6px; letter-spacing: 1px;
-  position: relative; z-index: 1;
+  font-size: 11px;
+  opacity: 0.9;
+  margin-top: 6px;
+  letter-spacing: 1px;
+  position: relative;
+  z-index: 1;
 }
 .express-hero-odd {
-  font-size: 56px; font-weight: 900;
-  margin-top: 14px;
-  position: relative; z-index: 1;
+  font-size: 62px;
+  font-weight: 900;
+  margin-top: 16px;
+  position: relative;
+  z-index: 1;
   background: linear-gradient(180deg, #fef9c3, #fbbf24, #f59e0b);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4));
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
   line-height: 1;
 }
 .express-hero-label {
-  font-size: 10px; opacity: 0.85;
-  letter-spacing: 3px; margin-top: 8px;
-  text-transform: uppercase; font-weight: 700;
-  position: relative; z-index: 1;
+  font-size: 10px;
+  opacity: 0.85;
+  letter-spacing: 3px;
+  margin-top: 8px;
+  text-transform: uppercase;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
 }
 .express-items-title {
   text-align: center;
   font-size: 13px;
   color: var(--text-dim);
   margin-bottom: 14px;
-  font-weight: 700;
-  letter-spacing: 1px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
 }
 .express-card {
   background: linear-gradient(135deg, var(--card) 0%, var(--card2) 100%);
@@ -392,7 +529,8 @@ body::before {
   border-radius: 16px;
   padding: 14px 16px;
   margin-bottom: 4px;
-  position: relative; overflow: hidden;
+  position: relative;
+  overflow: hidden;
   animation: slideIn 0.4s ease;
 }
 .express-card::before {
@@ -400,129 +538,156 @@ body::before {
   position: absolute;
   top: 0; left: 0; bottom: 0;
   width: 3px;
-  background: linear-gradient(180deg, var(--blue), var(--purple));
+  background: linear-gradient(180deg, var(--green), var(--green-bright));
+  box-shadow: 0 0 10px var(--green);
 }
 .express-card-head {
-  display: flex; align-items: center; gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin-bottom: 6px;
 }
 .express-num {
   display: inline-flex;
-  align-items: center; justify-content: center;
-  width: 26px; height: 26px;
-  background: linear-gradient(135deg, var(--blue), var(--purple));
+  align-items: center;
+  justify-content: center;
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, var(--green), #16a34a);
   color: #fff;
-  font-size: 12px; font-weight: 900;
-  border-radius: 50%; flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.5);
+  font-size: 13px;
+  font-weight: 900;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 2px 10px rgba(34, 197, 94, 0.6);
 }
 .express-match {
-  font-size: 14px; font-weight: 800; line-height: 1.25;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.25;
 }
 .express-league {
   font-size: 11px;
   color: var(--text-dim);
-  margin-left: 36px;
+  margin-left: 38px;
   margin-bottom: 10px;
+  font-weight: 600;
 }
 .express-card-body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 6px;
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(0, 0, 0, 0.35);
   border-radius: 10px;
   padding: 10px 6px;
 }
 .express-stat {
-  display: flex; flex-direction: column;
-  align-items: center; gap: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
   text-align: center;
 }
 .express-stat-label {
-  font-size: 9px; color: var(--text-mute);
+  font-size: 9px;
+  color: var(--text-mute);
   white-space: nowrap;
   text-transform: uppercase;
   letter-spacing: 0.3px;
-  font-weight: 700;
+  font-weight: 800;
 }
 .express-stat-value {
-  font-size: 14px; font-weight: 800;
+  font-size: 14px;
+  font-weight: 900;
 }
 .express-odd {
-  font-size: 16px; font-weight: 900;
-  color: var(--gold);
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--gold-bright);
   font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
 }
 .express-divider {
   text-align: center;
-  font-size: 16px; color: var(--blue);
-  margin: 6px 0; opacity: 0.5; font-weight: 900;
+  font-size: 18px;
+  color: var(--green);
+  margin: 6px 0;
+  opacity: 0.7;
+  font-weight: 900;
+  text-shadow: 0 0 10px var(--green);
 }
 .express-footer {
-  background: linear-gradient(135deg, #0f1729, #1e293b);
-  border: 1px solid var(--border);
+  background: linear-gradient(135deg, #0a2412, #143d24);
+  border: 1px solid var(--border-strong);
   border-radius: 18px;
   padding: 18px 20px;
   margin-top: 20px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-  position: relative; overflow: hidden;
+  box-shadow: 0 8px 35px rgba(34, 197, 94, 0.2);
+  position: relative;
+  overflow: hidden;
 }
 .express-footer::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, var(--cyan), var(--blue), var(--purple), var(--cyan));
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--green), var(--gold-bright), var(--green));
   background-size: 200% 100%;
   animation: shimmerBar 3s linear infinite;
 }
 .express-footer-row {
-  display: flex; justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  font-size: 13px; padding: 8px 0;
+  font-size: 13px;
+  padding: 8px 0;
   border-bottom: 1px solid var(--border);
   color: var(--text-dim);
+  font-weight: 600;
 }
 .express-footer-row:last-child {
   border-bottom: none;
   margin-top: 6px;
   padding-top: 14px;
-  border-top: 1px solid rgba(6, 182, 212, 0.3);
+  border-top: 1px solid rgba(34, 197, 94, 0.4);
   color: var(--text);
   font-size: 14px;
 }
 .express-footer-odd {
-  font-size: 28px; font-weight: 900;
-  color: var(--cyan);
+  font-size: 30px;
+  font-weight: 900;
+  color: var(--gold-bright);
   font-variant-numeric: tabular-nums;
-  text-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
+  text-shadow: 0 0 25px rgba(251, 191, 36, 0.6);
 }
 
 /* ===== СТАТИСТИКА ===== */
 .stats-wrap { padding: 10px 0; }
 .stats-big {
   text-align: center;
-  font-size: 72px; font-weight: 900;
-  background: linear-gradient(135deg, var(--green), #84cc16, #facc15);
+  font-size: 78px;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--green-bright), var(--green), #16a34a);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   line-height: 1;
-  filter: drop-shadow(0 6px 20px rgba(34, 197, 94, 0.3));
+  filter: drop-shadow(0 8px 30px rgba(34, 197, 94, 0.5));
   margin-bottom: 6px;
 }
 .stats-label {
   text-align: center;
   color: var(--text-dim);
   font-size: 11px;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
   text-transform: uppercase;
-  font-weight: 700;
+  font-weight: 800;
   margin-bottom: 32px;
 }
 .stats-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px; margin-bottom: 12px;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 .stats-box {
   background: linear-gradient(135deg, var(--card) 0%, var(--card2) 100%);
@@ -531,49 +696,59 @@ body::before {
   padding: 20px 16px;
   text-align: center;
   transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
 }
 .stats-box.clickable:active { transform: scale(0.96); }
 .stats-box .num {
-  font-size: 32px; font-weight: 900;
-  display: block; margin-bottom: 6px;
+  font-size: 32px;
+  font-weight: 900;
+  display: block;
+  margin-bottom: 6px;
 }
 .stats-box .name {
-  font-size: 11px; color: var(--text-dim);
-  font-weight: 700; letter-spacing: 0.5px;
+  font-size: 11px;
+  color: var(--text-dim);
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 .stats-box.win {
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(132, 204, 22, 0.08));
-  border-color: rgba(34, 197, 94, 0.3);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(74, 222, 128, 0.08));
+  border-color: rgba(34, 197, 94, 0.4);
 }
-.stats-box.win .num { color: var(--green); }
+.stats-box.win .num { color: var(--green-bright); text-shadow: 0 0 20px rgba(74, 222, 128, 0.5); }
 .stats-box.lose {
   background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(244, 63, 94, 0.08));
-  border-color: rgba(239, 68, 68, 0.3);
+  border-color: rgba(239, 68, 68, 0.4);
 }
-.stats-box.lose .num { color: var(--red); }
+.stats-box.lose .num { color: #f87171; text-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
 
 /* ===== EMPTY / ERROR / SKELETON ===== */
 .empty {
   text-align: center;
   color: var(--text-mute);
   padding: 80px 20px;
-  font-size: 13px; font-weight: 600;
+  font-size: 13px;
+  font-weight: 700;
 }
 .empty::before {
-  content: '📭';
-  font-size: 56px;
+  content: '⚽';
+  font-size: 64px;
   display: block;
   margin-bottom: 16px;
-  opacity: 0.5;
+  opacity: 0.4;
+  animation: float 2s ease-in-out infinite;
 }
 .error {
   text-align: center;
-  color: var(--red);
+  color: #f87171;
   padding: 20px;
   font-size: 13px;
   background: rgba(239, 68, 68, 0.08);
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.3);
   border-radius: 14px;
+  font-weight: 600;
 }
 .skeleton {
   background: linear-gradient(90deg, var(--card) 0%, var(--card2) 50%, var(--card) 100%);
@@ -588,17 +763,21 @@ body::before {
   100% { background-position: 200% 0; }
 }
 
-.card-win::before { background: linear-gradient(90deg, var(--green), #84cc16) !important; animation: none; }
+.card-win::before { background: linear-gradient(90deg, var(--green), #16a34a) !important; animation: none; }
 .card-lose::before { background: linear-gradient(90deg, var(--red), #f43f5e) !important; animation: none; }
 .winner-badge {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 4px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
   background: rgba(34, 197, 94, 0.15);
-  color: var(--green);
-  border: 1px solid rgba(34, 197, 94, 0.3);
-  border-radius: 8px;
-  font-size: 11px; font-weight: 800;
+  color: var(--green-bright);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 800;
   margin-top: 8px;
+  letter-spacing: 0.5px;
 }
 
 .sync-info {
@@ -606,46 +785,45 @@ body::before {
   font-size: 10px;
   color: var(--text-mute);
   padding: 14px 0;
-  letter-spacing: 0.5px;
-  font-weight: 600;
+  letter-spacing: 1px;
+  font-weight: 700;
 }
 .section-title {
-  font-size: 20px; font-weight: 900;
-  text-align: center; margin-bottom: 4px;
-  letter-spacing: 0.5px;
+  font-size: 22px;
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 4px;
+  letter-spacing: 1px;
+  color: var(--green-bright);
+  text-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
 }
 .section-sub {
   font-size: 11px;
   color: var(--text-dim);
   text-align: center;
   margin-bottom: 18px;
-  font-weight: 600; letter-spacing: 0.5px;
+  font-weight: 700;
+  letter-spacing: 1px;
 }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <svg class="header-logo" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="32" cy="32" r="30" fill="url(#ballGrad)" stroke="#60a5fa" stroke-width="2"/>
-    <path d="M32 4 C32 4, 20 20, 32 32 C44 44, 32 60, 32 60" stroke="#ffffff" stroke-width="1.5" opacity="0.5" fill="none"/>
-    <path d="M32 4 C32 4, 44 20, 32 32 C20 44, 32 60, 32 60" stroke="#ffffff" stroke-width="1.5" opacity="0.5" fill="none"/>
-    <circle cx="32" cy="32" r="4" fill="#ffffff" opacity="0.95"/>
-    <circle cx="20" cy="22" r="2.5" fill="#ffffff" opacity="0.8"/>
-    <circle cx="44" cy="22" r="2.5" fill="#ffffff" opacity="0.8"/>
-    <circle cx="20" cy="42" r="2.5" fill="#ffffff" opacity="0.8"/>
-    <circle cx="44" cy="42" r="2.5" fill="#ffffff" opacity="0.8"/>
-    <defs>
-      <linearGradient id="ballGrad" x1="0" y1="0" x2="64" y2="64">
-        <stop offset="0%" stop-color="#3b82f6"/>
-        <stop offset="50%" stop-color="#8b5cf6"/>
-        <stop offset="100%" stop-color="#ec4899"/>
-      </linearGradient>
-    </defs>
+  <svg class="header-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+    <!-- Классический футбольный мяч -->
+    <circle cx="32" cy="32" r="30" fill="#ffffff" stroke="#000000" stroke-width="2"/>
+    <!-- Чёрные пятиугольники (упрощённо) -->
+    <path d="M32 12 L40 22 L36 32 L28 32 L24 22 Z" fill="#000000"/>
+    <path d="M12 32 L20 36 L18 46 L8 44 Z" fill="#000000"/>
+    <path d="M52 32 L56 44 L46 46 L44 36 Z" fill="#000000"/>
+    <path d="M32 52 L38 48 L42 52 L40 60 L24 60 L22 52 L26 48 Z" fill="#000000"/>
+    <!-- Обводка -->
+    <circle cx="32" cy="32" r="30" fill="none" stroke="#22c55e" stroke-width="1.5" opacity="0.6"/>
   </svg>
   <h1>ПРОГНОЗЫ</h1>
-  <div class="sub">Тотал Больше 2.5</div>
-  <div class="live-badge">онлайн</div>
+  <div class="sub">⚽ ТОТАЛ БОЛЬШЕ 2.5 ⚽</div>
+  <div class="live-badge">на поле</div>
 </div>
 
 <div class="tabs-wrap">
@@ -698,7 +876,6 @@ if (tg) { tg.ready(); tg.expand(); }
 
 function haptic(s) { if (tg?.HapticFeedback) try { tg.HapticFeedback.impactOccurred(s || 'light'); } catch(e){} }
 
-// Аватар команды — цвет по хэшу имени
 function teamColor(name) {
   let h = 0;
   for (let i = 0; i < name.length; i++) h = name.charCodeAt(i) + ((h << 5) - h);
@@ -716,7 +893,6 @@ function teamColor(name) {
   ];
   return colors[Math.abs(h) % colors.length];
 }
-
 function teamAvatar(name) {
   const letter = (name || '?').charAt(0).toUpperCase();
   const bg = teamColor(name || 'x');
@@ -745,10 +921,10 @@ document.getElementById('filters').addEventListener('click', e => {
 });
 
 function getCache(tab) {
-  try { const r = localStorage.getItem(`tb25_v9_${tab}`); return r ? JSON.parse(r) : null; } catch(e){ return null; }
+  try { const r = localStorage.getItem(`tb25_v10_${tab}`); return r ? JSON.parse(r) : null; } catch(e){ return null; }
 }
 function setCache(tab, version, data) {
-  try { localStorage.setItem(`tb25_v9_${tab}`, JSON.stringify({ version, data, ts: Date.now() })); } catch(e){}
+  try { localStorage.setItem(`tb25_v10_${tab}`, JSON.stringify({ version, data, ts: Date.now() })); } catch(e){}
 }
 
 async function loadData() {
@@ -757,7 +933,7 @@ async function loadData() {
 
   if (cached) {
     renderTab(currentTab, cached.data);
-    document.getElementById('syncInfo').textContent = `✅ Данные актуальны`;
+    document.getElementById('syncInfo').textContent = '✅ Данные актуальны';
     if ((Date.now() - cached.ts) < CACHE_TTL) return;
   } else {
     content.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div>';
@@ -769,7 +945,6 @@ async function loadData() {
     if (result.error) throw new Error(result.error);
     const serverVersion = result.version || '1';
     const serverData = result.data !== undefined ? result.data : result;
-
     if (!cached || cached.version !== serverVersion) {
       setCache(currentTab, serverVersion, serverData);
       renderTab(currentTab, serverData);
@@ -794,13 +969,11 @@ function renderTab(tab, data) {
 }
 
 function probClass(p) { return p >= 65 ? 'prob-high' : p >= 60 ? 'prob-mid' : 'prob-low'; }
-function fillClass(p) { return p >= 65 ? 'fill-high' : p >= 60 ? 'fill-mid' : 'fill-low'; }
 function cardClass(p) { return p >= 70 ? 'card-hot' : p >= 65 ? 'card-mid' : ''; }
 
 function renderMatches(data) {
   const content = document.getElementById('content');
   if (!Array.isArray(data)) { content.innerHTML = '<div class="empty">Нет данных</div>'; return; }
-
   let filtered = data.slice();
   if (currentFilter === 'high') filtered = filtered.filter(m => m.probability >= 70);
   else if (currentFilter === 'fav') filtered = filtered.filter(m => favorites.includes(`${m.home}_${m.away}`));
@@ -812,7 +985,7 @@ function renderMatches(data) {
   }
 
   let html = '';
-  filtered.forEach((m, i) => {
+  filtered.forEach((m) => {
     const prob = parseInt(m.probability) || 0;
     const trend = m.trend || '';
     const fav = favorites.includes(`${m.home}_${m.away}`);
@@ -832,39 +1005,23 @@ function renderMatches(data) {
           <button class="icon-btn ${fav ? 'active' : ''}" onclick="toggleFav('${esc(m.home)}','${esc(m.away)}')">${fav ? '⭐' : '☆'}</button>
         </div>
         <div class="card-teams">
-          <div class="team">
-            ${teamAvatar(m.home)}
-            <div class="team-name">${m.home}</div>
-          </div>
+          <div class="team">${teamAvatar(m.home)}<div class="team-name">${m.home}</div></div>
           <div class="vs">VS</div>
-          <div class="team right">
-            ${teamAvatar(m.away)}
-            <div class="team-name">${m.away}</div>
-          </div>
+          <div class="team right">${teamAvatar(m.away)}<div class="team-name">${m.away}</div></div>
         </div>
         <div class="card-meta">
           <div class="meta-item">🏆 ${m.league}</div>
           <div class="meta-item">🕐 ${m.time}</div>
         </div>
         <div class="card-stats">
-          <div class="stat-box blue">
-            <div class="label">📊 Тотал</div>
-            <div class="value">${m.total}</div>
-          </div>
-          <div class="stat-box green">
-            <div class="label">🎯 Вероят.</div>
-            <div class="value">${prob}%</div>
-          </div>
-          <div class="stat-box gold">
-            <div class="label">💰 Кэф</div>
-            <div class="value">${m.odd} ${trend}</div>
-          </div>
+          <div class="stat-box blue"><div class="label">📊 Тотал</div><div class="value">${m.total}</div></div>
+          <div class="stat-box green"><div class="label">🎯 Вероят.</div><div class="value">${prob}%</div></div>
+          <div class="stat-box gold"><div class="label">💰 Кэф</div><div class="value">${m.odd} ${trend}</div></div>
         </div>
         ${outcomeHtml}
       </div>
     `;
   });
-
   content.innerHTML = html;
 }
 
@@ -914,17 +1071,15 @@ function renderExpress(data) {
   }
   let html = `
     <div class="express-hero">
-      <div class="express-hero-title">🔥 ТОП-ЭКСПРЕСС ДНЯ</div>
+      <div class="express-hero-title">🔥 ТОП-ЭКСПРЕСС</div>
       <div class="express-hero-sub">🎯 Все события на ТБ 2.5</div>
       <div class="express-hero-odd">${data.totalOdd}</div>
       <div class="express-hero-label">итоговый коэффициент</div>
     </div>
     <div class="express-items-title">📊 СОБЫТИЯ (${data.count})</div>
   `;
-
   data.matches.forEach((m, i) => {
     const prob = parseInt(m.probability) || 0;
-    const probCls = probClass(prob);
     const oddNum = parseFloat(m.odd) || 1;
     html += `
       <div class="express-card">
@@ -934,26 +1089,14 @@ function renderExpress(data) {
         </div>
         <div class="express-league">🏆 ${m.league}</div>
         <div class="express-card-body">
-          <div class="express-stat">
-            <div class="express-stat-label">📊 Тотал</div>
-            <div class="express-stat-value">${m.total}</div>
-          </div>
-          <div class="express-stat">
-            <div class="express-stat-label">🎯 Вероят.</div>
-            <div class="express-stat-value" style="color:${prob>=65?'#22c55e':'#f59e0b'}">${prob}%</div>
-          </div>
-          <div class="express-stat">
-            <div class="express-stat-label">💰 Кэф</div>
-            <div class="express-odd">${oddNum.toFixed(2)}</div>
-          </div>
+          <div class="express-stat"><div class="express-stat-label">📊 Тотал</div><div class="express-stat-value">${m.total}</div></div>
+          <div class="express-stat"><div class="express-stat-label">🎯 Вероят.</div><div class="express-stat-value" style="color:${prob>=65?'#4ade80':'#fbbf24'}">${prob}%</div></div>
+          <div class="express-stat"><div class="express-stat-label">💰 Кэф</div><div class="express-odd">${oddNum.toFixed(2)}</div></div>
         </div>
       </div>
     `;
-    if (i < data.matches.length - 1) {
-      html += `<div class="express-divider">✕</div>`;
-    }
+    if (i < data.matches.length - 1) html += `<div class="express-divider">⚽</div>`;
   });
-
   html += `
     <div class="express-footer">
       <div class="express-footer-row"><span>🎯 Стратегия</span><span>Тотал Больше 2.5</span></div>
@@ -965,10 +1108,7 @@ function renderExpress(data) {
 }
 
 function renderStats(data) {
-  if (!data) {
-    document.getElementById('content').innerHTML = '<div class="empty">Статистики пока нет</div>';
-    return;
-  }
+  if (!data) { document.getElementById('content').innerHTML = '<div class="empty">Статистики пока нет</div>'; return; }
   document.getElementById('content').innerHTML = `
     <div class="stats-wrap">
       <div class="stats-big">${data.accuracy}%</div>
@@ -1000,11 +1140,9 @@ async function openHistory(filter) {
     const resp = await fetch(`${API_URL}?action=history&filter=${filter}`);
     const raw = await resp.json();
     const data = Array.isArray(raw) ? raw : (raw.data || []);
-
     let html = `<button class="filter" onclick="loadData()" style="margin-bottom:14px;">← Назад</button>`;
     html += `<div class="section-title">${titles[filter]}</div>`;
     html += `<div class="section-sub">Найдено: ${data.length}</div>`;
-
     if (!data.length) {
       html += '<div class="empty">Пока нет матчей</div>';
     } else {
@@ -1048,7 +1186,6 @@ function toggleFav(home, away) {
   localStorage.setItem('tb25_favorites', JSON.stringify(favorites));
   renderMatches(allMatches);
 }
-
 function esc(s) { return String(s).replace(/'/g, "\\'"); }
 
 loadData();
