@@ -10,53 +10,59 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 :root {
-  --bg-1: #04120e;
-  --bg-2: #08201a;
-  --card-1: #0c2822;
-  --card-2: #103630;
-  --card-hi: rgba(255, 255, 255, 0.04);
-  --glass: rgba(12, 40, 34, 0.72);
-  --glass-strong: rgba(12, 40, 34, 0.9);
-  --border: rgba(120, 220, 180, 0.09);
-  --border-mid: rgba(120, 220, 180, 0.2);
-  --border-strong: rgba(45, 212, 191, 0.45);
-  --text: #eefdf7;
-  --text-dim: #7fe4c0;
-  --text-mute: #4d8471;
-  --mint: #2dd4bf;
-  --mint-glow: rgba(45, 212, 191, 0.35);
-  --mint-soft: rgba(45, 212, 191, 0.12);
-  --emerald: #10b981;
-  --emerald-glow: rgba(16, 185, 129, 0.32);
-  --gold: #fbbf24;
-  --gold-glow: rgba(251, 191, 36, 0.4);
-  --gold-soft: rgba(251, 191, 36, 0.12);
-  --success: #4ade80;
-  --success-glow: rgba(74, 222, 128, 0.35);
-  --success-soft: rgba(74, 222, 128, 0.12);
-  --danger: #fb7185;
-  --danger-glow: rgba(251, 113, 133, 0.35);
-  --danger-soft: rgba(251, 113, 133, 0.12);
+  --bg-0: #06090f;
+  --bg-1: #0a1219;
+  --bg-2: #0e1a24;
+  --card-1: #0f1c26;
+  --card-2: #132535;
+  --card-hi: rgba(255, 255, 255, 0.03);
+  --glass: rgba(15, 28, 38, 0.75);
+  --glass-strong: rgba(15, 28, 38, 0.92);
+  --border: rgba(140, 180, 210, 0.08);
+  --border-mid: rgba(140, 180, 210, 0.16);
+  --border-strong: rgba(100, 180, 220, 0.35);
+  --text: #eaf2f8;
+  --text-dim: #8fb5cc;
+  --text-mute: #4a6577;
+  --accent: #4aa8d8;
+  --accent-glow: rgba(74, 168, 216, 0.35);
+  --accent-soft: rgba(74, 168, 216, 0.1);
+  --mint: #5ecfb1;
+  --mint-glow: rgba(94, 207, 177, 0.3);
+  --mint-soft: rgba(94, 207, 177, 0.1);
+  --gold: #e5b96a;
+  --gold-glow: rgba(229, 185, 106, 0.35);
+  --gold-soft: rgba(229, 185, 106, 0.1);
+  --success: #56d68f;
+  --success-glow: rgba(86, 214, 143, 0.3);
+  --success-soft: rgba(86, 214, 143, 0.1);
+  --warn: #f0b45a;
+  --warn-glow: rgba(240, 180, 90, 0.3);
+  --danger: #e87a8b;
+  --danger-glow: rgba(232, 122, 139, 0.3);
+  --danger-soft: rgba(232, 122, 139, 0.1);
 }
 body.light-theme {
-  --bg-1: #f5fffb;
-  --bg-2: #e8faf1;
+  --bg-0: #f2f8fb;
+  --bg-1: #e9f3f8;
+  --bg-2: #deedf5;
   --card-1: #ffffff;
-  --card-2: #f5fdfa;
+  --card-2: #f4fafc;
   --card-hi: rgba(0, 0, 0, 0.015);
-  --glass: rgba(255, 255, 255, 0.86);
-  --glass-strong: rgba(255, 255, 255, 0.96);
-  --border: rgba(16, 185, 129, 0.14);
-  --border-mid: rgba(16, 185, 129, 0.24);
-  --border-strong: rgba(16, 185, 129, 0.55);
-  --text: #052e26;
-  --text-dim: #0f766e;
-  --text-mute: #4d8471;
-  --mint: #14b8a6;
-  --emerald: #059669;
-  --gold: #d97706;
-  --success: #16a34a;
-  --danger: #dc2626;
+  --glass: rgba(255, 255, 255, 0.85);
+  --glass-strong: rgba(255, 255, 255, 0.95);
+  --border: rgba(74, 168, 216, 0.14);
+  --border-mid: rgba(74, 168, 216, 0.24);
+  --border-strong: rgba(74, 168, 216, 0.5);
+  --text: #0a2331;
+  --text-dim: #2a6d8c;
+  --text-mute: #7a95a5;
+  --accent: #2a7ba8;
+  --mint: #3aaf90;
+  --gold: #b88a3a;
+  --success: #2ea66b;
+  --warn: #c98a2a;
+  --danger: #c85a6e;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body {
@@ -75,11 +81,11 @@ body {
 body::before {
   content: '';
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  inset: 0;
   background:
-    radial-gradient(ellipse 100% 60% at 50% -10%, rgba(45, 212, 191, 0.18), transparent 60%),
-    radial-gradient(ellipse 80% 50% at 12% 85%, rgba(16, 185, 129, 0.12), transparent 60%),
-    radial-gradient(ellipse 70% 40% at 90% 65%, rgba(251, 191, 36, 0.06), transparent 60%),
+    radial-gradient(ellipse 100% 60% at 50% -10%, rgba(74, 168, 216, 0.12), transparent 60%),
+    radial-gradient(ellipse 80% 50% at 12% 85%, rgba(94, 207, 177, 0.08), transparent 60%),
+    radial-gradient(ellipse 70% 40% at 90% 65%, rgba(229, 185, 106, 0.04), transparent 60%),
     linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
   pointer-events: none;
   z-index: 0;
@@ -88,307 +94,204 @@ body.light-theme::before { opacity: 0.6; }
 body::after {
   content: '';
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  inset: 0;
   pointer-events: none;
   z-index: 0;
   background-image:
-    radial-gradient(circle at 50% 50%, transparent 118px, rgba(45, 212, 191, 0.22) 118px, rgba(45, 212, 191, 0.22) 119px, transparent 119px),
-    radial-gradient(circle at 50% 50%, rgba(45, 212, 191, 0.45) 3px, transparent 4px),
-    linear-gradient(90deg, transparent 0%, transparent 4%, rgba(45, 212, 191, 0.16) 4%, rgba(45, 212, 191, 0.16) 96%, transparent 96%),
-    radial-gradient(circle at 0% 0%, transparent 75px, rgba(45, 212, 191, 0.2) 75px, rgba(45, 212, 191, 0.2) 76px, transparent 76px),
-    radial-gradient(circle at 100% 0%, transparent 75px, rgba(45, 212, 191, 0.2) 75px, rgba(45, 212, 191, 0.2) 76px, transparent 76px),
-    radial-gradient(circle at 0% 100%, transparent 75px, rgba(45, 212, 191, 0.2) 75px, rgba(45, 212, 191, 0.2) 76px, transparent 76px),
-    radial-gradient(circle at 100% 100%, transparent 75px, rgba(45, 212, 191, 0.2) 75px, rgba(45, 212, 191, 0.2) 76px, transparent 76px);
-  background-size: 100% 100%;
-  background-position: center;
-  background-repeat: no-repeat;
-  opacity: 0.45;
+    radial-gradient(circle at 50% 55%, transparent 90px, rgba(94, 207, 177, 0.14) 90px, rgba(94, 207, 177, 0.14) 92px, transparent 92px),
+    radial-gradient(circle at 50% 55%, rgba(94, 207, 177, 0.3) 3px, transparent 4px),
+    linear-gradient(90deg, transparent 0%, transparent 3%, rgba(94, 207, 177, 0.1) 3%, rgba(94, 207, 177, 0.1) 97%, transparent 97%),
+    linear-gradient(180deg, transparent 0%, transparent 6%, rgba(94, 207, 177, 0.08) 6%, rgba(94, 207, 177, 0.08) 6.2%, transparent 6.2%),
+    linear-gradient(0deg, transparent 0%, transparent 6%, rgba(94, 207, 177, 0.08) 6%, rgba(94, 207, 177, 0.08) 6.2%, transparent 6.2%);
+  opacity: 0.9;
 }
-body.light-theme::after { opacity: 0.22; }
+body.light-theme::after { opacity: 0.4; }
 html::before {
   content: '';
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  pointer-events: none;
+  inset: 0;
   z-index: 0;
+  pointer-events: none;
   background-image:
-    repeating-linear-gradient(90deg, rgba(45, 212, 191, 0.028) 0px, rgba(45, 212, 191, 0.028) 50px, rgba(45, 212, 191, 0.008) 50px, rgba(45, 212, 191, 0.008) 100px),
-    radial-gradient(circle, rgba(45, 212, 191, 0.05) 1px, transparent 1.4px);
-  background-size: 100% 100%, 16px 16px;
+    repeating-linear-gradient(90deg, rgba(94, 207, 177, 0.022) 0px, rgba(94, 207, 177, 0.022) 60px, rgba(94, 207, 177, 0.008) 60px, rgba(94, 207, 177, 0.008) 120px);
   opacity: 0.85;
 }
-html:has(body.light-theme)::before { opacity: 0.35; }
-.header { position: relative; padding: 28px 20px 22px; text-align: center; z-index: 1; }
-.header-top { position: absolute; top: 16px; right: 16px; z-index: 5; }
+html:has(body.light-theme)::before { opacity: 0.4; }
+.header { position: relative; padding: 26px 20px 20px; text-align: center; z-index: 1; }
+.header-top { position: absolute; top: 14px; right: 14px; z-index: 5; display: flex; gap: 8px; }
 .theme-btn {
-  width: 42px; height: 42px;
+  width: 40px; height: 40px;
   background: var(--glass);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--border-mid);
   border-radius: 50%;
-  color: var(--mint);
+  color: var(--accent);
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), inset 0 1px 0 var(--card-hi);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2), inset 0 1px 0 var(--card-hi);
 }
-.theme-btn:active { transform: scale(0.88) rotate(25deg); border-color: var(--mint); }
-.theme-btn svg { width: 18px; height: 18px; stroke-width: 2; }
-.ball-wrap {
-  width: 88px; height: 88px;
-  margin: 0 auto 14px;
-  position: relative;
-  display: flex; align-items: center; justify-content: center;
-}
+.theme-btn:active { transform: scale(0.9) rotate(20deg); border-color: var(--accent); }
+.theme-btn svg { width: 17px; height: 17px; stroke-width: 2; }
+.ball-wrap { width: 76px; height: 76px; margin: 0 auto 12px; position: relative; display: flex; align-items: center; justify-content: center; }
 .ball-wrap::before {
   content: '';
   position: absolute;
-  inset: -10px;
-  background: radial-gradient(circle, var(--mint-glow), transparent 70%);
+  inset: -8px;
+  background: radial-gradient(circle, var(--accent-glow), transparent 70%);
   border-radius: 50%;
-  filter: blur(20px);
+  filter: blur(18px);
   animation: ballGlow 3.5s ease-in-out infinite;
 }
-.ball-wrap::after {
-  content: '';
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 130px; height: 130px;
-  border: 1.5px solid rgba(45, 212, 191, 0.14);
-  border-radius: 50%;
-  animation: circleExpand 4s ease-in-out infinite;
-}
-@keyframes circleExpand {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.35; }
-  50% { transform: translate(-50%, -50%) scale(1.18); opacity: 0.1; }
-}
-@keyframes ballGlow {
-  0%, 100% { opacity: 0.6; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.15); }
-}
-.ball-emoji {
-  font-size: 60px;
-  line-height: 1;
-  position: relative;
-  z-index: 1;
-  filter: drop-shadow(0 6px 28px var(--mint-glow));
-  animation: ballRotate 7s ease-in-out infinite;
-}
-@keyframes ballRotate {
-  0%, 100% { transform: rotate(-8deg); }
-  50% { transform: rotate(8deg); }
-}
+.ball-emoji { font-size: 52px; line-height: 1; position: relative; z-index: 1; filter: drop-shadow(0 4px 22px var(--accent-glow)); animation: ballRotate 7s ease-in-out infinite; }
+@keyframes ballGlow { 0%, 100% { opacity: 0.55; transform: scale(1); } 50% { opacity: 0.95; transform: scale(1.1); } }
+@keyframes ballRotate { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
 .header h1 {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 900;
   letter-spacing: 4px;
-  background: linear-gradient(135deg, var(--mint) 0%, var(--emerald) 50%, var(--mint) 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--mint) 50%, var(--accent) 100%);
   background-size: 200% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: titleShimmer 5s linear infinite;
-  line-height: 1.1;
-  filter: drop-shadow(0 0 24px var(--mint-glow));
+  filter: drop-shadow(0 0 20px var(--accent-glow));
 }
-@keyframes titleShimmer {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
-}
-.header .sub {
-  font-size: 10px;
-  letter-spacing: 5px;
-  color: var(--text-dim);
-  margin-top: 8px;
-  text-transform: uppercase;
-  font-weight: 800;
-}
-.header-chips { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
+@keyframes titleShimmer { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+.header .sub { font-size: 10px; letter-spacing: 5px; color: var(--text-dim); margin-top: 6px; text-transform: uppercase; font-weight: 800; }
+.header-chips { display: flex; justify-content: center; gap: 10px; margin-top: 16px; }
 .header-chip {
-  display: flex; align-items: center; gap: 8px;
-  padding: 10px 20px;
+  display: flex; align-items: center; gap: 7px;
+  padding: 9px 18px;
   background: var(--glass);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border-mid);
-  border-radius: 26px;
+  border-radius: 24px;
   color: var(--text);
   font-size: 12px;
   font-weight: 800;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2), inset 0 1px 0 var(--card-hi);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18), inset 0 1px 0 var(--card-hi);
 }
-.header-chip svg { width: 15px; height: 15px; stroke-width: 2.2; color: var(--mint); }
-.header-chip:active { transform: scale(0.94); border-color: var(--mint); box-shadow: 0 4px 16px var(--mint-glow); }
-.header-chip.bonus-chip {
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(135deg, rgba(251, 191, 36, 0.16) 0%, rgba(45, 212, 191, 0.1) 50%, rgba(251, 191, 36, 0.16) 100%);
-  border: 1px solid rgba(251, 191, 36, 0.4);
-  box-shadow: 0 8px 24px rgba(251, 191, 36, 0.18);
-}
-.header-chip.bonus-chip::before {
-  content: '';
-  position: absolute;
-  top: 0; left: -100%;
-  width: 60%; height: 100%;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.35) 50%, transparent 100%);
-  animation: glassShimmer 8s ease-in-out infinite;
-}
-@keyframes glassShimmer {
-  0%, 75% { left: -100%; }
-  85% { left: 100%; }
-  100% { left: 100%; }
-}
+.header-chip svg { width: 14px; height: 14px; stroke-width: 2.2; color: var(--accent); }
+.header-chip:active { transform: scale(0.94); border-color: var(--accent); }
+.header-chip.bonus-chip { background: linear-gradient(135deg, rgba(229, 185, 106, 0.14) 0%, rgba(74, 168, 216, 0.08) 50%, rgba(229, 185, 106, 0.14) 100%); border: 1px solid rgba(229, 185, 106, 0.35); }
 .header-chip.bonus-chip svg { color: var(--gold); }
-.header-chip.bonus-chip svg, .header-chip.bonus-chip span { position: relative; z-index: 1; }
 .tabs-wrap {
   position: sticky;
   top: 0;
   background: var(--glass-strong);
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
-  padding: 12px 14px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 10px 12px;
   z-index: 10;
   border-bottom: 1px solid var(--border);
-  transition: background 0.4s ease;
 }
-.tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; justify-content: space-between; }
+.tabs { display: flex; gap: 5px; overflow-x: auto; scrollbar-width: none; justify-content: space-between; }
 .tabs::-webkit-scrollbar { display: none; }
 .tab {
   flex: 1 1 0;
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-  padding: 11px 4px;
-  border-radius: 14px;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 10px 4px;
+  border-radius: 12px;
   font-size: 10px;
   font-weight: 800;
   color: var(--text-dim);
   border: 1px solid transparent;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   cursor: pointer;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.3px;
 }
-.tab svg { width: 20px; height: 20px; stroke-width: 2.2; }
+.tab svg { width: 18px; height: 18px; stroke-width: 2.2; }
 .tab:active { transform: scale(0.94); }
 .tab.active {
-  background: linear-gradient(135deg, var(--mint-soft), rgba(45, 212, 191, 0.08));
-  border-color: var(--mint);
-  color: var(--mint);
-  box-shadow: 0 0 24px var(--mint-glow), inset 0 1px 0 var(--card-hi);
+  background: linear-gradient(135deg, var(--accent-soft), rgba(94, 207, 177, 0.06));
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 20px var(--accent-glow), inset 0 1px 0 var(--card-hi);
 }
-#content { padding: 18px 16px; position: relative; z-index: 1; }
+#content { padding: 16px 14px; position: relative; z-index: 1; }
 .card {
   background: linear-gradient(160deg, var(--card-1) 0%, var(--card-2) 100%);
   border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 22px;
-  margin-bottom: 16px;
+  border-radius: 20px;
+  padding: 18px;
+  margin-bottom: 14px;
   position: relative;
-  animation: cardSlideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 12px 44px rgba(0, 0, 0, 0.35), inset 0 1px 0 var(--card-hi);
+  animation: cardSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.3), inset 0 1px 0 var(--card-hi);
   overflow: hidden;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
-body.light-theme .card { box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 var(--card-hi); }
+body.light-theme .card { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05), inset 0 1px 0 var(--card-hi); }
 .card::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 3px;
-  border-radius: 24px 24px 0 0;
-  background: linear-gradient(90deg, transparent, var(--mint), var(--emerald), var(--mint), transparent);
-  opacity: 0.9;
+  height: 2px;
+  border-radius: 20px 20px 0 0;
+  background: linear-gradient(90deg, transparent, var(--accent), var(--mint), var(--accent), transparent);
+  opacity: 0.85;
 }
-.card::after {
-  content: '';
-  position: absolute;
-  top: 0; left: -100%;
-  width: 60%; height: 3px;
-  border-radius: 24px 24px 0 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
-  animation: topSheen 6s ease-in-out infinite;
-}
-@keyframes topSheen {
-  0%, 70% { left: -100%; }
-  85% { left: 100%; }
-  100% { left: 100%; }
-}
-.card.card-hot::before {
-  background: linear-gradient(90deg, transparent, var(--gold), #f59e0b, var(--gold), transparent);
-  box-shadow: 0 0 22px var(--gold-glow);
-}
-.card.card-mid::before {
-  background: linear-gradient(90deg, transparent, var(--success), var(--emerald), var(--success), transparent);
-}
-.card.card-live::before {
-  background: linear-gradient(90deg, transparent, var(--danger), #f43f5e, var(--danger), transparent);
-  animation: liveFlash 2s ease-in-out infinite, topSheen 6s ease-in-out infinite;
-}
-@keyframes liveFlash {
-  0%, 100% { opacity: 0.75; }
-  50% { opacity: 1; }
-}
+.card.card-hot::before { background: linear-gradient(90deg, transparent, var(--gold), #f0c87a, var(--gold), transparent); box-shadow: 0 0 18px var(--gold-glow); }
+.card.card-mid::before { background: linear-gradient(90deg, transparent, var(--success), var(--mint), var(--success), transparent); }
+.card.card-live::before { background: linear-gradient(90deg, transparent, var(--danger), #f09baa, var(--danger), transparent); animation: liveFlash 2s ease-in-out infinite; }
+@keyframes liveFlash { 0%, 100% { opacity: 0.75; } 50% { opacity: 1; } }
 @keyframes cardSlideIn {
-  0% { opacity: 0; transform: translateY(22px) scale(0.97); }
+  0% { opacity: 0; transform: translateY(18px) scale(0.98); }
   60% { opacity: 1; transform: translateY(-2px) scale(1.005); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
-.card-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px; }
+.card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
 .card-num-badge {
   flex-shrink: 0;
-  width: 34px; height: 34px;
+  width: 30px; height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--mint-soft), rgba(45, 212, 191, 0.06));
-  border: 1px solid rgba(45, 212, 191, 0.4);
+  background: linear-gradient(135deg, var(--accent-soft), rgba(94, 207, 177, 0.05));
+  border: 1px solid rgba(74, 168, 216, 0.35);
   border-radius: 50%;
-  color: var(--mint);
-  font-size: 14px;
+  color: var(--accent);
+  font-size: 13px;
   font-weight: 800;
   margin-top: 1px;
   font-family: 'JetBrains Mono', monospace;
-  box-shadow: 0 0 16px rgba(45, 212, 191, 0.18), inset 0 1px 0 var(--card-hi);
+  box-shadow: 0 0 14px var(--accent-glow), inset 0 1px 0 var(--card-hi);
 }
 .card-teams-block { flex: 1; min-width: 0; }
-.card-team {
-  font-size: 16px;
-  font-weight: 800;
-  line-height: 1.35;
-  word-break: break-word;
-  overflow-wrap: break-word;
-  color: var(--text);
-}
-.card-team + .card-team { margin-top: 4px; color: var(--text-dim); font-weight: 700; }
+.card-team { font-size: 15px; font-weight: 800; line-height: 1.35; word-break: break-word; overflow-wrap: break-word; color: var(--text); }
+.card-team + .card-team { margin-top: 3px; color: var(--text-dim); font-weight: 700; }
 .card-meta {
   display: flex;
   align-items: center;
   gap: 10px;
   font-size: 11px;
   color: var(--text-dim);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   font-weight: 700;
   flex-wrap: wrap;
-  padding-top: 14px;
+  padding-top: 12px;
   border-top: 1px dashed var(--border-mid);
 }
-.card-meta .meta-item { display: flex; align-items: center; gap: 5px; }
+.card-meta .meta-item { display: flex; align-items: center; gap: 4px; }
 .card-meta .meta-item.league { color: var(--gold); font-weight: 800; }
-.card-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+.card-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
 .stat-box {
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.12));
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.1));
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 16px 6px 14px;
+  border-radius: 14px;
+  padding: 14px 5px 12px;
   text-align: center;
   position: relative;
   overflow: hidden;
 }
-body.light-theme .stat-box { background: linear-gradient(180deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.02)); }
+body.light-theme .stat-box { background: linear-gradient(180deg, rgba(74, 168, 216, 0.05), rgba(74, 168, 216, 0.02)); }
 .stat-box::before {
   content: '';
   position: absolute;
@@ -397,71 +300,47 @@ body.light-theme .stat-box { background: linear-gradient(180deg, rgba(16, 185, 1
   width: 50%; height: 2px;
   border-radius: 2px;
 }
-.stat-box.blue::before { background: var(--mint); box-shadow: 0 0 12px var(--mint-glow); }
-.stat-box.green::before { background: var(--success); box-shadow: 0 0 12px var(--success-glow); }
-.stat-box.gold::before { background: var(--gold); box-shadow: 0 0 12px var(--gold-glow); }
-.stat-box .label {
-  font-size: 10px;
-  color: var(--text-mute);
-  text-transform: uppercase;
-  font-weight: 800;
-  letter-spacing: 1.2px;
-  margin-bottom: 8px;
-}
-.stat-box .value {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 25px;
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-  letter-spacing: -0.5px;
-}
-.stat-box.blue .value { color: var(--mint); text-shadow: 0 0 20px var(--mint-glow); }
-.stat-box.green .value { color: var(--success); text-shadow: 0 0 20px var(--success-glow); }
-.stat-box.gold .value { color: var(--gold); text-shadow: 0 0 20px var(--gold-glow); }
+.stat-box.blue::before { background: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
+.stat-box.green::before { background: var(--success); box-shadow: 0 0 10px var(--success-glow); }
+.stat-box.gold::before { background: var(--gold); box-shadow: 0 0 10px var(--gold-glow); }
+.stat-box .label { font-size: 10px; color: var(--text-mute); text-transform: uppercase; font-weight: 800; letter-spacing: 1.2px; margin-bottom: 6px; }
+.stat-box .value { font-family: 'JetBrains Mono', monospace; font-size: 23px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; letter-spacing: -0.4px; }
+.stat-box.blue .value { color: var(--accent); text-shadow: 0 0 18px var(--accent-glow); }
+.stat-box.green .value { color: var(--success); text-shadow: 0 0 18px var(--success-glow); }
+.stat-box.gold .value { color: var(--gold); text-shadow: 0 0 18px var(--gold-glow); }
 .outcome-line {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 16px;
-  background: var(--mint-soft);
-  border: 1px solid rgba(45, 212, 191, 0.28);
-  border-radius: 14px;
+  padding: 11px 14px;
+  background: var(--accent-soft);
+  border: 1px solid rgba(74, 168, 216, 0.22);
+  border-radius: 12px;
   font-size: 13px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 .outcome-line:last-child { margin-bottom: 0; }
-.outcome-line.double { background: var(--gold-soft); border-color: rgba(251, 191, 36, 0.28); }
-.outcome-line .label { color: var(--text-dim); font-weight: 700; display: flex; align-items: center; gap: 6px; }
-.outcome-line .fav {
-  color: var(--mint);
-  font-weight: 900;
-  font-size: 14px;
-  font-family: 'JetBrains Mono', monospace;
-  letter-spacing: 0.4px;
-  text-shadow: 0 0 12px var(--mint-glow);
-}
-.outcome-line.double .fav { color: var(--gold); text-shadow: 0 0 12px var(--gold-glow); }
+.outcome-line.double { background: var(--gold-soft); border-color: rgba(229, 185, 106, 0.22); }
+.outcome-line .label { color: var(--text-dim); font-weight: 700; display: flex; align-items: center; gap: 5px; }
+.outcome-line .fav { color: var(--accent); font-weight: 900; font-size: 14px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.3px; text-shadow: 0 0 10px var(--accent-glow); }
+.outcome-line.double .fav { color: var(--gold); text-shadow: 0 0 10px var(--gold-glow); }
 .live-badge {
   display: inline-block;
-  padding: 4px 10px;
+  padding: 3px 9px;
   background: var(--danger);
   color: #fff;
   font-size: 10px;
   font-weight: 900;
-  border-radius: 8px;
-  letter-spacing: 0.6px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
   animation: livePulse 1.5s infinite;
-  box-shadow: 0 0 16px var(--danger-glow);
+  box-shadow: 0 0 14px var(--danger-glow);
 }
-@keyframes livePulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.75; transform: scale(1.04); }
-}
+@keyframes livePulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
 .skeleton-card {
   background: linear-gradient(160deg, var(--card-1) 0%, var(--card-2) 100%);
   border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 22px;
-  margin-bottom: 16px;
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 14px;
   overflow: hidden;
   position: relative;
 }
@@ -470,45 +349,38 @@ body.light-theme .stat-box { background: linear-gradient(180deg, rgba(16, 185, 1
   position: absolute;
   top: 0; left: -100%;
   width: 100%; height: 100%;
-  background: linear-gradient(90deg, transparent 0%, rgba(45, 212, 191, 0.12) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(74, 168, 216, 0.08) 50%, transparent 100%);
   animation: skeletonShimmer 1.8s ease-in-out infinite;
 }
-@keyframes skeletonShimmer {
-  0% { left: -100%; }
-  100% { left: 100%; }
-}
-.skeleton-line { height: 14px; background: rgba(45, 212, 191, 0.12); border-radius: 7px; margin-bottom: 14px; }
+@keyframes skeletonShimmer { 0% { left: -100%; } 100% { left: 100%; } }
+.skeleton-line { height: 13px; background: rgba(74, 168, 216, 0.1); border-radius: 7px; margin-bottom: 12px; }
 .skeleton-line.w-70 { width: 70%; }
 .skeleton-line.w-50 { width: 50%; }
 .skeleton-line.w-100 { width: 100%; }
-.skeleton-line.h-18 { height: 18px; }
-.skeleton-balls { display: flex; justify-content: center; gap: 14px; padding: 22px 0; }
+.skeleton-line.h-18 { height: 17px; }
+.skeleton-balls { display: flex; justify-content: center; gap: 12px; padding: 20px 0; }
 .skeleton-ball {
-  width: 42px; height: 42px;
+  width: 38px; height: 38px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(45, 212, 191, 0.3), rgba(45, 212, 191, 0.08));
+  background: radial-gradient(circle, rgba(74, 168, 216, 0.25), rgba(74, 168, 216, 0.06));
   display: flex; align-items: center; justify-content: center;
-  font-size: 20px;
+  font-size: 18px;
   animation: ballBounce 1.4s ease-in-out infinite;
-  box-shadow: 0 0 22px rgba(45, 212, 191, 0.3);
+  box-shadow: 0 0 18px rgba(74, 168, 216, 0.25);
 }
 .skeleton-ball:nth-child(2) { animation-delay: 0.2s; }
 .skeleton-ball:nth-child(3) { animation-delay: 0.4s; }
-@keyframes ballBounce {
-  0%, 100% { transform: translateY(0); opacity: 0.4; }
-  50% { transform: translateY(-14px); opacity: 1; }
-}
-.yesterday-summary { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+@keyframes ballBounce { 0%, 100% { transform: translateY(0); opacity: 0.4; } 50% { transform: translateY(-12px); opacity: 1; } }
+.yesterday-summary { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 18px; }
 .yesterday-stat {
   background: linear-gradient(160deg, var(--card-1) 0%, var(--card-2) 100%);
   border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 20px 10px;
+  border-radius: 16px;
+  padding: 18px 10px;
   text-align: center;
   animation: cardSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), inset 0 1px 0 var(--card-hi);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.22), inset 0 1px 0 var(--card-hi);
   position: relative;
   overflow: hidden;
 }
@@ -520,82 +392,60 @@ body.light-theme .stat-box { background: linear-gradient(180deg, rgba(16, 185, 1
   width: 60%; height: 2px;
   border-radius: 2px;
 }
-.yesterday-stat.win::before { background: var(--success); box-shadow: 0 0 12px var(--success-glow); }
-.yesterday-stat.lose::before { background: var(--danger); box-shadow: 0 0 12px var(--danger-glow); }
-.yesterday-stat.acc::before { background: var(--gold); box-shadow: 0 0 12px var(--gold-glow); }
-.yesterday-stat .ys-num {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 32px;
-  font-weight: 900;
-  display: block;
-  margin-bottom: 6px;
-  line-height: 1;
-}
+.yesterday-stat.win::before { background: var(--success); box-shadow: 0 0 10px var(--success-glow); }
+.yesterday-stat.lose::before { background: var(--danger); box-shadow: 0 0 10px var(--danger-glow); }
+.yesterday-stat.acc::before { background: var(--gold); box-shadow: 0 0 10px var(--gold-glow); }
+.yesterday-stat .ys-num { font-family: 'JetBrains Mono', monospace; font-size: 30px; font-weight: 900; display: block; margin-bottom: 5px; line-height: 1; }
 .yesterday-stat .ys-label { font-size: 11px; color: var(--text-dim); font-weight: 800; }
-.yesterday-stat.win .ys-num { color: var(--success); text-shadow: 0 0 20px var(--success-glow); }
-.yesterday-stat.lose .ys-num { color: var(--danger); text-shadow: 0 0 20px var(--danger-glow); }
-.yesterday-stat.acc .ys-num { color: var(--gold); text-shadow: 0 0 20px var(--gold-glow); }
+.yesterday-stat.win .ys-num { color: var(--success); text-shadow: 0 0 18px var(--success-glow); }
+.yesterday-stat.lose .ys-num { color: var(--danger); text-shadow: 0 0 18px var(--danger-glow); }
+.yesterday-stat.acc .ys-num { color: var(--gold); text-shadow: 0 0 18px var(--gold-glow); }
 .express-hero {
-  background: radial-gradient(ellipse at 50% 0%, rgba(251, 191, 36, 0.35), transparent 60%), linear-gradient(135deg, #7c2d12 0%, #b45309 50%, #d97706 100%);
-  border-radius: 26px;
-  padding: 34px 24px;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(229, 185, 106, 0.3), transparent 60%),
+    linear-gradient(135deg, #4a3418 0%, #6e4d1e 50%, #8a6128 100%);
+  border-radius: 22px;
+  padding: 30px 22px;
   color: #fff;
   text-align: center;
-  margin-bottom: 22px;
+  margin-bottom: 18px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(217, 119, 6, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  box-shadow: 0 16px 48px rgba(110, 77, 30, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   animation: cardSlideIn 0.6s ease;
-  border: 1px solid rgba(251, 191, 36, 0.35);
+  border: 1px solid rgba(229, 185, 106, 0.3);
 }
 .express-hero::before {
   content: '🏆';
   position: absolute;
-  top: 22px; right: 26px;
-  font-size: 44px;
-  opacity: 0.4;
-  animation: ballRotate 5s ease-in-out infinite;
-  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
+  top: 20px; right: 24px;
+  font-size: 40px;
+  opacity: 0.35;
+  filter: drop-shadow(0 0 16px rgba(229, 185, 106, 0.5));
 }
-.express-hero::after {
-  content: '';
-  position: absolute;
-  top: 0; left: -100%;
-  width: 60%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-  animation: glassShimmer 7s ease-in-out infinite;
-}
-.express-hero-title { font-size: 22px; font-weight: 900; letter-spacing: 3px; position: relative; z-index: 1; }
-.express-hero-sub { font-size: 11px; opacity: 0.92; margin-top: 8px; letter-spacing: 2px; position: relative; z-index: 1; }
+.express-hero-title { font-size: 20px; font-weight: 900; letter-spacing: 3px; position: relative; z-index: 1; }
+.express-hero-sub { font-size: 11px; opacity: 0.85; margin-top: 6px; letter-spacing: 2px; position: relative; z-index: 1; }
 .express-hero-odd {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 68px; font-weight: 900; margin-top: 18px;
-  background: linear-gradient(180deg, #fef9c3, #fcd34d, #f59e0b);
+  font-size: 60px; font-weight: 900; margin-top: 14px;
+  background: linear-gradient(180deg, #fef3d8, #e5b96a, #c99440);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   line-height: 1;
   position: relative;
   z-index: 1;
-  filter: drop-shadow(0 4px 20px rgba(255, 255, 255, 0.3));
+  filter: drop-shadow(0 3px 16px rgba(229, 185, 106, 0.4));
 }
-.express-hero-label {
-  font-size: 10px; opacity: 0.9; letter-spacing: 4px; margin-top: 12px;
-  text-transform: uppercase; font-weight: 800;
-  position: relative; z-index: 1;
-}
-.express-items-title {
-  text-align: center; font-size: 13px; color: var(--text-dim);
-  margin-bottom: 16px; font-weight: 800; letter-spacing: 1.5px;
-}
+.express-hero-label { font-size: 10px; opacity: 0.85; letter-spacing: 4px; margin-top: 10px; text-transform: uppercase; font-weight: 800; position: relative; z-index: 1; }
+.express-items-title { text-align: center; font-size: 12px; color: var(--text-dim); margin-bottom: 14px; font-weight: 800; letter-spacing: 1.5px; }
 .express-card {
   background: linear-gradient(160deg, var(--card-1) 0%, var(--card-2) 100%);
   border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 18px 20px;
-  margin-bottom: 12px;
+  border-radius: 18px;
+  padding: 16px 18px;
+  margin-bottom: 10px;
   animation: cardSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.32), inset 0 1px 0 var(--card-hi);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.28), inset 0 1px 0 var(--card-hi);
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   position: relative;
   overflow: hidden;
 }
@@ -604,89 +454,66 @@ body.light-theme .stat-box { background: linear-gradient(180deg, rgba(16, 185, 1
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--mint), var(--emerald), var(--mint), transparent);
-  opacity: 0.7;
+  background: linear-gradient(90deg, transparent, var(--accent), var(--mint), var(--accent), transparent);
+  opacity: 0.6;
 }
-.express-card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.express-card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .express-num {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 32px; height: 32px;
-  background: linear-gradient(135deg, var(--mint), var(--emerald));
-  color: #fff; font-size: 14px; font-weight: 900;
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, var(--accent), var(--mint));
+  color: #fff; font-size: 13px; font-weight: 900;
   border-radius: 50%; flex-shrink: 0;
-  box-shadow: 0 0 18px var(--mint-glow);
+  box-shadow: 0 0 14px var(--accent-glow);
 }
-.express-match { font-size: 15px; font-weight: 800; }
-.express-league { font-size: 11px; color: var(--text-dim); margin-left: 44px; margin-bottom: 14px; font-weight: 700; }
+.express-match { font-size: 14px; font-weight: 800; }
+.express-league { font-size: 11px; color: var(--text-dim); margin-left: 38px; margin-bottom: 12px; font-weight: 700; }
 .express-card-body {
   display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 8px; background: rgba(0, 0, 0, 0.25);
-  border-radius: 14px; padding: 14px 8px;
+  gap: 6px; background: rgba(0, 0, 0, 0.22);
+  border-radius: 12px; padding: 12px 6px;
   border: 1px solid var(--border);
 }
-body.light-theme .express-card-body { background: rgba(16, 185, 129, 0.05); }
-.express-stat { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-.express-stat-label { font-size: 10px; color: var(--text-mute); text-transform: uppercase; font-weight: 800; letter-spacing: 0.6px; }
-.express-stat-value { font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 800; }
-.express-odd {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 19px; font-weight: 900; color: var(--gold);
-  text-shadow: 0 0 14px var(--gold-glow);
-}
+body.light-theme .express-card-body { background: rgba(74, 168, 216, 0.04); }
+.express-stat { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.express-stat-label { font-size: 10px; color: var(--text-mute); text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; }
+.express-stat-value { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 800; }
+.express-odd { font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 900; color: var(--gold); text-shadow: 0 0 12px var(--gold-glow); }
 .express-footer {
   background: linear-gradient(160deg, var(--card-1) 0%, var(--card-2) 100%);
   border: 1px solid var(--border-strong);
-  border-radius: 22px;
-  padding: 20px 22px;
-  margin-top: 18px;
+  border-radius: 20px;
+  padding: 18px 20px;
+  margin-top: 16px;
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.3), inset 0 1px 0 var(--card-hi);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.28), inset 0 1px 0 var(--card-hi);
 }
-.express-footer-row {
-  display: flex; justify-content: space-between;
-  font-size: 14px; padding: 10px 0;
-  color: var(--text-dim); font-weight: 700;
-}
-.express-footer-row:last-child {
-  margin-top: 8px; padding-top: 18px;
-  border-top: 1px solid var(--border);
-  color: var(--text); font-size: 15px;
-}
-.express-footer-odd {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 30px; font-weight: 900; color: var(--gold);
-  text-shadow: 0 0 26px var(--gold-glow);
-}
-.stats-wrap { padding: 10px 0; }
+.express-footer-row { display: flex; justify-content: space-between; font-size: 13px; padding: 9px 0; color: var(--text-dim); font-weight: 700; }
+.express-footer-row:last-child { margin-top: 6px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--text); font-size: 15px; }
+.express-footer-odd { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 900; color: var(--gold); text-shadow: 0 0 22px var(--gold-glow); }
+.stats-wrap { padding: 8px 0; }
 .stats-big {
   font-family: 'JetBrains Mono', monospace;
-  text-align: center; font-size: 88px; font-weight: 900;
-  background: linear-gradient(135deg, var(--mint), var(--emerald), var(--mint));
+  text-align: center; font-size: 82px; font-weight: 900;
+  background: linear-gradient(135deg, var(--accent), var(--mint), var(--accent));
   background-size: 200% 100%;
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   line-height: 1;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   animation: titleShimmer 5s linear infinite;
-  filter: drop-shadow(0 0 30px var(--mint-glow));
+  filter: drop-shadow(0 0 24px var(--accent-glow));
 }
-.stats-label {
-  text-align: center; color: var(--text-dim);
-  font-size: 12px; letter-spacing: 4px;
-  text-transform: uppercase; font-weight: 800;
-  margin-bottom: 32px;
-}
-.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.stats-label { text-align: center; color: var(--text-dim); font-size: 11px; letter-spacing: 4px; text-transform: uppercase; font-weight: 800; margin-bottom: 28px; }
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
 .stats-box {
   background: linear-gradient(160deg, var(--card-1) 0%, var(--card-2) 100%);
   border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 24px 18px;
+  border-radius: 18px;
+  padding: 20px 16px;
   text-align: center;
   animation: cardSlideIn 0.5s ease;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3), inset 0 1px 0 var(--card-hi);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.26), inset 0 1px 0 var(--card-hi);
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   position: relative;
   overflow: hidden;
   transition: transform 0.25s ease;
@@ -699,242 +526,237 @@ body.light-theme .express-card-body { background: rgba(16, 185, 129, 0.05); }
   width: 55%; height: 2px;
   border-radius: 2px;
 }
-.stats-box.win::before { background: var(--success); box-shadow: 0 0 12px var(--success-glow); }
-.stats-box.lose::before { background: var(--danger); box-shadow: 0 0 12px var(--danger-glow); }
+.stats-box.win::before { background: var(--success); box-shadow: 0 0 10px var(--success-glow); }
+.stats-box.lose::before { background: var(--danger); box-shadow: 0 0 10px var(--danger-glow); }
 .stats-box.clickable:active { transform: scale(0.97); }
-.stats-box .num {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 38px; font-weight: 900;
-  display: block; margin-bottom: 6px;
-  line-height: 1;
-}
+.stats-box .num { font-family: 'JetBrains Mono', monospace; font-size: 34px; font-weight: 900; display: block; margin-bottom: 5px; line-height: 1; }
 .stats-box .name { font-size: 12px; color: var(--text-dim); font-weight: 800; }
-.stats-box.win .num { color: var(--success); text-shadow: 0 0 22px var(--success-glow); }
-.stats-box.lose .num { color: var(--danger); text-shadow: 0 0 22px var(--danger-glow); }
-.leagues-title {
-  font-size: 14px;
-  font-weight: 900;
-  color: var(--mint);
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  margin-bottom: 14px;
-  margin-top: 32px;
-  text-shadow: 0 0 22px var(--mint-glow);
-}
+.stats-box.win .num { color: var(--success); text-shadow: 0 0 18px var(--success-glow); }
+.stats-box.lose .num { color: var(--danger); text-shadow: 0 0 18px var(--danger-glow); }
+.leagues-title { font-size: 13px; font-weight: 900; color: var(--accent); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 12px; margin-top: 28px; text-shadow: 0 0 18px var(--accent-glow); }
 .league-item {
   background: linear-gradient(160deg, var(--card-1) 0%, var(--card-2) 100%);
   border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 15px 18px;
-  margin-bottom: 10px;
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   animation: cardSlideIn 0.5s ease;
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 var(--card-hi);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18), inset 0 1px 0 var(--card-hi);
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease;
 }
+.league-item:active { transform: scale(0.98); border-color: var(--accent); }
 .league-name { flex: 1; font-size: 13px; font-weight: 800; }
-.league-stats {
-  display: flex; gap: 12px; align-items: center;
-  font-size: 13px; font-weight: 800;
-  font-family: 'JetBrains Mono', monospace;
-}
+.league-stats { display: flex; gap: 10px; align-items: center; font-size: 12px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
 .league-win { color: var(--success); }
 .league-lose { color: var(--danger); }
-.league-acc {
-  background: var(--mint-soft);
-  color: var(--mint);
-  padding: 4px 10px;
-  border-radius: 8px;
-  font-variant-numeric: tabular-nums;
-  border: 1px solid rgba(45, 212, 191, 0.25);
-}
-.faq-header { text-align: center; padding: 20px 0 26px; }
+.league-acc { background: var(--accent-soft); color: var(--accent); padding: 3px 9px; border-radius: 7px; font-variant-numeric: tabular-nums; border: 1px solid rgba(74, 168, 216, 0.2); }
+.league-arrow { color: var(--text-mute); font-size: 16px; }
+.faq-header { text-align: center; padding: 18px 0 22px; }
 .faq-header-icon {
-  width: 72px; height: 72px;
-  margin: 0 auto 16px;
+  width: 66px; height: 66px;
+  margin: 0 auto 14px;
   display: flex; align-items: center; justify-content: center;
-  background: linear-gradient(135deg, var(--mint-soft), rgba(45, 212, 191, 0.06));
-  border: 2px solid var(--mint);
+  background: linear-gradient(135deg, var(--accent-soft), rgba(94, 207, 177, 0.05));
+  border: 2px solid var(--accent);
   border-radius: 50%;
-  font-size: 36px;
-  box-shadow: 0 0 34px var(--mint-glow);
+  font-size: 32px;
+  box-shadow: 0 0 28px var(--accent-glow);
   animation: ballPulse 3s ease-in-out infinite;
 }
-@keyframes ballPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.06); }
-}
+@keyframes ballPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 .faq-header-title {
-  font-size: 26px; font-weight: 900; letter-spacing: 3px;
-  background: linear-gradient(135deg, var(--mint), var(--emerald));
+  font-size: 24px; font-weight: 900; letter-spacing: 3px;
+  background: linear-gradient(135deg, var(--accent), var(--mint));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
-.faq-header-sub { font-size: 12px; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; font-weight: 700; }
-.faq-section { margin-bottom: 24px; }
-.faq-section-title {
-  font-size: 12px; font-weight: 900;
-  color: var(--mint);
-  text-transform: uppercase; letter-spacing: 2.5px;
-  margin-bottom: 12px;
-}
+.faq-header-sub { font-size: 11px; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; font-weight: 700; }
+.faq-section { margin-bottom: 20px; }
+.faq-section-title { font-size: 12px; font-weight: 900; color: var(--accent); text-transform: uppercase; letter-spacing: 2.5px; margin-bottom: 10px; }
 .faq-item {
   background: linear-gradient(160deg, var(--card-1) 0%, var(--card-2) 100%);
   border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 16px 18px;
-  margin-bottom: 12px;
+  border-radius: 16px;
+  padding: 15px 17px;
+  margin-bottom: 10px;
   animation: cardSlideIn 0.5s ease;
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22), inset 0 1px 0 var(--card-hi);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2), inset 0 1px 0 var(--card-hi);
 }
-.faq-q {
-  font-size: 14px; font-weight: 800;
-  margin-bottom: 10px;
-  display: flex; align-items: flex-start; gap: 10px;
-  line-height: 1.35;
-}
+.faq-q { font-size: 14px; font-weight: 800; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 10px; line-height: 1.35; }
 .faq-q-icon {
   flex-shrink: 0;
-  width: 24px; height: 24px;
-  background: linear-gradient(135deg, var(--mint), var(--emerald));
+  width: 22px; height: 22px;
+  background: linear-gradient(135deg, var(--accent), var(--mint));
   color: #fff; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 900;
-  box-shadow: 0 0 12px var(--mint-glow);
+  font-size: 12px; font-weight: 900;
+  box-shadow: 0 0 10px var(--accent-glow);
 }
-.faq-a { font-size: 13px; color: var(--text-dim); line-height: 1.6; padding-left: 34px; }
-.faq-a strong { color: var(--mint); font-weight: 800; }
-.faq-a ul { margin-top: 8px; padding-left: 18px; }
-.faq-a li { margin-bottom: 6px; }
-.faq-stat {
-  display: inline-block; padding: 2px 10px;
-  background: var(--mint-soft);
-  color: var(--mint);
-  border-radius: 6px; font-size: 12px; font-weight: 800;
-  margin: 0 3px;
-  border: 1px solid rgba(45, 212, 191, 0.25);
-}
-.faq-highlight {
-  background: linear-gradient(135deg, var(--mint-soft), rgba(45, 212, 191, 0.04));
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 12px 14px; margin-top: 12px;
-  font-size: 13px; line-height: 1.55;
-}
+.faq-a { font-size: 13px; color: var(--text-dim); line-height: 1.6; padding-left: 32px; }
+.faq-a strong { color: var(--accent); font-weight: 800; }
+.faq-a ul { margin-top: 6px; padding-left: 16px; }
+.faq-a li { margin-bottom: 5px; }
+.faq-stat { display: inline-block; padding: 2px 9px; background: var(--accent-soft); color: var(--accent); border-radius: 6px; font-size: 12px; font-weight: 800; margin: 0 3px; border: 1px solid rgba(74, 168, 216, 0.2); }
+.faq-highlight { background: linear-gradient(135deg, var(--accent-soft), rgba(74, 168, 216, 0.03)); border: 1px solid var(--border); border-radius: 12px; padding: 11px 13px; margin-top: 10px; font-size: 13px; line-height: 1.55; }
 .disclaimer {
-  background: linear-gradient(160deg, rgba(251, 191, 36, 0.08), rgba(251, 113, 133, 0.04));
-  border: 1px solid rgba(251, 191, 36, 0.3);
-  border-radius: 18px;
-  padding: 18px 20px;
-  margin-top: 18px;
+  background: linear-gradient(160deg, rgba(229, 185, 106, 0.06), rgba(232, 122, 139, 0.03));
+  border: 1px solid rgba(229, 185, 106, 0.25);
+  border-radius: 16px;
+  padding: 16px 18px;
+  margin-top: 16px;
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 8px 24px rgba(251, 191, 36, 0.08);
+  box-shadow: 0 6px 20px rgba(229, 185, 106, 0.06);
 }
-.disclaimer-title {
-  font-size: 13px;
-  font-weight: 900;
-  color: var(--gold);
-  margin-bottom: 10px;
-  display: flex; align-items: center; gap: 8px;
-  text-shadow: 0 0 14px var(--gold-glow);
-}
-.disclaimer-title::before { content: '⚠️'; font-size: 18px; }
+.disclaimer-title { font-size: 13px; font-weight: 900; color: var(--gold); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; text-shadow: 0 0 12px var(--gold-glow); }
+.disclaimer-title::before { content: '⚠️'; font-size: 16px; }
 .disclaimer-text { font-size: 12px; color: var(--text); line-height: 1.7; }
 .disclaimer-text strong { color: var(--gold); }
 .bonus-card {
-  background: radial-gradient(ellipse at 50% 0%, rgba(251, 191, 36, 0.4), transparent 60%), linear-gradient(135deg, #7c2d12 0%, #b45309 50%, #d97706 100%);
-  border-radius: 26px;
-  padding: 34px 26px;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(229, 185, 106, 0.3), transparent 60%),
+    linear-gradient(135deg, #4a3418 0%, #6e4d1e 50%, #8a6128 100%);
+  border-radius: 22px;
+  padding: 30px 24px;
   color: #fff;
   text-align: center;
-  margin-bottom: 22px;
+  margin-bottom: 18px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(217, 119, 6, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  box-shadow: 0 16px 48px rgba(110, 77, 30, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   animation: cardSlideIn 0.6s ease;
-  border: 1px solid rgba(251, 191, 36, 0.35);
+  border: 1px solid rgba(229, 185, 106, 0.3);
 }
-.bonus-card::before {
-  content: '🎁';
-  position: absolute;
-  top: 18px; right: 22px;
-  font-size: 48px;
-  opacity: 0.45;
-  animation: ballRotate 4s ease-in-out infinite;
-  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.4));
-}
-.bonus-title { font-size: 26px; font-weight: 900; letter-spacing: 2px; margin-bottom: 14px; }
-.bonus-text { font-size: 14px; opacity: 0.95; line-height: 1.7; margin-bottom: 24px; }
+.bonus-card::before { content: '🎁'; position: absolute; top: 16px; right: 20px; font-size: 42px; opacity: 0.4; filter: drop-shadow(0 0 18px rgba(229, 185, 106, 0.5)); }
+.bonus-title { font-size: 24px; font-weight: 900; letter-spacing: 2px; margin-bottom: 12px; }
+.bonus-text { font-size: 14px; opacity: 0.92; line-height: 1.7; margin-bottom: 22px; }
 .bonus-btn {
   display: inline-block;
-  padding: 16px 42px;
-  background: linear-gradient(135deg, #fcd34d, #f59e0b);
-  color: #78350f;
+  padding: 14px 38px;
+  background: linear-gradient(135deg, #f0d089, #e5b96a);
+  color: #3d2a10;
   text-decoration: none;
-  border-radius: 34px;
+  border-radius: 32px;
   font-size: 15px;
   font-weight: 900;
   letter-spacing: 1.5px;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45), inset 0 -2px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.4), inset 0 -2px 0 rgba(0, 0, 0, 0.1);
   border: none;
   cursor: pointer;
   transition: transform 0.25s ease;
 }
 .bonus-btn:active { transform: scale(0.95); }
-.empty {
-  text-align: center; color: var(--text-mute);
-  padding: 80px 20px; font-size: 14px; font-weight: 700;
-}
-.empty::before {
-  content: '⚽'; font-size: 68px;
-  display: block; margin-bottom: 16px; opacity: 0.3;
-  filter: drop-shadow(0 0 22px var(--mint-glow));
-}
-.error {
-  text-align: center; color: var(--danger);
-  padding: 22px; font-size: 14px;
-  background: var(--danger-soft);
-  border: 1px solid rgba(251, 113, 133, 0.3);
-  border-radius: 16px; font-weight: 700;
-}
-.winner-badge {
-  display: inline-block;
-  padding: 6px 14px;
-  background: var(--success-soft);
-  border: 1px solid rgba(74, 222, 128, 0.35);
-  color: var(--success);
-  border-radius: 10px;
-  font-size: 12px; font-weight: 800;
-  margin-top: 8px;
-  text-shadow: 0 0 12px var(--success-glow);
-}
-.sync-line {
-  text-align: center;
-  font-size: 11px;
-  color: var(--text-mute);
-  padding: 20px 16px 10px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-}
+.empty { text-align: center; color: var(--text-mute); padding: 70px 20px; font-size: 14px; font-weight: 700; }
+.empty::before { content: '⚽'; font-size: 60px; display: block; margin-bottom: 14px; opacity: 0.25; filter: drop-shadow(0 0 18px var(--accent-glow)); }
+.error { text-align: center; color: var(--danger); padding: 20px; font-size: 14px; background: var(--danger-soft); border: 1px solid rgba(232, 122, 139, 0.25); border-radius: 14px; font-weight: 700; }
+.winner-badge { display: inline-block; padding: 5px 12px; background: var(--success-soft); border: 1px solid rgba(86, 214, 143, 0.3); color: var(--success); border-radius: 9px; font-size: 12px; font-weight: 800; margin-top: 6px; text-shadow: 0 0 10px var(--success-glow); }
+.sync-line { text-align: center; font-size: 11px; color: var(--text-mute); padding: 18px 16px 8px; font-weight: 700; letter-spacing: 0.5px; }
 .section-title {
-  font-size: 22px; font-weight: 900;
-  text-align: center; margin-bottom: 5px;
+  font-size: 20px; font-weight: 900;
+  text-align: center; margin-bottom: 4px;
   letter-spacing: 3px;
-  background: linear-gradient(135deg, var(--mint), var(--emerald));
+  background: linear-gradient(135deg, var(--accent), var(--mint));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  filter: drop-shadow(0 0 20px var(--mint-glow));
+  filter: drop-shadow(0 0 16px var(--accent-glow));
 }
-.section-sub {
-  font-size: 12px; color: var(--text-dim);
-  text-align: center; margin-bottom: 20px;
-  font-weight: 700;
+.section-sub { font-size: 12px; color: var(--text-dim); text-align: center; margin-bottom: 18px; font-weight: 700; }
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
 }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal-box {
+  background: linear-gradient(160deg, var(--card-1) 0%, var(--card-2) 100%);
+  border: 1px solid var(--border-strong);
+  border-radius: 24px;
+  padding: 28px 22px;
+  max-width: 420px;
+  width: 100%;
+  position: relative;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), inset 0 1px 0 var(--card-hi);
+  animation: modalSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  max-height: 85vh;
+  overflow-y: auto;
+}
+@keyframes modalSlide {
+  0% { opacity: 0; transform: translateY(30px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal-icon {
+  width: 70px; height: 70px;
+  margin: 0 auto 16px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--accent-soft), rgba(94, 207, 177, 0.06));
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  font-size: 34px;
+  box-shadow: 0 0 30px var(--accent-glow);
+}
+.modal-title {
+  font-size: 20px; font-weight: 900;
+  text-align: center;
+  letter-spacing: 2px;
+  background: linear-gradient(135deg, var(--accent), var(--mint));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 16px;
+}
+.modal-text { font-size: 13px; color: var(--text-dim); line-height: 1.65; margin-bottom: 14px; }
+.modal-text strong { color: var(--accent); font-weight: 800; }
+.modal-warn {
+  background: linear-gradient(160deg, rgba(232, 122, 139, 0.08), rgba(229, 185, 106, 0.05));
+  border: 1px solid rgba(232, 122, 139, 0.25);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin: 16px 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.modal-warn-title { font-weight: 900; color: var(--danger); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.modal-warn-title::before { content: '⚠️'; font-size: 16px; }
+.modal-warn strong { color: var(--danger); }
+.modal-star {
+  background: linear-gradient(160deg, rgba(229, 185, 106, 0.08), rgba(229, 185, 106, 0.03));
+  border: 1px solid rgba(229, 185, 106, 0.25);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin: 16px 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text);
+}
+.modal-star strong { color: var(--gold); font-weight: 800; }
+.modal-btn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--accent), var(--mint));
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 10px 28px var(--accent-glow);
+  transition: transform 0.25s ease;
+  margin-top: 8px;
+}
+.modal-btn:active { transform: scale(0.96); }
 </style>
 </head>
 <body>
@@ -947,9 +769,7 @@ body.light-theme .express-card-body { background: rgba(16, 185, 129, 0.05); }
       </svg>
     </div>
   </div>
-  <div class="ball-wrap">
-    <div class="ball-emoji">⚽</div>
-  </div>
+  <div class="ball-wrap"><div class="ball-emoji">⚽</div></div>
   <h1>ПРОГНОЗЫ</h1>
   <div class="sub">ТОТАЛ БОЛЬШЕ 2.5</div>
   <div class="header-chips">
@@ -1020,11 +840,8 @@ function toggleTheme() {
 function updateThemeIcon(theme) {
   const icon = document.getElementById('themeIcon');
   if (!icon) return;
-  if (theme === 'light') {
-    icon.innerHTML = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
-  } else {
-    icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
-  }
+  if (theme === 'light') icon.innerHTML = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
+  else icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
 }
 initTheme();
 function haptic(s) {
@@ -1034,11 +851,52 @@ function haptic(s) {
     else tg.HapticFeedback.impactOccurred('light');
   } catch(e){}
 }
+function probColor(p) {
+  if (p >= 75) return 'var(--success)';
+  if (p >= 70) return 'var(--warn)';
+  if (p >= 65) return 'var(--mint)';
+  return 'var(--accent)';
+}
+function probGlow(p) {
+  if (p >= 75) return 'var(--success-glow)';
+  if (p >= 70) return 'var(--warn-glow)';
+  if (p >= 65) return 'var(--mint-glow)';
+  return 'var(--accent-glow)';
+}
+function checkDailyWelcome() {
+  const today = new Date().toISOString().slice(0, 10);
+  const lastSeen = localStorage.getItem('tb25_last_seen');
+  if (lastSeen === today) return;
+  localStorage.setItem('tb25_last_seen', today);
+  showWelcomeModal();
+}
+function showWelcomeModal() {
+  const modal = document.createElement('div');
+  modal.className = 'modal-overlay';
+  modal.innerHTML = '<div class="modal-box">' +
+    '<div class="modal-icon">⚽</div>' +
+    '<div class="modal-title">ДОБРО ПОЖАЛОВАТЬ</div>' +
+    '<div class="modal-text">Это приложение <strong>спортивной аналитики</strong> для поиска футбольных матчей с высокой вероятностью исхода <strong>«Тотал Больше 2.5 голов»</strong>.</div>' +
+    '<div class="modal-text">Бот ежедневно собирает матчи из топ-чемпионатов и еврокубков, применяет <strong>математическую модель</strong> (xG + распределение Пуассона) и показывает только те, где вероятность ≥ 60%.</div>' +
+    '<div class="modal-warn">' +
+      '<div class="modal-warn-title">Это НЕ букмекерская контора</div>' +
+      '<div>Мы <strong>не принимаем ставки</strong> и <strong>не храним деньги</strong>. Все прогнозы носят <strong>информационный характер</strong> и <strong>не гарантируют выигрыш</strong>. Любой исход — это вероятность, а не факт.</div>' +
+    '</div>' +
+    '<div class="modal-star">⭐ Если проект полезен — поддержи его <strong>звёздочкой</strong>. Это помогает развитию и бесплатной работе сервиса.</div>' +
+    '<button class="modal-btn" onclick="closeModal(this)">ПОНЯЛ, ПОЕХАЛИ 🚀</button>' +
+    '</div>';
+  document.body.appendChild(modal);
+}
+function closeModal(btn) {
+  haptic('medium');
+  const overlay = btn.closest('.modal-overlay');
+  overlay.style.opacity = '0';
+  overlay.style.transition = 'opacity 0.25s ease';
+  setTimeout(() => overlay.remove(), 250);
+}
 function switchTabDirect(tabName) {
   haptic('medium');
-  document.querySelectorAll('.tab').forEach(t => {
-    t.classList.toggle('active', t.dataset.tab === tabName);
-  });
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tabName));
   currentTab = tabName;
   loadData();
 }
@@ -1052,11 +910,11 @@ document.getElementById('tabs').addEventListener('click', e => {
   loadData();
 });
 function getCache(tab) {
-  try { const r = localStorage.getItem('tb25_v27_' + tab); return r ? JSON.parse(r) : null; } catch(e){ return null; }
+  try { const r = localStorage.getItem('tb25_v28_' + tab); return r ? JSON.parse(r) : null; } catch(e){ return null; }
 }
 function setCache(tab, version, data) {
   try {
-    localStorage.setItem('tb25_v27_' + tab, JSON.stringify({ version, data, ts: Date.now() }));
+    localStorage.setItem('tb25_v28_' + tab, JSON.stringify({ version, data, ts: Date.now() }));
     localStorage.setItem('tb25_last_update', new Date().toISOString());
   } catch(e){}
 }
@@ -1082,7 +940,7 @@ function updateSyncLine() {
   } catch (e) { el.textContent = ''; }
 }
 function showSkeleton() {
-  return '<div class="skeleton-card"><div class="skeleton-balls"><div class="skeleton-ball">⚽</div><div class="skeleton-ball">⚽</div><div class="skeleton-ball">⚽</div></div><div class="skeleton-line w-70 h-18"></div><div class="skeleton-line w-50"></div><div class="skeleton-line w-100"></div></div><div class="skeleton-card"><div class="skeleton-balls"><div class="skeleton-ball">⚽</div><div class="skeleton-ball">⚽</div><div class="skeleton-ball">⚽</div></div><div class="skeleton-line w-70 h-18"></div><div class="skeleton-line w-50"></div><div class="skeleton-line w-100"></div></div>';
+  return '<div class="skeleton-card"><div class="skeleton-balls"><div class="skeleton-ball">⚽</div><div class="skeleton-ball">⚽</div><div class="skeleton-ball">⚽</div></div><div class="skeleton-line w-70 h-18"></div><div class="skeleton-line w-50"></div><div class="skeleton-line w-100"></div></div>';
 }
 async function loadData() {
   const content = document.getElementById('content');
@@ -1119,23 +977,16 @@ function renderTab(tab, data) {
   else if (tab === 'yesterday') renderYesterday(data);
   else if (tab === 'express') renderExpress(data);
   else if (tab === 'stats') renderStats(data);
-  else if (tab === 'faq') renderFaq();
-  else if (tab === 'bonus') renderBonus();
 }
 function cardClass(p) { return p >= 70 ? 'card-hot' : p >= 65 ? 'card-mid' : ''; }
 function renderMatches(data) {
   const content = document.getElementById('content');
-  if (!Array.isArray(data) || !data.length) {
-    content.innerHTML = '<div class="empty">Нет матчей</div>';
-    return;
-  }
+  if (!Array.isArray(data) || !data.length) { content.innerHTML = '<div class="empty">Нет матчей</div>'; return; }
   const sorted = data.slice().sort((a, b) => {
     const pa = parseInt(a.probability) || 0;
     const pb = parseInt(b.probability) || 0;
     if (pb !== pa) return pb - pa;
-    const oa = parseFloat(a.odd) || 0;
-    const ob = parseFloat(b.odd) || 0;
-    return oa - ob;
+    return (parseFloat(a.odd) || 0) - (parseFloat(b.odd) || 0);
   });
   let html = '';
   sorted.forEach((m, idx) => {
@@ -1149,19 +1000,16 @@ function renderMatches(data) {
       let mainLabel = 'X';
       if (best === p1) mainLabel = 'П1';
       else if (best === p2) mainLabel = 'П2';
-      const chance1X = p1 + px;
-      const chance2X = p2 + px;
-      const chance12 = p1 + p2;
-      let doubleLabel = '1X';
-      let bestDouble = chance1X;
+      const chance1X = p1 + px, chance2X = p2 + px, chance12 = p1 + p2;
+      let doubleLabel = '1X', bestDouble = chance1X;
       if (chance2X > bestDouble) { doubleLabel = '2X'; bestDouble = chance2X; }
       if (chance12 > bestDouble) { doubleLabel = '12'; bestDouble = chance12; }
       outcomeHtml = '<div class="outcome-line"><span class="label">🏆 Прогноз</span><span class="fav">' + mainLabel + ' · ' + best + '%</span></div><div class="outcome-line double" style="margin-bottom:0;"><span class="label">🎯 Двойной шанс</span><span class="fav">' + doubleLabel + ' · ' + bestDouble + '%</span></div>';
     }
-    html += '<div class="card ' + cardClass(prob) + ' ' + (live ? 'card-live' : '') + '" style="animation-delay:' + (idx * 0.06) + 's;">';
+    html += '<div class="card ' + cardClass(prob) + ' ' + (live ? 'card-live' : '') + '" style="animation-delay:' + (idx * 0.05) + 's;">';
     html += '<div class="card-header"><span class="card-num-badge">' + (idx + 1) + '</span><div class="card-teams-block"><div class="card-team">' + m.home + '</div><div class="card-team">' + m.away + '</div></div></div>';
     html += '<div class="card-meta"><div class="meta-item league">🏆 ' + m.league + '</div><div class="meta-item">📅 ' + (m.date || '') + (m.time ? ' · ' + m.time : '') + '</div>' + (live ? '<div class="meta-item"><span class="live-badge">LIVE</span></div>' : '') + '</div>';
-    html += '<div class="card-stats"><div class="stat-box blue"><div class="label">Тотал</div><div class="value">' + m.total + '</div></div><div class="stat-box green"><div class="label">Вероят.</div><div class="value">' + prob + '%</div></div><div class="stat-box gold"><div class="label">Кэф</div><div class="value">' + m.odd + '</div></div></div>';
+    html += '<div class="card-stats"><div class="stat-box blue"><div class="label">Тотал</div><div class="value">' + m.total + '</div></div><div class="stat-box green"><div class="label">Вероят.</div><div class="value" style="color:' + probColor(prob) + ';text-shadow:0 0 18px ' + probGlow(prob) + '">' + prob + '%</div></div><div class="stat-box gold"><div class="label">Кэф</div><div class="value">' + m.odd + '</div></div></div>';
     html += outcomeHtml + '</div>';
   });
   content.innerHTML = html;
@@ -1176,72 +1024,98 @@ function renderYesterday(data) {
     accuracy = total > 0 ? Math.round(wins / total * 100) : 0;
   } else if (data && data.matches) {
     matches = data.matches || [];
-    wins = data.wins || 0;
-    loses = data.loses || 0;
-    accuracy = data.accuracy || 0;
-    total = data.total || 0;
-    dateStr = data.date || '';
-    isYesterday = data.isYesterday !== false;
+    wins = data.wins || 0; loses = data.loses || 0;
+    accuracy = data.accuracy || 0; total = data.total || 0;
+    dateStr = data.date || ''; isYesterday = data.isYesterday !== false;
   }
   if (!matches.length) { content.innerHTML = '<div class="empty">Вчера матчей не было</div>'; return; }
   const titleText = isYesterday ? '✅ ВЧЕРА' : '📅 ПОСЛЕДНИЕ МАТЧИ';
-  const subtitleText = isYesterday ? (dateStr + ' · ' + total + ' матчей') : ('Последние ' + total + ' матчей из архива');
+  const subtitleText = isYesterday ? (dateStr + ' · ' + total + ' матчей') : ('Последние ' + total + ' матчей');
   let html = '<div class="section-title">' + titleText + '</div><div class="section-sub">' + subtitleText + '</div>';
   html += '<div class="yesterday-summary"><div class="yesterday-stat win"><div class="ys-num">' + wins + '</div><div class="ys-label">✅ Зашло</div></div><div class="yesterday-stat lose"><div class="ys-num">' + loses + '</div><div class="ys-label">❌ Не зашло</div></div><div class="yesterday-stat acc"><div class="ys-num">' + accuracy + '%</div><div class="ys-label">🎯 Точность</div></div></div>';
   matches.forEach((m, idx) => {
     const emoji = m.status === 'win' ? '✅' : m.status === 'lose' ? '❌' : '⏳';
     const winnerHtml = m.winner ? '<div class="winner-badge">🏆 ' + m.winner + '</div>' : '';
-    html += '<div class="card" style="animation-delay:' + (idx * 0.06) + 's;">';
-    html += '<div class="card-header"><div class="card-teams-block" style="padding-left:4px;"><div class="card-team">' + m.home + '</div><div class="card-team">' + m.away + '</div></div><span style="font-size:20px;font-weight:900;font-family:\'JetBrains Mono\',monospace;color:var(--text);">' + (m.score || '—') + '</span></div>';
-    html += '<div class="card-meta"><div class="meta-item league">🏆 ' + m.league + '</div><div class="meta-item">⚽ ' + m.total + ' голов</div>' + (m.date ? '<div class="meta-item">📅 ' + m.date + (m.time ? ' · ' + m.time : '') + '</div>' : '') + '</div>';
-    html += '<div class="outcome-line" style="margin-bottom:0;"><span class="label">' + emoji + ' Прогноз</span><span class="fav">' + m.prediction + '</span></div>' + winnerHtml + '</div>';
+    html += '<div class="card" style="animation-delay:' + (idx * 0.05) + 's;"><div class="card-header"><div class="card-teams-block" style="padding-left:4px;"><div class="card-team">' + m.home + '</div><div class="card-team">' + m.away + '</div></div><span style="font-size:19px;font-weight:900;font-family:\'JetBrains Mono\',monospace;color:var(--text);">' + (m.score || '—') + '</span></div><div class="card-meta"><div class="meta-item league">🏆 ' + m.league + '</div><div class="meta-item">⚽ ' + m.total + ' голов</div>' + (m.date ? '<div class="meta-item">📅 ' + m.date + (m.time ? ' · ' + m.time : '') + '</div>' : '') + '</div><div class="outcome-line" style="margin-bottom:0;"><span class="label">' + emoji + ' Прогноз</span><span class="fav">' + m.prediction + '</span></div>' + winnerHtml + '</div>';
   });
   content.innerHTML = html;
 }
 function renderExpress(data) {
   const content = document.getElementById('content');
-  if (!data || !data.matches || !data.matches.length) {
-    content.innerHTML = '<div class="empty">Экспресс ещё не собран</div>';
-    return;
-  }
-  const sortedMatches = data.matches.slice().sort((a, b) => {
-    const pa = parseInt(a.probability) || 0;
-    const pb = parseInt(b.probability) || 0;
-    return pb - pa;
+  if (!data || !data.matches || !data.matches.length) { content.innerHTML = '<div class="empty">Экспресс ещё не собран</div>'; return; }
+  const todayISO = new Date().toISOString().slice(0, 10);
+  let todayMatches = data.matches.filter(m => {
+    if (!m.date) return true;
+    return m.date.indexOf(todayISO) === 0;
   });
-  let html = '<div class="express-hero"><div class="express-hero-title">🔥 ТОП-ЭКСПРЕСС</div><div class="express-hero-sub">🎯 Все события на ТБ 2.5</div><div class="express-hero-odd">' + data.totalOdd + '</div><div class="express-hero-label">итоговый коэффициент</div></div>';
-  html += '<div class="express-items-title">📊 СОБЫТИЯ (' + data.count + ')</div>';
+  if (todayMatches.length === 0) todayMatches = data.matches;
+  const sortedMatches = todayMatches.slice().sort((a, b) => (parseInt(b.probability) || 0) - (parseInt(a.probability) || 0));
+  let totalOdd = 1;
+  sortedMatches.forEach(m => { totalOdd *= (parseFloat(m.odd) || 1); });
+  totalOdd = totalOdd.toFixed(2);
+  let html = '<div class="express-hero"><div class="express-hero-title">🔥 ТОП-ЭКСПРЕСС</div><div class="express-hero-sub">🎯 События на сегодня · ТБ 2.5</div><div class="express-hero-odd">' + totalOdd + '</div><div class="express-hero-label">итоговый коэффициент</div></div>';
+  html += '<div class="express-items-title">📊 СОБЫТИЯ (' + sortedMatches.length + ')</div>';
   sortedMatches.forEach((m, i) => {
     const prob = parseInt(m.probability) || 0;
     const oddNum = parseFloat(m.odd) || 1;
-    html += '<div class="express-card" style="animation-delay:' + (i * 0.08) + 's;">';
+    html += '<div class="express-card" style="animation-delay:' + (i * 0.07) + 's;">';
     html += '<div class="express-card-head"><span class="express-num">' + (i + 1) + '</span><span class="express-match">' + m.home + ' — ' + m.away + '</span></div>';
-    html += '<div class="express-league">🏆 ' + m.league + '</div>';
-    html += '<div class="express-card-body"><div class="express-stat"><div class="express-stat-label">Тотал</div><div class="express-stat-value">' + m.total + '</div></div><div class="express-stat"><div class="express-stat-label">Вероят.</div><div class="express-stat-value" style="color:' + (prob >= 65 ? 'var(--success)' : 'var(--gold)') + '">' + prob + '%</div></div><div class="express-stat"><div class="express-stat-label">Кэф</div><div class="express-odd">' + oddNum.toFixed(2) + '</div></div></div></div>';
+    html += '<div class="express-league">🏆 ' + m.league + (m.date ? ' · 📅 ' + m.date + (m.time ? ' ' + m.time : '') : '') + '</div>';
+    html += '<div class="express-card-body"><div class="express-stat"><div class="express-stat-label">Тотал</div><div class="express-stat-value">' + m.total + '</div></div><div class="express-stat"><div class="express-stat-label">Вероят.</div><div class="express-stat-value" style="color:' + probColor(prob) + '">' + prob + '%</div></div><div class="express-stat"><div class="express-stat-label">Кэф</div><div class="express-odd">' + oddNum.toFixed(2) + '</div></div></div></div>';
   });
-  html += '<div class="express-footer"><div class="express-footer-row"><span>🎯 Стратегия</span><span>Тотал Больше 2.5</span></div><div class="express-footer-row"><span>📊 Событий</span><span>' + data.count + '</span></div><div class="express-footer-row"><span>💰 Общий кэф</span><span class="express-footer-odd">' + data.totalOdd + '</span></div></div>';
+  html += '<div class="express-footer"><div class="express-footer-row"><span>🎯 Стратегия</span><span>Тотал Больше 2.5</span></div><div class="express-footer-row"><span>📊 Событий</span><span>' + sortedMatches.length + '</span></div><div class="express-footer-row"><span>💰 Общий кэф</span><span class="express-footer-odd">' + totalOdd + '</span></div></div>';
   content.innerHTML = html;
 }
 function renderStats(data) {
   if (!data) { document.getElementById('content').innerHTML = '<div class="empty">Статистики пока нет</div>'; return; }
   let html = '<div class="stats-wrap"><div class="stats-big">' + data.accuracy + '%</div><div class="stats-label">Точность прогнозов</div>';
   html += '<div class="stats-grid"><div class="stats-box win clickable" onclick="openHistory(\'wins\')"><span class="num">' + data.wins + '</span><span class="name">✅ Зашло →</span></div><div class="stats-box lose clickable" onclick="openHistory(\'loses\')"><span class="num">' + data.loses + '</span><span class="name">❌ Не зашло →</span></div></div>';
-  html += '<div class="stats-box clickable" onclick="openHistory(\'all\')" style="margin-top:14px;"><span class="num">' + data.total + '</span><span class="name">📈 Всего матчей →</span></div>';
+  html += '<div class="stats-box clickable" onclick="openHistory(\'all\')" style="margin-top:12px;"><span class="num">' + data.total + '</span><span class="name">📈 Всего матчей →</span></div>';
   if (data.leagues && data.leagues.length) {
-    html += '<div class="leagues-title">📊 ПО ЛИГАМ</div>';
+    html += '<div class="leagues-title">📊 ПО ЛИГАМ · НАЖМИ ДЛЯ ДЕТАЛЕЙ</div>';
     data.leagues.forEach((lg, i) => {
-      html += '<div class="league-item" style="animation-delay:' + (i * 0.05) + 's;"><div class="league-name">🏆 ' + lg.name + '</div><div class="league-stats"><span class="league-win">✅ ' + lg.wins + '</span><span class="league-lose">❌ ' + lg.loses + '</span><span class="league-acc">' + lg.accuracy + '%</span></div></div>';
+      const safeName = String(lg.name).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+      html += '<div class="league-item" style="animation-delay:' + (i * 0.04) + 's;" onclick="openLeague(\'' + safeName + '\')"><div class="league-name">🏆 ' + lg.name + '</div><div class="league-stats"><span class="league-win">✅ ' + lg.wins + '</span><span class="league-lose">❌ ' + lg.loses + '</span><span class="league-acc">' + lg.accuracy + '%</span></div><span class="league-arrow">›</span></div>';
     });
   }
   html += '<div class="disclaimer"><div class="disclaimer-title">Важно</div><div class="disclaimer-text">Все прогнозы — это <strong>сбор информации и аналитика</strong>. Они <strong>не являются гарантией победы</strong>. Играйте ответственно.</div></div></div>';
   document.getElementById('content').innerHTML = html;
+}
+async function openLeague(leagueName) {
+  haptic('medium');
+  const content = document.getElementById('content');
+  content.innerHTML = showSkeleton();
+  try {
+    const resp = await fetch(API_URL + '?action=league&name=' + encodeURIComponent(leagueName));
+    const raw = await resp.json();
+    const data = Array.isArray(raw) ? raw : (raw.data || []);
+    let html = '<button style="margin-bottom:14px;padding:9px 18px;border-radius:22px;font-size:12px;font-weight:800;background:var(--glass);color:var(--text-dim);border:1px solid var(--border-mid);cursor:pointer;font-family:inherit;backdrop-filter:blur(12px);" onclick="switchTabDirect(\'stats\')">← Назад к статистике</button>';
+    html += '<div class="section-title">🏆 ' + leagueName + '</div>';
+    html += '<div class="section-sub">Матчей в лиге: ' + data.length + '</div>';
+    if (!data.length) {
+      html += '<div class="empty">По этой лиге пока нет матчей</div>';
+    } else {
+      data.forEach((m, idx) => {
+        const emoji = m.status === 'win' ? '✅' : m.status === 'lose' ? '❌' : '⏳';
+        const winnerHtml = m.winner ? '<div class="winner-badge">🏆 ' + m.winner + '</div>' : '';
+        html += '<div class="card" style="animation-delay:' + (idx * 0.04) + 's;"><div class="card-header"><div class="card-teams-block" style="padding-left:4px;"><div class="card-team">' + m.home + '</div><div class="card-team">' + m.away + '</div></div><span style="font-size:19px;font-weight:900;font-family:\'JetBrains Mono\',monospace;">' + (m.score || '—') + '</span></div><div class="card-meta"><div class="meta-item">⚽ ' + m.total + ' голов</div>' + (m.date ? '<div class="meta-item">📅 ' + m.date + (m.time ? ' · ' + m.time : '') + '</div>' : '') + '</div><div class="outcome-line" style="margin-bottom:0;"><span class="label">' + emoji + ' ' + m.prediction + '</span><span class="fav">' + emoji + '</span></div>' + winnerHtml + '</div>';
+      });
+    }
+    content.innerHTML = html;
+  } catch (e) {
+    content.innerHTML = '<div class="error">❌ ' + e.message + '</div>';
+  }
 }
 function renderBonus() {
   document.getElementById('content').innerHTML = '<div class="section-title">🎁 БОНУС</div><div class="section-sub">Приветственный бонус от партнёра</div><div class="bonus-card"><div class="bonus-title">БОНУС ДЛЯ ТЕБЯ</div><div class="bonus-text">Зарегистрируйся и получи приветственный бонус.<br>🔥 Лучшие коэффициенты на ТБ 2.5<br>⚡ Быстрые выплаты</div><a class="bonus-btn" href="' + AD_URL + '" target="_blank">🎁 ЗАБРАТЬ БОНУС</a></div><div class="disclaimer"><div class="disclaimer-title">Важно</div><div class="disclaimer-text">Все прогнозы — это <strong>аналитика и сбор информации</strong>. Они <strong>не гарантируют победу</strong>. Играйте ответственно.</div></div>';
 }
 function renderFaq() {
   const content = document.getElementById('content');
-  content.innerHTML = '<div class="faq-header"><div class="faq-header-icon">⚽</div><div class="faq-header-title">FAQ</div><div class="faq-header-sub">Как работает бот</div></div><div class="faq-section"><div class="faq-section-title">🎯 Логика прогнозов</div><div class="faq-item"><div class="faq-q"><div class="faq-q-icon">?</div>По какому принципу выбираются матчи?</div><div class="faq-a">Бот автоматически ищет матчи и применяет математическую модель:<ul><li>Анализирует <strong>силу атаки и обороны</strong> команд</li><li>Рассчитывает ожидаемое <strong>количество голов</strong> (xG)</li><li>Применяет <strong>распределение Пуассона</strong> для расчёта вероятности ТБ 2.5</li><li>Отсеивает матчи с вероятностью ниже <span class="faq-stat">60%</span></li></ul><div class="faq-highlight">📈 В итоге вы видите <strong>самые вероятные исходы</strong> на «Тотал Больше 2.5 голов».</div></div></div></div><div class="faq-section"><div class="faq-section-title">⚙️ Обновление данных</div><div class="faq-item"><div class="faq-q"><div class="faq-q-icon">?</div>Как часто обновляются прогнозы?</div><div class="faq-a">Данные обновляются <strong>автоматически</strong>:<ul><li>🔍 <strong>Поиск новых матчей</strong> — каждые 5 часов</li><li>📈 <strong>Обновление коэффициентов</strong> — каждые 15 минут</li><li>⚽ <strong>Счёт и результаты</strong> — каждые 30 минут</li><li>📨 <strong>Уведомления</strong> — каждую минуту</li></ul></div></div></div><div class="faq-section"><div class="faq-section-title">🎁 Уведомления</div><div class="faq-item"><div class="faq-q"><div class="faq-q-icon">?</div>Какие уведомления я получу?</div><div class="faq-a"><ul><li>⏰ <strong>За 15 минут</strong> до матча — напоминание</li><li>🎉 <strong>После завершения</strong> — зашёл прогноз или нет</li><li>📊 <strong>В 9:00</strong> — утренний дайджест</li><li>🎁 <strong>В 19:00</strong> — бонус от партнёра</li></ul></div></div></div><div class="faq-section"><div class="faq-section-title">🎨 Тема</div><div class="faq-item"><div class="faq-q"><div class="faq-q-icon">?</div>Как сменить тему?</div><div class="faq-a">Нажмите <strong>☀️/🌙</strong> в правом верхнем углу шапки — приложение переключится между светлой и тёмной темой.</div></div></div><div class="disclaimer"><div class="disclaimer-title">Дисклеймер</div><div class="disclaimer-text">Все публикуемые прогнозы — это <strong>исключительно аналитика и сбор информации</strong>. Они <strong>не являются гарантией победы</strong>. Материалы носят информационный характер и показывают только вероятность события. Играйте ответственно.</div></div>';
+  content.innerHTML = '<div class="faq-header"><div class="faq-header-icon">⚽</div><div class="faq-header-title">FAQ</div><div class="faq-header-sub">Как работает проект</div></div>' +
+  '<div class="faq-section"><div class="faq-section-title">🎯 Логика прогнозов</div><div class="faq-item"><div class="faq-q"><div class="faq-q-icon">?</div>По какому принципу выбираются матчи?</div><div class="faq-a">Бот автоматически ищет матчи и применяет математическую модель:<ul><li>Анализирует <strong>силу атаки и обороны</strong></li><li>Рассчитывает ожидаемое <strong>количество голов</strong> (xG)</li><li>Применяет <strong>распределение Пуассона</strong></li><li>Отсеивает матчи с вероятностью ниже <span class="faq-stat">60%</span></li></ul><div class="faq-highlight">📈 В итоге видите <strong>самые вероятные исходы</strong> на «Тотал Больше 2.5».</div></div></div></div>' +
+  '<div class="faq-section"><div class="faq-section-title">⚙️ Обновление данных</div><div class="faq-item"><div class="faq-q"><div class="faq-q-icon">?</div>Как часто обновляются прогнозы?</div><div class="faq-a">Данные обновляются <strong>автоматически</strong>:<ul><li>🔍 <strong>Поиск матчей</strong> — каждые 5 часов</li><li>📈 <strong>Кэфы</strong> — каждые 15 минут</li><li>⚽ <strong>Счёт и результаты</strong> — каждые 30 минут</li></ul></div></div></div>' +
+  '<div class="faq-section"><div class="faq-section-title">🎁 Уведомления</div><div class="faq-item"><div class="faq-q"><div class="faq-q-icon">?</div>Какие уведомления я получу?</div><div class="faq-a"><ul><li>⏰ <strong>За 15 минут</strong> до матча</li><li>🎉 <strong>После завершения</strong> — результат</li><li>📊 <strong>В 9:00</strong> — утренний дайджест</li></ul></div></div></div>' +
+  '<div class="disclaimer"><div class="disclaimer-title">Это не букмекер</div><div class="disclaimer-text">Проект — это <strong>аналитика и сбор информации</strong>. Мы <strong>не принимаем ставки</strong> и <strong>не храним деньги</strong>. Все прогнозы — <strong>информационные</strong> и <strong>не гарантируют выигрыш</strong>. Играйте ответственно.</div></div>';
 }
 async function openHistory(filter) {
   haptic('medium');
@@ -1252,7 +1126,7 @@ async function openHistory(filter) {
     const resp = await fetch(API_URL + '?action=history&filter=' + filter);
     const raw = await resp.json();
     const data = Array.isArray(raw) ? raw : (raw.data || []);
-    let html = '<button style="margin-bottom:16px;padding:10px 20px;border-radius:24px;font-size:12px;font-weight:800;background:var(--glass);color:var(--text-dim);border:1px solid var(--border-mid);cursor:pointer;font-family:inherit;backdrop-filter:blur(12px);" onclick="loadData()">← Назад</button>';
+    let html = '<button style="margin-bottom:14px;padding:9px 18px;border-radius:22px;font-size:12px;font-weight:800;background:var(--glass);color:var(--text-dim);border:1px solid var(--border-mid);cursor:pointer;font-family:inherit;backdrop-filter:blur(12px);" onclick="switchTabDirect(\'stats\')">← Назад</button>';
     html += '<div class="section-title">' + titles[filter] + '</div>';
     html += '<div class="section-sub">Найдено: ' + data.length + '</div>';
     if (!data.length) {
@@ -1261,7 +1135,7 @@ async function openHistory(filter) {
       data.forEach((m, idx) => {
         const emoji = m.status === 'win' ? '✅' : m.status === 'lose' ? '❌' : '⏳';
         const winnerHtml = m.winner ? '<div class="winner-badge">🏆 ' + m.winner + '</div>' : '';
-        html += '<div class="card" style="animation-delay:' + (idx * 0.05) + 's;"><div class="card-header"><div class="card-teams-block" style="padding-left:4px;"><div class="card-team">' + m.home + '</div><div class="card-team">' + m.away + '</div></div><span style="font-size:20px;font-weight:900;font-family:\'JetBrains Mono\',monospace;">' + (m.score || '—') + '</span></div><div class="card-meta"><div class="meta-item league">🏆 ' + m.league + '</div>' + (m.date ? '<div class="meta-item">📅 ' + m.date + (m.time ? ' · ' + m.time : '') + '</div>' : '') + '<div class="meta-item">⚽ ' + m.total + '</div></div><div class="outcome-line" style="margin-bottom:0;"><span class="label">' + emoji + ' ' + m.prediction + '</span><span class="fav">' + emoji + '</span></div>' + winnerHtml + '</div>';
+        html += '<div class="card" style="animation-delay:' + (idx * 0.04) + 's;"><div class="card-header"><div class="card-teams-block" style="padding-left:4px;"><div class="card-team">' + m.home + '</div><div class="card-team">' + m.away + '</div></div><span style="font-size:19px;font-weight:900;font-family:\'JetBrains Mono\',monospace;">' + (m.score || '—') + '</span></div><div class="card-meta"><div class="meta-item league">🏆 ' + m.league + '</div>' + (m.date ? '<div class="meta-item">📅 ' + m.date + (m.time ? ' · ' + m.time : '') + '</div>' : '') + '<div class="meta-item">⚽ ' + m.total + '</div></div><div class="outcome-line" style="margin-bottom:0;"><span class="label">' + emoji + ' ' + m.prediction + '</span><span class="fav">' + emoji + '</span></div>' + winnerHtml + '</div>';
       });
     }
     content.innerHTML = html;
@@ -1269,6 +1143,7 @@ async function openHistory(filter) {
     content.innerHTML = '<div class="error">❌ ' + e.message + '</div>';
   }
 }
+checkDailyWelcome();
 loadData();
 </script>
 </body>
