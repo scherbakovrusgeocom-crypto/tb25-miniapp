@@ -24,12 +24,7 @@
   --purple: #8b5cf6;
   --purple-bright: #a78bfa;
 }
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  -webkit-tap-highlight-color: transparent;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: var(--bg);
@@ -142,7 +137,7 @@ body::before {
   background: rgba(34, 197, 94, 0.25);
 }
 
-/* ===== БОНУС-ЧИП (Стекло + Мерцание) ===== */
+/* Бонус-чип — стекло с мерцанием */
 .header-chip.bonus-chip {
   position: relative;
   overflow: hidden;
@@ -180,15 +175,8 @@ body::before {
   85% { left: 100%; }
   100% { left: 100%; }
 }
-.header-chip.bonus-chip svg {
-  position: relative;
-  z-index: 1;
-  color: #ffffff;
-}
-.header-chip.bonus-chip span {
-  position: relative;
-  z-index: 1;
-}
+.header-chip.bonus-chip svg { position: relative; z-index: 1; color: #ffffff; }
+.header-chip.bonus-chip span { position: relative; z-index: 1; }
 
 /* ===== ТАБЫ ===== */
 .tabs-wrap {
@@ -227,7 +215,6 @@ body::before {
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
-  -webkit-tap-highlight-color: transparent;
 }
 .tab svg { width: 18px; height: 18px; stroke-width: 2.2; }
 .tab.active {
@@ -346,10 +333,7 @@ body::before {
   border-color: rgba(139, 92, 246, 0.2);
 }
 .outcome-line .label { color: var(--text-dim); font-weight: 700; }
-.outcome-line .fav {
-  color: var(--green-bright);
-  font-weight: 900;
-}
+.outcome-line .fav { color: var(--green-bright); font-weight: 900; }
 .outcome-line.double .fav { color: var(--purple-bright); }
 
 .live-badge {
@@ -362,6 +346,45 @@ body::before {
   border-radius: 5px;
   letter-spacing: 0.5px;
 }
+
+/* ===== СВОДКА ВЧЕРА ===== */
+.yesterday-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.yesterday-stat {
+  background: linear-gradient(135deg, var(--card) 0%, var(--card2) 100%);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 8px;
+  text-align: center;
+}
+.yesterday-stat .ys-num {
+  font-size: 24px;
+  font-weight: 900;
+  display: block;
+  margin-bottom: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.yesterday-stat .ys-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+.yesterday-stat.win {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(74, 222, 128, 0.08));
+  border-color: rgba(34, 197, 94, 0.4);
+}
+.yesterday-stat.win .ys-num { color: var(--green-bright); }
+.yesterday-stat.lose {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(244, 63, 94, 0.08));
+  border-color: rgba(239, 68, 68, 0.4);
+}
+.yesterday-stat.lose .ys-num { color: #f87171; }
+.yesterday-stat.acc .ys-num { color: var(--gold-bright); }
 
 /* ===== ЭКСПРЕСС ===== */
 .express-hero {
@@ -753,11 +776,11 @@ document.getElementById('tabs').addEventListener('click', e => {
 });
 
 function getCache(tab) {
-  try { const r = localStorage.getItem(`tb25_v18_${tab}`); return r ? JSON.parse(r) : null; } catch(e){ return null; }
+  try { const r = localStorage.getItem(`tb25_v19_${tab}`); return r ? JSON.parse(r) : null; } catch(e){ return null; }
 }
 function setCache(tab, version, data) {
   try {
-    localStorage.setItem(`tb25_v18_${tab}`, JSON.stringify({ version, data, ts: Date.now() }));
+    localStorage.setItem(`tb25_v19_${tab}`, JSON.stringify({ version, data, ts: Date.now() }));
     localStorage.setItem('tb25_last_update', new Date().toISOString());
   } catch(e){}
 }
@@ -897,24 +920,64 @@ function renderMatches(data) {
 
 function renderYesterday(data) {
   const content = document.getElementById('content');
-  const arr = Array.isArray(data) ? data.slice() : [];
-  if (!arr.length) {
+
+  let matches = [];
+  let wins = 0, loses = 0, accuracy = 0, total = 0;
+  let dateStr = '';
+  let isYesterday = true;
+
+  if (Array.isArray(data)) {
+    matches = data;
+    matches.forEach(m => { if (m.status === 'win') wins++; else if (m.status === 'lose') loses++; });
+    total = wins + loses;
+    accuracy = total > 0 ? Math.round(wins / total * 100) : 0;
+  } else if (data && data.matches) {
+    matches = data.matches || [];
+    wins = data.wins || 0;
+    loses = data.loses || 0;
+    accuracy = data.accuracy || 0;
+    total = data.total || 0;
+    dateStr = data.date || '';
+    isYesterday = data.isYesterday !== false;
+  }
+
+  if (!matches.length) {
     content.innerHTML = '<div class="empty">Вчера матчей не было</div>';
     return;
   }
-  let wins = 0, loses = 0;
-  arr.forEach(m => { if (m.status === 'win') wins++; else if (m.status === 'lose') loses++; });
-  const total = wins + loses;
-  const acc = total > 0 ? Math.round(wins / total * 100) : 0;
 
-  let html = `<div class="section-title">✅ ВЧЕРА</div>
-    <div class="section-sub">${wins} зашло · ${loses} не зашло · ${acc}%</div>`;
+  const titleText = isYesterday ? '✅ ВЧЕРА' : '📅 ПОСЛЕДНИЕ МАТЧИ';
+  const subtitleText = isYesterday
+    ? `${dateStr} · ${total} матчей`
+    : `Последние ${total} матчей из архива`;
 
-  arr.forEach(m => {
+  let html = `
+    <div class="section-title">${titleText}</div>
+    <div class="section-sub">${subtitleText}</div>
+
+    <div class="yesterday-summary">
+      <div class="yesterday-stat win">
+        <div class="ys-num">${wins}</div>
+        <div class="ys-label">✅ Зашло</div>
+      </div>
+      <div class="yesterday-stat lose">
+        <div class="ys-num">${loses}</div>
+        <div class="ys-label">❌ Не зашло</div>
+      </div>
+      <div class="yesterday-stat acc">
+        <div class="ys-num">${accuracy}%</div>
+        <div class="ys-label">🎯 Точность</div>
+      </div>
+    </div>
+  `;
+
+  matches.forEach(m => {
     const emoji = m.status === 'win' ? '✅' : m.status === 'lose' ? '❌' : '⏳';
+    const cls = m.status === 'win' ? 'card-win' : m.status === 'lose' ? 'card-lose' : '';
     const winnerHtml = m.winner ? `<div class="winner-badge">🏆 ${m.winner}</div>` : '';
+
     html += `
-      <div class="card">
+      <div class="card ${cls}">
         <div class="card-teams">
           <div class="team">${m.home}</div>
           <div class="vs">${m.score || '—'}</div>
@@ -923,6 +986,7 @@ function renderYesterday(data) {
         <div class="card-meta">
           <div class="meta-item">🏆 ${m.league}</div>
           <div class="meta-item">⚽ ${m.total} голов</div>
+          ${m.date ? `<div class="meta-item">📅 ${m.date} ${m.time || ''}</div>` : ''}
         </div>
         <div class="outcome-line" style="margin-bottom:0;">
           <span class="label">${emoji} Прогноз</span>
@@ -932,6 +996,7 @@ function renderYesterday(data) {
       </div>
     `;
   });
+
   content.innerHTML = html;
 }
 
