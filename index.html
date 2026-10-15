@@ -77,37 +77,74 @@ body {
   transition: background 0.4s ease, color 0.4s ease;
 }
 
-/* ФОН — футбольное поле ночью */
+/* ===== СЛОЙ 1: БАЗА + ОСВЕЩЕНИЕ СТАДИОНА ===== */
 body::before {
   content: '';
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background:
-    radial-gradient(ellipse at 50% 0%, rgba(16, 185, 129, 0.15), transparent 55%),
-    radial-gradient(ellipse at 15% 80%, rgba(52, 211, 153, 0.08), transparent 50%),
+    radial-gradient(ellipse at 50% 0%, rgba(16, 185, 129, 0.16), transparent 55%),
+    radial-gradient(ellipse at 15% 80%, rgba(52, 211, 153, 0.1), transparent 50%),
     radial-gradient(ellipse at 85% 60%, rgba(251, 191, 36, 0.05), transparent 50%),
     linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
   pointer-events: none;
   z-index: 0;
 }
-/* Полосы газона */
+body.light-theme::before { opacity: 0.55; }
+
+/* ===== СЛОЙ 2: ФУТБОЛЬНОЕ ПОЛЕ С РАЗМЕТКОЙ ===== */
 body::after {
   content: '';
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: repeating-linear-gradient(
-    90deg,
-    rgba(16, 185, 129, 0.025) 0px,
-    rgba(16, 185, 129, 0.025) 80px,
-    transparent 80px,
-    transparent 160px
-  );
   pointer-events: none;
   z-index: 0;
-  opacity: 0.7;
+
+  background-image:
+    /* Центральный круг */
+    radial-gradient(circle at 50% 50%, transparent 118px, rgba(16, 185, 129, 0.4) 118px, rgba(16, 185, 129, 0.4) 120px, transparent 120px),
+    /* Центральная точка */
+    radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.6) 4px, transparent 5px),
+    /* Горизонтальная линия центра поля */
+    linear-gradient(90deg, transparent 0%, transparent 4%, rgba(16, 185, 129, 0.3) 4%, rgba(16, 185, 129, 0.3) 96%, transparent 96%),
+    /* Угловые дуги */
+    radial-gradient(circle at 0% 0%, transparent 75px, rgba(16, 185, 129, 0.35) 75px, rgba(16, 185, 129, 0.35) 77px, transparent 77px),
+    radial-gradient(circle at 100% 0%, transparent 75px, rgba(16, 185, 129, 0.35) 75px, rgba(16, 185, 129, 0.35) 77px, transparent 77px),
+    radial-gradient(circle at 0% 100%, transparent 75px, rgba(16, 185, 129, 0.35) 75px, rgba(16, 185, 129, 0.35) 77px, transparent 77px),
+    radial-gradient(circle at 100% 100%, transparent 75px, rgba(16, 185, 129, 0.35) 75px, rgba(16, 185, 129, 0.35) 77px, transparent 77px);
+
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.55;
 }
-body.light-theme::before { opacity: 0.5; }
-body.light-theme::after { opacity: 0.4; }
+body.light-theme::after { opacity: 0.35; }
+
+/* ===== СЛОЙ 3: ПОЛОСЫ ГАЗОНА + ТЕКСТУРА ТРАВЫ ===== */
+html::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    /* Полосы газона (стрижка) */
+    repeating-linear-gradient(
+      90deg,
+      rgba(16, 185, 129, 0.045) 0px,
+      rgba(16, 185, 129, 0.045) 50px,
+      rgba(16, 185, 129, 0.015) 50px,
+      rgba(16, 185, 129, 0.015) 100px
+    ),
+    /* Текстура травы — точки */
+    radial-gradient(circle, rgba(52, 211, 153, 0.09) 1px, transparent 1.5px);
+  background-size: 100% 100%, 14px 14px;
+  opacity: 0.85;
+}
+body.light-theme {
+  /* ничего */
+}
+html:has(body.light-theme)::before { opacity: 0.45; }
 
 /* ===== ШАПКА ===== */
 .header {
@@ -136,7 +173,6 @@ body.light-theme::after { opacity: 0.4; }
 .theme-btn:active { transform: scale(0.9) rotate(20deg); border-color: var(--green); }
 .theme-btn svg { width: 18px; height: 18px; stroke-width: 2; }
 
-/* Мяч с полем */
 .ball-wrap {
   width: 80px; height: 80px;
   margin: 0 auto 14px;
@@ -260,7 +296,7 @@ body.light-theme::after { opacity: 0.4; }
 .tabs-wrap {
   position: sticky;
   top: 0;
-  background: rgba(10, 20, 16, 0.9);
+  background: rgba(10, 20, 16, 0.88);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   padding: 12px 14px;
@@ -268,7 +304,7 @@ body.light-theme::after { opacity: 0.4; }
   border-bottom: 1px solid var(--border);
   transition: background 0.4s ease;
 }
-body.light-theme .tabs-wrap { background: rgba(240, 253, 244, 0.9); }
+body.light-theme .tabs-wrap { background: rgba(240, 253, 244, 0.88); }
 .tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; justify-content: space-between; }
 .tabs::-webkit-scrollbar { display: none; }
 .tab {
@@ -308,12 +344,13 @@ body.light-theme .tabs-wrap { background: rgba(240, 253, 244, 0.9); }
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
   transition: all 0.4s ease;
   overflow: hidden;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 body.light-theme .card {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 }
 
-/* Верхняя полоска — цвет газона */
 .card::before {
   content: '';
   position: absolute;
@@ -346,7 +383,6 @@ body.light-theme .card {
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* ЗАГОЛОВОК КАРТОЧКИ */
 .card-header {
   display: flex;
   align-items: flex-start;
@@ -399,7 +435,6 @@ body.light-theme .card {
   font-weight: 700;
 }
 
-/* Мета-информация */
 .card-meta {
   display: flex;
   align-items: center;
@@ -420,7 +455,6 @@ body.light-theme .card {
   font-weight: 700;
 }
 
-/* СТАТЫ */
 .card-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -477,7 +511,6 @@ body.light-theme .stat-box { background: rgba(16, 185, 129, 0.06); }
   text-shadow: 0 0 16px var(--gold-glow);
 }
 
-/* Прогноз */
 .outcome-line {
   display: flex; align-items: center; justify-content: space-between;
   padding: 11px 16px;
@@ -576,7 +609,6 @@ body.light-theme .stat-box { background: rgba(16, 185, 129, 0.06); }
   50% { transform: translateY(-12px); opacity: 1; }
 }
 
-/* ===== СВОДКА ВЧЕРА ===== */
 .yesterday-summary {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -590,6 +622,8 @@ body.light-theme .stat-box { background: rgba(16, 185, 129, 0.06); }
   padding: 18px 10px;
   text-align: center;
   animation: cardSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 .yesterday-stat .ys-num {
   font-family: 'JetBrains Mono', monospace;
@@ -658,6 +692,8 @@ body.light-theme .stat-box { background: rgba(16, 185, 129, 0.06); }
   margin-bottom: 12px;
   animation: cardSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 .express-card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
 .express-num {
@@ -692,6 +728,8 @@ body.light-theme .express-card-body { background: rgba(16, 185, 129, 0.06); }
   border-radius: 20px;
   padding: 20px 22px;
   margin-top: 18px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 .express-footer-row {
   display: flex; justify-content: space-between;
@@ -737,6 +775,8 @@ body.light-theme .express-card-body { background: rgba(16, 185, 129, 0.06); }
   text-align: center;
   animation: cardSlideIn 0.5s ease;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 .stats-box.clickable:active { transform: scale(0.97); }
 .stats-box .num {
@@ -751,7 +791,6 @@ body.light-theme .express-card-body { background: rgba(16, 185, 129, 0.06); }
 .stats-box.lose { border-color: rgba(248, 113, 113, 0.35); }
 .stats-box.lose .num { color: var(--danger); text-shadow: 0 0 20px var(--danger-glow); }
 
-/* ===== ЛИГИ ===== */
 .leagues-title {
   font-size: 14px;
   font-weight: 900;
@@ -772,6 +811,8 @@ body.light-theme .express-card-body { background: rgba(16, 185, 129, 0.06); }
   align-items: center;
   gap: 12px;
   animation: cardSlideIn 0.5s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 .league-name {
   flex: 1;
@@ -834,6 +875,8 @@ body.light-theme .express-card-body { background: rgba(16, 185, 129, 0.06); }
   padding: 16px 18px;
   margin-bottom: 12px;
   animation: cardSlideIn 0.5s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 .faq-q {
   font-size: 14px; font-weight: 800;
@@ -878,6 +921,8 @@ body.light-theme .express-card-body { background: rgba(16, 185, 129, 0.06); }
   border-radius: 18px;
   padding: 18px 20px;
   margin-top: 18px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 .disclaimer-title {
   font-size: 13px;
@@ -944,7 +989,6 @@ body.light-theme .express-card-body { background: rgba(16, 185, 129, 0.06); }
 }
 .bonus-btn:active { transform: scale(0.96); }
 
-/* ===== EMPTY / ERROR ===== */
 .empty {
   text-align: center; color: var(--text-mute);
   padding: 80px 20px; font-size: 14px; font-weight: 700;
@@ -1125,11 +1169,11 @@ document.getElementById('tabs').addEventListener('click', e => {
 });
 
 function getCache(tab) {
-  try { const r = localStorage.getItem(`tb25_v24_${tab}`); return r ? JSON.parse(r) : null; } catch(e){ return null; }
+  try { const r = localStorage.getItem(`tb25_v25_${tab}`); return r ? JSON.parse(r) : null; } catch(e){ return null; }
 }
 function setCache(tab, version, data) {
   try {
-    localStorage.setItem(`tb25_v24_${tab}`, JSON.stringify({ version, data, ts: Date.now() }));
+    localStorage.setItem(`tb25_v25_${tab}`, JSON.stringify({ version, data, ts: Date.now() }));
     localStorage.setItem('tb25_last_update', new Date().toISOString());
   } catch(e){}
 }
