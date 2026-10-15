@@ -57,41 +57,16 @@ body::before {
 /* ===== ШАПКА ===== */
 .header {
   position: relative;
-  padding: 20px 20px 18px;
+  padding: 22px 20px 18px;
   text-align: center;
   background: linear-gradient(180deg, #0a2412 0%, #05140a 100%);
   border-bottom: 1px solid var(--border);
   z-index: 1;
 }
-.header-top {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  display: flex;
-  gap: 8px;
-  z-index: 3;
-}
-.header-icon {
-  width: 36px; height: 36px;
-  background: rgba(34, 197, 94, 0.12);
-  border: 1px solid var(--border-strong);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.2s;
-  color: var(--green-bright);
-}
-.header-icon:active {
-  transform: scale(0.9);
-  background: rgba(34, 197, 94, 0.25);
-}
 .ball-wrap {
   position: relative;
-  width: 68px;
-  height: 68px;
+  width: 64px;
+  height: 64px;
   margin: 0 auto 10px;
   display: flex;
   align-items: center;
@@ -105,7 +80,7 @@ body::before {
   50% { transform: scale(1.06); }
 }
 .ball-emoji {
-  font-size: 46px;
+  font-size: 44px;
   line-height: 1;
   filter: drop-shadow(0 4px 16px rgba(34, 197, 94, 0.7));
   animation: ballRotate 6s ease-in-out infinite;
@@ -129,6 +104,42 @@ body::before {
   margin-top: 5px;
   text-transform: uppercase;
   font-weight: 700;
+}
+
+/* ===== ЧИПЫ ПОД ШАПКОЙ ===== */
+.header-chips {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+  position: relative;
+  z-index: 2;
+}
+.header-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 20px;
+  color: var(--green-bright);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.header-chip svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.2;
+}
+.header-chip:active {
+  transform: scale(0.95);
+  background: rgba(34, 197, 94, 0.25);
 }
 
 /* ===== ТАБЫ ===== */
@@ -631,15 +642,31 @@ body::before {
 <body>
 
 <div class="header">
-  <div class="header-top">
-    <div class="header-icon" onclick="switchTabDirect('bonus')" title="Бонус">🎁</div>
-    <div class="header-icon" onclick="switchTabDirect('faq')" title="FAQ">❓</div>
-  </div>
   <div class="ball-wrap">
     <div class="ball-emoji">⚽</div>
   </div>
   <h1>ПРОГНОЗЫ</h1>
   <div class="sub">ТОТАЛ БОЛЬШЕ 2.5</div>
+
+  <div class="header-chips">
+    <div class="header-chip" onclick="switchTabDirect('bonus')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="8" width="18" height="13" rx="2"/>
+        <path d="M12 8v13M3 12h18"/>
+        <path d="M7.5 8a2.5 2.5 0 010-5c1.5 0 2.5 1 4.5 5"/>
+        <path d="M16.5 8a2.5 2.5 0 000-5c-1.5 0-2.5 1-4.5 5"/>
+      </svg>
+      Бонус
+    </div>
+    <div class="header-chip" onclick="switchTabDirect('faq')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/>
+        <circle cx="12" cy="17" r="0.5" fill="currentColor"/>
+      </svg>
+      FAQ
+    </div>
+  </div>
 </div>
 
 <div class="tabs-wrap">
@@ -706,11 +733,11 @@ document.getElementById('tabs').addEventListener('click', e => {
 });
 
 function getCache(tab) {
-  try { const r = localStorage.getItem(`tb25_v16_${tab}`); return r ? JSON.parse(r) : null; } catch(e){ return null; }
+  try { const r = localStorage.getItem(`tb25_v17_${tab}`); return r ? JSON.parse(r) : null; } catch(e){ return null; }
 }
 function setCache(tab, version, data) {
   try {
-    localStorage.setItem(`tb25_v16_${tab}`, JSON.stringify({ version, data, ts: Date.now() }));
+    localStorage.setItem(`tb25_v17_${tab}`, JSON.stringify({ version, data, ts: Date.now() }));
     localStorage.setItem('tb25_last_update', new Date().toISOString());
   } catch(e){}
 }
@@ -856,7 +883,10 @@ function renderMatches(data) {
 function renderYesterday(data) {
   const content = document.getElementById('content');
   const arr = Array.isArray(data) ? data.slice() : [];
-  if (!arr.length) { content.innerHTML = '<div class="empty">Вчера матчей не было</div>'; return; }
+  if (!arr.length) {
+    content.innerHTML = '<div class="empty">Вчера матчей не было</div>';
+    return;
+  }
   let wins = 0, loses = 0;
   arr.forEach(m => { if (m.status === 'win') wins++; else if (m.status === 'lose') loses++; });
   const total = wins + loses;
@@ -1062,7 +1092,7 @@ async function openHistory(filter) {
     const resp = await fetch(`${API_URL}?action=history&filter=${filter}`);
     const raw = await resp.json();
     const data = Array.isArray(raw) ? raw : (raw.data || []);
-    let html = `<button class="filter" onclick="loadData()" style="margin-bottom:14px;padding:6px 14px;border-radius:18px;font-size:11px;font-weight:700;background:var(--card);color:var(--text-dim);border:1px solid var(--border);cursor:pointer;">← Назад</button>`;
+    let html = `<button style="margin-bottom:14px;padding:6px 14px;border-radius:18px;font-size:11px;font-weight:700;background:var(--card);color:var(--text-dim);border:1px solid var(--border);cursor:pointer;font-family:inherit;" onclick="loadData()">← Назад</button>`;
     html += `<div class="section-title">${titles[filter]}</div>`;
     html += `<div class="section-sub">Найдено: ${data.length}</div>`;
     if (!data.length) {
