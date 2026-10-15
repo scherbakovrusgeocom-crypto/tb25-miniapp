@@ -20,12 +20,10 @@
   --text-mute: #65a30d;
   --green: #22c55e;
   --green-bright: #4ade80;
-  --green-glow: #86efac;
   --gold: #f59e0b;
   --gold-bright: #fbbf24;
   --red: #ef4444;
   --cyan: #06b6d4;
-  --white: #ffffff;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body {
@@ -91,20 +89,17 @@ body::before {
   50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.15; }
 }
 .header-logo {
-  width: 62px; height: 62px;
+  width: 68px; height: 68px;
   margin: 0 auto 10px;
   display: block;
   position: relative;
   z-index: 2;
-  filter: drop-shadow(0 0 25px rgba(34, 197, 94, 0.7));
-  animation: ballSpin 12s linear infinite;
+  filter: drop-shadow(0 4px 20px rgba(34, 197, 94, 0.6));
+  animation: shieldFloat 4s ease-in-out infinite;
 }
-@keyframes ballSpin {
-  0% { transform: rotate(0deg) translateY(0); }
-  25% { transform: rotate(90deg) translateY(-3px); }
-  50% { transform: rotate(180deg) translateY(0); }
-  75% { transform: rotate(270deg) translateY(-3px); }
-  100% { transform: rotate(360deg) translateY(0); }
+@keyframes shieldFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 .header h1 {
   font-size: 26px;
@@ -193,7 +188,7 @@ body::before {
   background: linear-gradient(135deg, rgba(34, 197, 94, 0.25), rgba(74, 222, 128, 0.15));
   border-color: var(--green);
   color: var(--green-bright);
-  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
 }
 
 /* ===== ФИЛЬТРЫ ===== */
@@ -222,7 +217,7 @@ body::before {
 /* ===== КОНТЕНТ ===== */
 #content { padding: 14px 16px; position: relative; z-index: 1; }
 
-/* ===== КАРТОЧКА МАТЧА ===== */
+/* ===== КАРТОЧКА ===== */
 .card {
   background: linear-gradient(135deg, var(--card) 0%, var(--card2) 100%);
   border: 1px solid var(--border);
@@ -266,23 +261,17 @@ body::before {
 .team {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex: 1;
   min-width: 0;
 }
 .team.right { flex-direction: row-reverse; text-align: right; }
-.team-avatar {
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 15px;
-  font-weight: 900;
-  color: #fff;
+.team-bar {
+  width: 4px;
+  height: 36px;
+  border-radius: 2px;
   flex-shrink: 0;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.5);
-  border: 2px solid rgba(34, 197, 94, 0.4);
+  transition: 0.3s;
 }
 .team-name {
   font-size: 13px;
@@ -372,13 +361,21 @@ body::before {
   border: 1px solid rgba(34, 197, 94, 0.3);
   border-radius: 12px;
   font-size: 12px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+}
+.outcome-line.double {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.12), rgba(139, 92, 246, 0.06));
+  border-color: rgba(139, 92, 246, 0.3);
 }
 .outcome-line .label { color: var(--text-dim); font-weight: 700; letter-spacing: 0.3px; }
 .outcome-line .fav {
   color: var(--green-bright);
   font-weight: 900;
   text-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+}
+.outcome-line.double .fav {
+  color: #a78bfa;
+  text-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
 }
 
 .card-actions {
@@ -458,51 +455,29 @@ body::before {
   50% { transform: translateY(-6px); }
 }
 .express-hero-title {
-  font-size: 20px;
-  font-weight: 900;
-  letter-spacing: 1px;
-  position: relative;
-  z-index: 1;
+  font-size: 20px; font-weight: 900; letter-spacing: 1px;
+  position: relative; z-index: 1;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
 }
 .express-hero-sub {
-  font-size: 11px;
-  opacity: 0.9;
-  margin-top: 6px;
-  letter-spacing: 1px;
-  position: relative;
-  z-index: 1;
+  font-size: 11px; opacity: 0.9; margin-top: 6px; letter-spacing: 1px;
+  position: relative; z-index: 1;
 }
 .express-hero-odd {
-  font-size: 62px;
-  font-weight: 900;
-  margin-top: 16px;
-  position: relative;
-  z-index: 1;
+  font-size: 62px; font-weight: 900; margin-top: 16px;
+  position: relative; z-index: 1;
   background: linear-gradient(180deg, #fef9c3, #fbbf24, #f59e0b);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
-  line-height: 1;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5)); line-height: 1;
 }
 .express-hero-label {
-  font-size: 10px;
-  opacity: 0.85;
-  letter-spacing: 3px;
-  margin-top: 8px;
-  text-transform: uppercase;
-  font-weight: 700;
-  position: relative;
-  z-index: 1;
+  font-size: 10px; opacity: 0.85; letter-spacing: 3px; margin-top: 8px;
+  text-transform: uppercase; font-weight: 700;
+  position: relative; z-index: 1;
 }
 .express-items-title {
-  text-align: center;
-  font-size: 13px;
-  color: var(--text-dim);
-  margin-bottom: 14px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
+  text-align: center; font-size: 13px; color: var(--text-dim);
+  margin-bottom: 14px; font-weight: 800; letter-spacing: 1.5px;
 }
 .express-card {
   background: linear-gradient(135deg, var(--card) 0%, var(--card2) 100%);
@@ -517,83 +492,44 @@ body::before {
 .express-card::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; bottom: 0;
-  width: 3px;
+  top: 0; left: 0; bottom: 0; width: 3px;
   background: linear-gradient(180deg, var(--green), var(--green-bright));
   box-shadow: 0 0 10px var(--green);
 }
-.express-card-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 6px;
-}
+.express-card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
 .express-num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-flex; align-items: center; justify-content: center;
   width: 28px; height: 28px;
   background: linear-gradient(135deg, var(--green), #16a34a);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 900;
-  border-radius: 50%;
-  flex-shrink: 0;
+  color: #fff; font-size: 13px; font-weight: 900;
+  border-radius: 50%; flex-shrink: 0;
   box-shadow: 0 2px 10px rgba(34, 197, 94, 0.6);
 }
-.express-match {
-  font-size: 14px;
-  font-weight: 800;
-  line-height: 1.25;
-}
+.express-match { font-size: 14px; font-weight: 800; line-height: 1.25; }
 .express-league {
-  font-size: 11px;
-  color: var(--text-dim);
-  margin-left: 38px;
-  margin-bottom: 10px;
-  font-weight: 600;
+  font-size: 11px; color: var(--text-dim);
+  margin-left: 38px; margin-bottom: 10px; font-weight: 600;
 }
 .express-card-body {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
-  background: rgba(0, 0, 0, 0.35);
-  border-radius: 10px;
-  padding: 10px 6px;
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 6px; background: rgba(0, 0, 0, 0.35);
+  border-radius: 10px; padding: 10px 6px;
 }
-.express-stat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  text-align: center;
-}
+.express-stat { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
 .express-stat-label {
-  font-size: 9px;
-  color: var(--text-mute);
-  white-space: nowrap;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  font-weight: 800;
+  font-size: 9px; color: var(--text-mute);
+  white-space: nowrap; text-transform: uppercase;
+  letter-spacing: 0.3px; font-weight: 800;
 }
-.express-stat-value {
-  font-size: 14px;
-  font-weight: 900;
-}
+.express-stat-value { font-size: 14px; font-weight: 900; }
 .express-odd {
-  font-size: 16px;
-  font-weight: 900;
-  color: var(--gold-bright);
+  font-size: 16px; font-weight: 900; color: var(--gold-bright);
   font-variant-numeric: tabular-nums;
   text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
 }
 .express-divider {
-  text-align: center;
-  font-size: 18px;
-  color: var(--green);
-  margin: 6px 0;
-  opacity: 0.7;
-  font-weight: 900;
+  text-align: center; font-size: 18px; color: var(--green);
+  margin: 6px 0; opacity: 0.7; font-weight: 900;
   text-shadow: 0 0 10px var(--green);
 }
 .express-footer {
@@ -603,40 +539,30 @@ body::before {
   padding: 18px 20px;
   margin-top: 20px;
   box-shadow: 0 8px 35px rgba(34, 197, 94, 0.2);
-  position: relative;
-  overflow: hidden;
+  position: relative; overflow: hidden;
 }
 .express-footer::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
+  top: 0; left: 0; right: 0; height: 3px;
   background: linear-gradient(90deg, var(--green), var(--gold-bright), var(--green));
   background-size: 200% 100%;
   animation: shimmerBar 3s linear infinite;
 }
 .express-footer-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 13px;
-  padding: 8px 0;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 13px; padding: 8px 0;
   border-bottom: 1px solid var(--border);
-  color: var(--text-dim);
-  font-weight: 600;
+  color: var(--text-dim); font-weight: 600;
 }
 .express-footer-row:last-child {
   border-bottom: none;
-  margin-top: 6px;
-  padding-top: 14px;
+  margin-top: 6px; padding-top: 14px;
   border-top: 1px solid rgba(34, 197, 94, 0.4);
-  color: var(--text);
-  font-size: 14px;
+  color: var(--text); font-size: 14px;
 }
 .express-footer-odd {
-  font-size: 30px;
-  font-weight: 900;
-  color: var(--gold-bright);
+  font-size: 30px; font-weight: 900; color: var(--gold-bright);
   font-variant-numeric: tabular-nums;
   text-shadow: 0 0 25px rgba(251, 191, 36, 0.6);
 }
@@ -644,32 +570,20 @@ body::before {
 /* ===== СТАТИСТИКА ===== */
 .stats-wrap { padding: 10px 0; }
 .stats-big {
-  text-align: center;
-  font-size: 78px;
-  font-weight: 900;
+  text-align: center; font-size: 78px; font-weight: 900;
   background: linear-gradient(135deg, var(--green-bright), var(--green), #16a34a);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   line-height: 1;
   filter: drop-shadow(0 8px 30px rgba(34, 197, 94, 0.5));
   margin-bottom: 6px;
 }
 .stats-label {
-  text-align: center;
-  color: var(--text-dim);
-  font-size: 11px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  font-weight: 800;
+  text-align: center; color: var(--text-dim);
+  font-size: 11px; letter-spacing: 3px;
+  text-transform: uppercase; font-weight: 800;
   margin-bottom: 32px;
 }
-.stats-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 12px;
-}
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
 .stats-box {
   background: linear-gradient(135deg, var(--card) 0%, var(--card2) 100%);
   border: 1px solid var(--border);
@@ -677,22 +591,12 @@ body::before {
   padding: 20px 16px;
   text-align: center;
   transition: all 0.2s;
-  position: relative;
-  overflow: hidden;
 }
 .stats-box.clickable:active { transform: scale(0.96); }
-.stats-box .num {
-  font-size: 32px;
-  font-weight: 900;
-  display: block;
-  margin-bottom: 6px;
-}
+.stats-box .num { font-size: 32px; font-weight: 900; display: block; margin-bottom: 6px; }
 .stats-box .name {
-  font-size: 11px;
-  color: var(--text-dim);
-  font-weight: 800;
-  letter-spacing: 1px;
-  text-transform: uppercase;
+  font-size: 11px; color: var(--text-dim);
+  font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
 }
 .stats-box.win {
   background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(74, 222, 128, 0.08));
@@ -706,17 +610,11 @@ body::before {
 .stats-box.lose .num { color: #f87171; text-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
 
 /* ===== FAQ ===== */
-.faq-header {
-  text-align: center;
-  padding: 20px 0 24px;
-  position: relative;
-}
+.faq-header { text-align: center; padding: 20px 0 24px; position: relative; }
 .faq-header-icon {
   width: 64px; height: 64px;
   margin: 0 auto 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(74, 222, 128, 0.1));
   border: 2px solid var(--green);
   border-radius: 50%;
@@ -725,38 +623,26 @@ body::before {
   animation: float 3s ease-in-out infinite;
 }
 .faq-header-title {
-  font-size: 24px;
-  font-weight: 900;
-  letter-spacing: 2px;
+  font-size: 24px; font-weight: 900; letter-spacing: 2px;
   color: var(--green-bright);
   text-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
   margin-bottom: 6px;
 }
 .faq-header-sub {
-  font-size: 11px;
-  color: var(--text-dim);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  font-weight: 700;
+  font-size: 11px; color: var(--text-dim);
+  letter-spacing: 2px; text-transform: uppercase; font-weight: 700;
 }
 .faq-section { margin-bottom: 20px; }
 .faq-section-title {
-  font-size: 11px;
-  font-weight: 900;
+  font-size: 11px; font-weight: 900;
   color: var(--green-bright);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 12px;
-  padding-left: 4px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  text-transform: uppercase; letter-spacing: 2px;
+  margin-bottom: 12px; padding-left: 4px;
+  display: flex; align-items: center; gap: 8px;
 }
 .faq-section-title::before {
-  content: '';
-  width: 4px; height: 4px;
-  background: var(--green-bright);
-  border-radius: 50%;
+  content: ''; width: 4px; height: 4px;
+  background: var(--green-bright); border-radius: 50%;
   box-shadow: 0 0 10px var(--green-bright);
 }
 .faq-item {
@@ -767,181 +653,122 @@ body::before {
   margin-bottom: 10px;
   position: relative;
   overflow: hidden;
-  transition: 0.2s;
 }
 .faq-item::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; bottom: 0;
-  width: 3px;
+  top: 0; left: 0; bottom: 0; width: 3px;
   background: linear-gradient(180deg, var(--green), var(--green-bright));
   box-shadow: 0 0 10px var(--green);
 }
 .faq-q {
-  font-size: 14px;
-  font-weight: 800;
+  font-size: 14px; font-weight: 800;
   margin-bottom: 8px;
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
+  display: flex; align-items: flex-start; gap: 8px;
   line-height: 1.3;
 }
 .faq-q-icon {
   flex-shrink: 0;
   width: 22px; height: 22px;
   background: linear-gradient(135deg, var(--green), #16a34a);
-  color: #fff;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 900;
-  margin-top: 1px;
+  color: #fff; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 900; margin-top: 1px;
   box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
 }
 .faq-a {
-  font-size: 12px;
-  color: var(--text-dim);
-  line-height: 1.55;
-  padding-left: 30px;
-  font-weight: 500;
+  font-size: 12px; color: var(--text-dim);
+  line-height: 1.55; padding-left: 30px; font-weight: 500;
 }
 .faq-a strong { color: var(--green-bright); font-weight: 800; }
 .faq-a ul { margin-top: 6px; padding-left: 16px; }
 .faq-a li { margin-bottom: 4px; }
 .faq-stat {
-  display: inline-block;
-  padding: 2px 8px;
+  display: inline-block; padding: 2px 8px;
   background: rgba(34, 197, 94, 0.15);
   color: var(--green-bright);
   border: 1px solid rgba(34, 197, 94, 0.3);
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 800;
+  border-radius: 6px; font-size: 11px; font-weight: 800;
   margin: 0 2px;
 }
 .faq-highlight {
   background: rgba(34, 197, 94, 0.08);
   border: 1px solid rgba(34, 197, 94, 0.25);
   border-radius: 10px;
-  padding: 12px;
-  margin-top: 10px;
-  font-size: 12px;
-  color: var(--text);
-  line-height: 1.5;
+  padding: 12px; margin-top: 10px;
+  font-size: 12px; color: var(--text); line-height: 1.5;
 }
 .faq-cta {
   background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(74, 222, 128, 0.08));
   border: 1px solid rgba(34, 197, 94, 0.3);
   border-radius: 14px;
-  padding: 16px;
-  text-align: center;
-  margin-top: 20px;
+  padding: 16px; text-align: center; margin-top: 20px;
 }
-.faq-cta-text {
-  font-size: 13px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: var(--green-bright);
-}
+.faq-cta-text { font-size: 13px; font-weight: 700; margin-bottom: 12px; color: var(--green-bright); }
 .faq-cta-btn {
-  display: inline-block;
-  padding: 10px 24px;
+  display: inline-block; padding: 10px 24px;
   background: linear-gradient(135deg, var(--green), #16a34a);
-  color: #fff;
-  text-decoration: none;
-  border-radius: 25px;
-  font-size: 13px;
-  font-weight: 900;
+  color: #fff; text-decoration: none;
+  border-radius: 25px; font-size: 13px; font-weight: 900;
   letter-spacing: 0.5px;
   box-shadow: 0 4px 15px rgba(34, 197, 94, 0.5);
-  border: none;
-  cursor: pointer;
-  transition: 0.2s;
+  border: none; cursor: pointer; transition: 0.2s;
 }
 .faq-cta-btn:active { transform: scale(0.96); }
 
 /* ===== EMPTY / ERROR / SKELETON ===== */
 .empty {
-  text-align: center;
-  color: var(--text-mute);
-  padding: 80px 20px;
-  font-size: 13px;
-  font-weight: 700;
+  text-align: center; color: var(--text-mute);
+  padding: 80px 20px; font-size: 13px; font-weight: 700;
 }
 .empty::before {
-  content: '⚽';
-  font-size: 64px;
-  display: block;
-  margin-bottom: 16px;
-  opacity: 0.4;
+  content: '⚽'; font-size: 64px;
+  display: block; margin-bottom: 16px; opacity: 0.4;
   animation: float 2s ease-in-out infinite;
 }
 .error {
-  text-align: center;
-  color: #f87171;
-  padding: 20px;
-  font-size: 13px;
+  text-align: center; color: #f87171;
+  padding: 20px; font-size: 13px;
   background: rgba(239, 68, 68, 0.08);
   border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 14px;
-  font-weight: 600;
+  border-radius: 14px; font-weight: 600;
 }
 .skeleton {
   background: linear-gradient(90deg, var(--card) 0%, var(--card2) 50%, var(--card) 100%);
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
-  border-radius: 18px;
-  height: 140px;
-  margin-bottom: 12px;
+  border-radius: 18px; height: 140px; margin-bottom: 12px;
 }
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
 .card-win::before { background: linear-gradient(90deg, var(--green), #16a34a) !important; animation: none; }
 .card-lose::before { background: linear-gradient(90deg, var(--red), #f43f5e) !important; animation: none; }
 .winner-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+  display: inline-flex; align-items: center; gap: 4px;
   padding: 5px 12px;
   background: rgba(34, 197, 94, 0.15);
   color: var(--green-bright);
   border: 1px solid rgba(34, 197, 94, 0.4);
   border-radius: 10px;
-  font-size: 11px;
-  font-weight: 800;
-  margin-top: 8px;
-  letter-spacing: 0.5px;
+  font-size: 11px; font-weight: 800;
+  margin-top: 8px; letter-spacing: 0.5px;
 }
 
 .sync-info {
-  text-align: center;
-  font-size: 10px;
-  color: var(--text-mute);
-  padding: 10px 16px;
-  letter-spacing: 1px;
-  font-weight: 700;
+  text-align: center; font-size: 10px;
+  color: var(--text-mute); padding: 10px 16px;
+  letter-spacing: 1px; font-weight: 700;
 }
 .section-title {
-  font-size: 22px;
-  font-weight: 900;
-  text-align: center;
-  margin-bottom: 4px;
-  letter-spacing: 1px;
-  color: var(--green-bright);
+  font-size: 22px; font-weight: 900;
+  text-align: center; margin-bottom: 4px;
+  letter-spacing: 1px; color: var(--green-bright);
   text-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
 }
 .section-sub {
-  font-size: 11px;
-  color: var(--text-dim);
-  text-align: center;
-  margin-bottom: 18px;
-  font-weight: 700;
-  letter-spacing: 1px;
+  font-size: 11px; color: var(--text-dim);
+  text-align: center; margin-bottom: 18px;
+  font-weight: 700; letter-spacing: 1px;
 }
 </style>
 </head>
@@ -949,12 +776,24 @@ body::before {
 
 <div class="header">
   <svg class="header-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="32" cy="32" r="30" fill="#ffffff" stroke="#000000" stroke-width="2"/>
-    <path d="M32 12 L40 22 L36 32 L28 32 L24 22 Z" fill="#000000"/>
-    <path d="M12 32 L20 36 L18 46 L8 44 Z" fill="#000000"/>
-    <path d="M52 32 L56 44 L46 46 L44 36 Z" fill="#000000"/>
-    <path d="M32 52 L38 48 L42 52 L40 60 L24 60 L22 52 L26 48 Z" fill="#000000"/>
-    <circle cx="32" cy="32" r="30" fill="none" stroke="#22c55e" stroke-width="1.5" opacity="0.6"/>
+    <defs>
+      <linearGradient id="shieldGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#22c55e"/>
+        <stop offset="100%" stop-color="#15803d"/>
+      </linearGradient>
+      <linearGradient id="shieldStroke" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#4ade80"/>
+        <stop offset="100%" stop-color="#fbbf24"/>
+      </linearGradient>
+    </defs>
+    <path d="M32 4 L56 14 V32 C56 46 44 56 32 60 C20 56 8 46 8 32 V14 Z"
+          fill="url(#shieldGrad)" stroke="url(#shieldStroke)" stroke-width="2"/>
+    <path d="M32 10 L50 18 V32 C50 43 41 51 32 54 C23 51 14 43 14 32 V18 Z"
+          fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+    <circle cx="32" cy="28" r="9" fill="#ffffff"/>
+    <path d="M32 21 L36 25 L34.5 30 L29.5 30 L28 25 Z" fill="#0a2412"/>
+    <circle cx="32" cy="28" r="9" fill="none" stroke="#0a2412" stroke-width="1.2"/>
+    <path d="M31 38 L29 44 H33 L31 50 L36 43 H32 L34 38 Z" fill="#fbbf24"/>
   </svg>
   <h1>ПРОГНОЗЫ</h1>
   <div class="sub">⚽ ТОТАЛ БОЛЬШЕ 2.5 ⚽</div>
@@ -1020,23 +859,15 @@ function teamColor(name) {
   let h = 0;
   for (let i = 0; i < name.length; i++) h = name.charCodeAt(i) + ((h << 5) - h);
   const colors = [
-    'linear-gradient(135deg,#ef4444,#dc2626)',
-    'linear-gradient(135deg,#3b82f6,#1d4ed8)',
-    'linear-gradient(135deg,#22c55e,#15803d)',
-    'linear-gradient(135deg,#f59e0b,#d97706)',
-    'linear-gradient(135deg,#8b5cf6,#6d28d9)',
-    'linear-gradient(135deg,#ec4899,#db2777)',
-    'linear-gradient(135deg,#06b6d4,#0891b2)',
-    'linear-gradient(135deg,#84cc16,#65a30d)',
-    'linear-gradient(135deg,#f97316,#ea580c)',
-    'linear-gradient(135deg,#14b8a6,#0d9488)'
+    '#ef4444', '#3b82f6', '#22c55e', '#f59e0b',
+    '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16',
+    '#f97316', '#14b8a6'
   ];
   return colors[Math.abs(h) % colors.length];
 }
-function teamAvatar(name) {
-  const letter = (name || '?').charAt(0).toUpperCase();
-  const bg = teamColor(name || 'x');
-  return `<div class="team-avatar" style="background:${bg}">${letter}</div>`;
+function teamBar(name) {
+  const color = teamColor(name || 'x');
+  return `<div class="team-bar" style="background:${color};box-shadow:0 0 10px ${color}"></div>`;
 }
 
 document.getElementById('tabs').addEventListener('click', e => {
@@ -1061,11 +892,11 @@ document.getElementById('filters').addEventListener('click', e => {
 });
 
 function getCache(tab) {
-  try { const r = localStorage.getItem(`tb25_v11_${tab}`); return r ? JSON.parse(r) : null; } catch(e){ return null; }
+  try { const r = localStorage.getItem(`tb25_v12_${tab}`); return r ? JSON.parse(r) : null; } catch(e){ return null; }
 }
 function setCache(tab, version, data) {
   try {
-    localStorage.setItem(`tb25_v11_${tab}`, JSON.stringify({ version, data, ts: Date.now() }));
+    localStorage.setItem(`tb25_v12_${tab}`, JSON.stringify({ version, data, ts: Date.now() }));
     localStorage.setItem('tb25_last_update', new Date().toISOString());
   } catch(e){}
 }
@@ -1083,17 +914,13 @@ function updateSyncTime() {
     const mm = String(d.getMinutes()).padStart(2, '0');
     const day = String(d.getDate()).padStart(2, '0');
     const month = String(d.getMonth() + 1).padStart(2, '0');
-
     let ago = '';
     if (diffMin < 1) ago = 'только что';
     else if (diffMin < 60) ago = `${diffMin} мин назад`;
     else if (diffMin < 1440) ago = `${Math.floor(diffMin / 60)} ч назад`;
     else ago = `${Math.floor(diffMin / 1440)} дн назад`;
-
     el.textContent = `🕐 Обновлено: ${hh}:${mm} · ${day}.${month} (${ago})`;
-  } catch (e) {
-    el.textContent = '';
-  }
+  } catch (e) { el.textContent = ''; }
 }
 
 async function loadData() {
@@ -1148,7 +975,6 @@ function renderTab(tab, data) {
   else if (tab === 'faq') renderFaq();
 }
 
-function probClass(p) { return p >= 65 ? 'prob-high' : p >= 60 ? 'prob-mid' : 'prob-low'; }
 function cardClass(p) { return p >= 70 ? 'card-hot' : p >= 65 ? 'card-mid' : ''; }
 
 function renderMatches(data) {
@@ -1172,11 +998,33 @@ function renderMatches(data) {
     const live = String(m.result || '').includes('Live');
 
     let outcomeHtml = '';
-    if (m.outcome && m.outcome.favorite) {
-      outcomeHtml = `<div class="outcome-line">
-        <span class="label">🏆 Прогноз</span>
-        <span class="fav">${m.outcome.favorite} · ${m.outcome.favoriteProb}%</span>
-      </div>`;
+    if (m.outcome) {
+      const o = m.outcome;
+      const p1 = o.p1 || 0, px = o.x || 0, p2 = o.p2 || 0;
+      const best = Math.max(p1, px, p2);
+      let mainLabel = 'X';
+      if (best === p1) mainLabel = 'П1';
+      else if (best === p2) mainLabel = 'П2';
+
+      const chance1X = p1 + px;
+      const chance2X = p2 + px;
+      const chance12 = p1 + p2;
+
+      let doubleLabel = '1X';
+      let bestDouble = chance1X;
+      if (chance2X > bestDouble) { doubleLabel = '2X'; bestDouble = chance2X; }
+      if (chance12 > bestDouble) { doubleLabel = '12'; bestDouble = chance12; }
+
+      outcomeHtml = `
+        <div class="outcome-line">
+          <span class="label">🏆 Прогноз</span>
+          <span class="fav">${mainLabel} · ${best}%</span>
+        </div>
+        <div class="outcome-line double" style="margin-bottom:8px;">
+          <span class="label">🎯 Двойной шанс</span>
+          <span class="fav">${doubleLabel} · ${bestDouble}%</span>
+        </div>
+      `;
     }
 
     html += `
@@ -1185,9 +1033,9 @@ function renderMatches(data) {
           <button class="icon-btn ${fav ? 'active' : ''}" onclick="toggleFav('${esc(m.home)}','${esc(m.away)}')">${fav ? '⭐' : '☆'}</button>
         </div>
         <div class="card-teams">
-          <div class="team">${teamAvatar(m.home)}<div class="team-name">${m.home}</div></div>
+          <div class="team">${teamBar(m.home)}<div class="team-name">${m.home}</div></div>
           <div class="vs">VS</div>
-          <div class="team right">${teamAvatar(m.away)}<div class="team-name">${m.away}</div></div>
+          <div class="team right">${teamBar(m.away)}<div class="team-name">${m.away}</div></div>
         </div>
         <div class="card-meta">
           <div class="meta-item">🏆 ${m.league}</div>
@@ -1224,9 +1072,9 @@ function renderYesterday(data) {
     html += `
       <div class="card ${cls}">
         <div class="card-teams">
-          <div class="team">${teamAvatar(m.home)}<div class="team-name">${m.home}</div></div>
+          <div class="team">${teamBar(m.home)}<div class="team-name">${m.home}</div></div>
           <div class="vs">${m.score || '—'}</div>
-          <div class="team right">${teamAvatar(m.away)}<div class="team-name">${m.away}</div></div>
+          <div class="team right">${teamBar(m.away)}<div class="team-name">${m.away}</div></div>
         </div>
         <div class="card-meta">
           <div class="meta-item">🏆 ${m.league}</div>
@@ -1342,7 +1190,13 @@ function renderFaq() {
       <div class="faq-item">
         <div class="faq-q"><div class="faq-q-icon">?</div>Что такое "Прогноз на исход"?</div>
         <div class="faq-a">
-          Кроме тотала, бот рассчитывает <strong>вероятность победы каждой команды</strong> (П1 / X / П2). Модель оценивает силу команд по их рейтингу и выдаёт <strong>фаворита матча</strong> в процентах.
+          Кроме тотала, бот рассчитывает <strong>вероятность победы каждой команды</strong>:
+          <ul>
+            <li><strong>П1</strong> — победа хозяев</li>
+            <li><strong>X</strong> — ничья</li>
+            <li><strong>П2</strong> — победа гостей</li>
+            <li><strong>1X</strong> / <strong>2X</strong> / <strong>12</strong> — двойной шанс</li>
+          </ul>
         </div>
       </div>
 
@@ -1382,13 +1236,6 @@ function renderFaq() {
           Внизу экрана есть <strong>индикатор времени</strong> — покажет, когда данные последний раз получены с сервера. Если прошло больше 30 минут, бот подтянет свежие автоматически.
         </div>
       </div>
-
-      <div class="faq-item">
-        <div class="faq-q"><div class="faq-q-icon">?</div>Можно обновить вручную?</div>
-        <div class="faq-a">
-          Да! Просто <strong>закройте и откройте</strong> приложение заново — данные подтянутся свежие. Или нажмите на любой таб — обновление произойдёт автоматически.
-        </div>
-      </div>
     </div>
 
     <div class="faq-section">
@@ -1400,17 +1247,10 @@ function renderFaq() {
           Бот пришлёт вам:
           <ul>
             <li>⏰ <strong>За 15 минут</strong> до матча — напоминание с прогнозом</li>
-            <li>🎉 <strong>После завершения</strong> — зашёл прогноз или нет, с итоговым счётом</li>
-            <li>📊 <strong>Раз в день в 9:00</strong> — утренний дайджест со статистикой</li>
-            <li>🎁 <strong>Раз в день в 19:00</strong> — бонус от надёжного букмекера</li>
+            <li>🎉 <strong>После завершения</strong> — зашёл прогноз или нет</li>
+            <li>📊 <strong>Раз в день в 9:00</strong> — утренний дайджест</li>
+            <li>🎁 <strong>Раз в день в 19:00</strong> — бонус от букмекера</li>
           </ul>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-q"><div class="faq-q-icon">?</div>Как отключить уведомления?</div>
-        <div class="faq-a">
-          Уведомления приходят <strong>только вам</strong> (в личный чат с ботом). Чтобы отключить, напишите боту <strong>/stop</strong>. Чтобы включить обратно — <strong>/start</strong>.
         </div>
       </div>
     </div>
@@ -1421,10 +1261,10 @@ function renderFaq() {
       <div class="faq-item">
         <div class="faq-q"><div class="faq-q-icon">?</div>Откуда берётся статистика?</div>
         <div class="faq-a">
-          Все <strong>завершённые прогнозы</strong> автоматически попадают в архив. В разделе <strong>«Статистика»</strong> можно посмотреть:
+          Все <strong>завершённые прогнозы</strong> автоматически попадают в архив. В разделе <strong>«Статистика»</strong>:
           <ul>
-            <li>🎯 Общую точность прогнозов в %</li>
-            <li>✅ Сколько прогнозов зашло</li>
+            <li>🎯 Общая точность прогнозов</li>
+            <li>✅ Сколько зашло</li>
             <li>❌ Сколько не зашло</li>
             <li>📋 Список всех матчей с итоговыми счетами</li>
           </ul>
@@ -1434,7 +1274,7 @@ function renderFaq() {
       <div class="faq-item">
         <div class="faq-q"><div class="faq-q-icon">?</div>Что такое "Избранное"?</div>
         <div class="faq-a">
-          Нажмите <strong>☆ звёздочку</strong> на карточке матча — он добавится в избранное. Фильтр <strong>«⭐ Избранное»</strong> покажет только выбранные матчи. Список сохраняется на вашем устройстве.
+          Нажмите <strong>☆ звёздочку</strong> на карточке матча — он добавится в избранное. Фильтр <strong>«⭐ Избранное»</strong> покажет только выбранные матчи. Список сохраняется на устройстве.
         </div>
       </div>
     </div>
@@ -1477,9 +1317,9 @@ async function openHistory(filter) {
         html += `
           <div class="card ${cls}">
             <div class="card-teams">
-              <div class="team">${teamAvatar(m.home)}<div class="team-name">${m.home}</div></div>
+              <div class="team">${teamBar(m.home)}<div class="team-name">${m.home}</div></div>
               <div class="vs">${m.score || '—'}</div>
-              <div class="team right">${teamAvatar(m.away)}<div class="team-name">${m.away}</div></div>
+              <div class="team right">${teamBar(m.away)}<div class="team-name">${m.away}</div></div>
             </div>
             <div class="card-meta">
               <div class="meta-item">🏆 ${m.league}</div>
