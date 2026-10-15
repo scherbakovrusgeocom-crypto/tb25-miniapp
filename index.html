@@ -24,15 +24,24 @@
   --purple: #8b5cf6;
   --purple-bright: #a78bfa;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: var(--bg);
   color: var(--text);
-  padding: 0 0 40px;
+  padding: 0 0 30px;
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -webkit-touch-callout: none;
 }
 body::before {
   content: '';
@@ -45,19 +54,45 @@ body::before {
   z-index: 0;
 }
 
+/* ===== ШАПКА ===== */
 .header {
   position: relative;
-  padding: 26px 20px 22px;
+  padding: 20px 20px 18px;
   text-align: center;
   background: linear-gradient(180deg, #0a2412 0%, #05140a 100%);
   border-bottom: 1px solid var(--border);
   z-index: 1;
 }
+.header-top {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 8px;
+  z-index: 3;
+}
+.header-icon {
+  width: 36px; height: 36px;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--green-bright);
+}
+.header-icon:active {
+  transform: scale(0.9);
+  background: rgba(34, 197, 94, 0.25);
+}
 .ball-wrap {
   position: relative;
-  width: 76px;
-  height: 76px;
-  margin: 0 auto 12px;
+  width: 68px;
+  height: 68px;
+  margin: 0 auto 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -70,7 +105,7 @@ body::before {
   50% { transform: scale(1.06); }
 }
 .ball-emoji {
-  font-size: 52px;
+  font-size: 46px;
   line-height: 1;
   filter: drop-shadow(0 4px 16px rgba(34, 197, 94, 0.7));
   animation: ballRotate 6s ease-in-out infinite;
@@ -80,7 +115,7 @@ body::before {
   50% { transform: rotate(15deg); }
 }
 .header h1 {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 900;
   letter-spacing: 3px;
   color: var(--green-bright);
@@ -88,14 +123,15 @@ body::before {
   font-family: 'Arial Black', 'Impact', sans-serif;
 }
 .header .sub {
-  font-size: 10px;
+  font-size: 9px;
   letter-spacing: 3px;
   color: var(--text-dim);
-  margin-top: 6px;
+  margin-top: 5px;
   text-transform: uppercase;
   font-weight: 700;
 }
 
+/* ===== ТАБЫ ===== */
 .tabs-wrap {
   position: sticky;
   top: 0;
@@ -106,58 +142,45 @@ body::before {
   z-index: 10;
   border-bottom: 1px solid var(--border);
 }
-.tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.tabs {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  justify-content: space-between;
+}
 .tabs::-webkit-scrollbar { display: none; }
 .tab {
-  flex: 0 0 auto;
+  flex: 1 1 0;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 3px;
-  padding: 8px 14px;
-  border-radius: 12px;
-  font-size: 10px;
+  padding: 8px 4px;
+  border-radius: 10px;
+  font-size: 9px;
   font-weight: 800;
   color: var(--text-dim);
   background: transparent;
   border: 1px solid transparent;
   transition: all 0.25s;
-  white-space: nowrap;
   cursor: pointer;
-  min-width: 62px;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 .tab svg { width: 18px; height: 18px; stroke-width: 2.2; }
 .tab.active {
   background: linear-gradient(135deg, rgba(34, 197, 94, 0.25), rgba(74, 222, 128, 0.15));
   border-color: var(--green);
   color: var(--green-bright);
-  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
-}
-
-.filters-wrap { padding: 12px 16px 0; }
-.filters { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
-.filters::-webkit-scrollbar { display: none; }
-.filter {
-  flex: 0 0 auto;
-  padding: 6px 14px;
-  border-radius: 18px;
-  font-size: 11px;
-  font-weight: 700;
-  background: var(--card);
-  color: var(--text-dim);
-  border: 1px solid var(--border);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.filter.active {
-  background: linear-gradient(135deg, var(--green), #16a34a);
-  color: #fff;
-  border-color: transparent;
-  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.5);
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
 }
 
 #content { padding: 14px 16px; position: relative; z-index: 1; }
 
+/* ===== КАРТОЧКА ===== */
 .card {
   background: linear-gradient(135deg, var(--card) 0%, var(--card2) 100%);
   border: 1px solid var(--border);
@@ -213,6 +236,7 @@ body::before {
   color: var(--text-dim);
   margin-bottom: 12px;
   font-weight: 600;
+  flex-wrap: wrap;
 }
 .card-meta .meta-item { display: flex; align-items: center; gap: 4px; }
 
@@ -220,7 +244,7 @@ body::before {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 .stat-box {
   background: rgba(0, 0, 0, 0.3);
@@ -257,6 +281,7 @@ body::before {
   font-size: 12px;
   margin-bottom: 6px;
 }
+.outcome-line:last-child { margin-bottom: 0; }
 .outcome-line.double {
   background: rgba(139, 92, 246, 0.08);
   border-color: rgba(139, 92, 246, 0.2);
@@ -285,6 +310,8 @@ body::before {
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+  user-select: none;
+  -webkit-user-select: none;
 }
 .icon-btn.active {
   color: var(--gold-bright);
@@ -303,50 +330,51 @@ body::before {
   letter-spacing: 0.5px;
 }
 
+/* ===== ЭКСПРЕСС ===== */
 .express-hero {
   background: linear-gradient(135deg, #78350f 0%, #b45309 50%, #d97706 100%);
   border-radius: 20px;
-  padding: 26px 20px;
+  padding: 24px 20px;
   color: #fff;
   text-align: center;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
   position: relative;
   overflow: hidden;
   box-shadow: 0 10px 40px rgba(217, 119, 6, 0.4);
 }
-.express-hero-title { font-size: 20px; font-weight: 900; letter-spacing: 1px; }
-.express-hero-sub { font-size: 11px; opacity: 0.9; margin-top: 6px; }
+.express-hero-title { font-size: 18px; font-weight: 900; letter-spacing: 1px; }
+.express-hero-sub { font-size: 10px; opacity: 0.9; margin-top: 4px; }
 .express-hero-odd {
-  font-size: 58px; font-weight: 900; margin-top: 14px;
+  font-size: 52px; font-weight: 900; margin-top: 12px;
   background: linear-gradient(180deg, #fef9c3, #fbbf24, #f59e0b);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   line-height: 1;
 }
 .express-hero-label {
-  font-size: 10px; opacity: 0.85; letter-spacing: 3px; margin-top: 8px;
+  font-size: 9px; opacity: 0.85; letter-spacing: 2px; margin-top: 6px;
   text-transform: uppercase; font-weight: 700;
 }
 .express-items-title {
-  text-align: center; font-size: 13px; color: var(--text-dim);
-  margin-bottom: 14px; font-weight: 800; letter-spacing: 1.5px;
+  text-align: center; font-size: 12px; color: var(--text-dim);
+  margin-bottom: 12px; font-weight: 800; letter-spacing: 1px;
 }
 .express-card {
   background: linear-gradient(135deg, var(--card) 0%, var(--card2) 100%);
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 14px 16px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 .express-card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
 .express-num {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 26px; height: 26px;
+  width: 24px; height: 24px;
   background: var(--green);
-  color: #fff; font-size: 12px; font-weight: 900;
+  color: #fff; font-size: 11px; font-weight: 900;
   border-radius: 50%; flex-shrink: 0;
 }
-.express-match { font-size: 14px; font-weight: 800; }
-.express-league { font-size: 11px; color: var(--text-dim); margin-left: 36px; margin-bottom: 10px; }
+.express-match { font-size: 13px; font-weight: 800; }
+.express-league { font-size: 10px; color: var(--text-dim); margin-left: 34px; margin-bottom: 10px; }
 .express-card-body {
   display: grid; grid-template-columns: repeat(3, 1fr);
   gap: 6px; background: rgba(0, 0, 0, 0.25);
@@ -354,14 +382,14 @@ body::before {
 }
 .express-stat { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .express-stat-label { font-size: 9px; color: var(--text-mute); text-transform: uppercase; font-weight: 800; }
-.express-stat-value { font-size: 14px; font-weight: 900; }
-.express-odd { font-size: 16px; font-weight: 900; color: var(--gold-bright); }
+.express-stat-value { font-size: 13px; font-weight: 900; }
+.express-odd { font-size: 15px; font-weight: 900; color: var(--gold-bright); }
 .express-footer {
   background: linear-gradient(135deg, #0a2412, #143d24);
   border: 1px solid var(--border-strong);
   border-radius: 16px;
   padding: 16px 20px;
-  margin-top: 18px;
+  margin-top: 14px;
 }
 .express-footer-row {
   display: flex; justify-content: space-between;
@@ -373,11 +401,12 @@ body::before {
   border-top: 1px solid rgba(34, 197, 94, 0.3);
   color: var(--text); font-size: 14px;
 }
-.express-footer-odd { font-size: 26px; font-weight: 900; color: var(--gold-bright); }
+.express-footer-odd { font-size: 24px; font-weight: 900; color: var(--gold-bright); }
 
+/* ===== СТАТИСТИКА ===== */
 .stats-wrap { padding: 10px 0; }
 .stats-big {
-  text-align: center; font-size: 72px; font-weight: 900;
+  text-align: center; font-size: 66px; font-weight: 900;
   background: linear-gradient(135deg, var(--green-bright), var(--green));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   line-height: 1;
@@ -387,7 +416,7 @@ body::before {
   text-align: center; color: var(--text-dim);
   font-size: 11px; letter-spacing: 2px;
   text-transform: uppercase; font-weight: 800;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
 .stats-box {
@@ -398,11 +427,12 @@ body::before {
   text-align: center;
 }
 .stats-box.clickable:active { transform: scale(0.97); }
-.stats-box .num { font-size: 30px; font-weight: 900; display: block; margin-bottom: 4px; }
+.stats-box .num { font-size: 28px; font-weight: 900; display: block; margin-bottom: 4px; }
 .stats-box .name { font-size: 11px; color: var(--text-dim); font-weight: 800; }
 .stats-box.win .num { color: var(--green-bright); }
 .stats-box.lose .num { color: #f87171; }
 
+/* ===== FAQ ===== */
 .faq-header { text-align: center; padding: 16px 0 20px; }
 .faq-header-icon {
   width: 60px; height: 60px;
@@ -437,7 +467,7 @@ body::before {
   margin-bottom: 10px;
 }
 .faq-q {
-  font-size: 14px; font-weight: 800;
+  font-size: 13px; font-weight: 800;
   margin-bottom: 8px;
   display: flex; align-items: flex-start; gap: 8px;
   line-height: 1.3;
@@ -470,17 +500,17 @@ body::before {
   padding: 10px 12px; margin-top: 10px;
   font-size: 12px; line-height: 1.5;
 }
-/* ДИСКЛЕЙМЕР */
+
+/* ===== ДИСКЛЕЙМЕР ===== */
 .disclaimer {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(239, 68, 68, 0.06));
-  border: 1px solid rgba(245, 158, 11, 0.35);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(239, 68, 68, 0.05));
+  border: 1px solid rgba(245, 158, 11, 0.3);
   border-radius: 14px;
-  padding: 16px;
-  margin-top: 10px;
-  margin-bottom: 20px;
+  padding: 14px 16px;
+  margin-top: 14px;
 }
 .disclaimer-title {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 900;
   color: var(--gold-bright);
   margin-bottom: 8px;
@@ -488,29 +518,23 @@ body::before {
   align-items: center;
   gap: 8px;
 }
-.disclaimer-title::before {
-  content: '⚠️';
-  font-size: 18px;
-}
+.disclaimer-title::before { content: '⚠️'; font-size: 16px; }
 .disclaimer-text {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text);
   line-height: 1.6;
   opacity: 0.95;
 }
-.disclaimer-text strong {
-  color: var(--gold-bright);
-}
+.disclaimer-text strong { color: var(--gold-bright); }
 
-/* БОНУС */
+/* ===== БОНУС ===== */
 .bonus-card {
   background: linear-gradient(135deg, #7c2d12, #b45309, #d97706);
   border-radius: 20px;
-  padding: 24px 20px;
+  padding: 26px 20px;
   color: #fff;
   text-align: center;
-  margin-top: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   position: relative;
   overflow: hidden;
   box-shadow: 0 10px 40px rgba(217, 119, 6, 0.4);
@@ -525,22 +549,22 @@ body::before {
 .bonus-title {
   font-size: 20px; font-weight: 900;
   letter-spacing: 1px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 .bonus-text {
   font-size: 13px;
   opacity: 0.95;
-  line-height: 1.5;
-  margin-bottom: 16px;
+  line-height: 1.6;
+  margin-bottom: 18px;
 }
 .bonus-btn {
   display: inline-block;
-  padding: 12px 32px;
+  padding: 12px 30px;
   background: linear-gradient(135deg, #fbbf24, #f59e0b);
   color: #78350f;
   text-decoration: none;
-  border-radius: 30px;
-  font-size: 15px;
+  border-radius: 28px;
+  font-size: 14px;
   font-weight: 900;
   letter-spacing: 0.5px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
@@ -550,6 +574,7 @@ body::before {
 }
 .bonus-btn:active { transform: scale(0.96); }
 
+/* ===== EMPTY / ERROR / SKELETON ===== */
 .empty {
   text-align: center; color: var(--text-mute);
   padding: 70px 20px; font-size: 13px; font-weight: 700;
@@ -606,6 +631,10 @@ body::before {
 <body>
 
 <div class="header">
+  <div class="header-top">
+    <div class="header-icon" onclick="switchTabDirect('bonus')" title="Бонус">🎁</div>
+    <div class="header-icon" onclick="switchTabDirect('faq')" title="FAQ">❓</div>
+  </div>
   <div class="ball-wrap">
     <div class="ball-emoji">⚽</div>
   </div>
@@ -635,22 +664,6 @@ body::before {
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 12l4-4 4 4 5-5"/></svg>
       Стата
     </div>
-    <div class="tab" data-tab="bonus">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M7.5 8a2.5 2.5 0 010-5c1.5 0 2.5 1 4.5 5M16.5 8a2.5 2.5 0 000-5c-1.5 0-2.5 1-4.5 5"/></svg>
-      Бонус
-    </div>
-    <div class="tab" data-tab="faq">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.5" fill="currentColor"/></svg>
-      FAQ
-    </div>
-  </div>
-</div>
-
-<div class="filters-wrap">
-  <div class="filters" id="filters">
-    <button class="filter active" data-filter="all">Все</button>
-    <button class="filter" data-filter="high">🔥 >70%</button>
-    <button class="filter" data-filter="fav">⭐ Избранное</button>
   </div>
 </div>
 
@@ -663,14 +676,24 @@ const AD_URL = 'https://baltbet.ru/account/register?refpromo=1221753';
 
 const CACHE_TTL = 30 * 60 * 1000;
 let currentTab = 'today';
-let currentFilter = 'all';
 let allMatches = [];
 let favorites = JSON.parse(localStorage.getItem('tb25_favorites') || '[]');
 
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.ready(); tg.expand(); }
 
-function haptic(s) { if (tg?.HapticFeedback) try { tg.HapticFeedback.impactOccurred(s || 'light'); } catch(e){} }
+function haptic(s) {
+  if (tg?.HapticFeedback) try { tg.HapticFeedback.impactOccurred(s || 'light'); } catch(e){}
+}
+
+function switchTabDirect(tabName) {
+  haptic('light');
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === tabName);
+  });
+  currentTab = tabName;
+  loadData();
+}
 
 document.getElementById('tabs').addEventListener('click', e => {
   const tab = e.target.closest('.tab');
@@ -679,26 +702,15 @@ document.getElementById('tabs').addEventListener('click', e => {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   tab.classList.add('active');
   currentTab = tab.dataset.tab;
-  document.querySelector('.filters-wrap').style.display = (currentTab === 'today' || currentTab === 'tomorrow') ? 'block' : 'none';
   loadData();
 });
 
-document.getElementById('filters').addEventListener('click', e => {
-  const f = e.target.closest('.filter');
-  if (!f) return;
-  haptic('light');
-  document.querySelectorAll('.filter').forEach(x => x.classList.remove('active'));
-  f.classList.add('active');
-  currentFilter = f.dataset.filter;
-  if (currentTab === 'today' || currentTab === 'tomorrow') renderMatches(allMatches);
-});
-
 function getCache(tab) {
-  try { const r = localStorage.getItem(`tb25_v15_${tab}`); return r ? JSON.parse(r) : null; } catch(e){ return null; }
+  try { const r = localStorage.getItem(`tb25_v16_${tab}`); return r ? JSON.parse(r) : null; } catch(e){ return null; }
 }
 function setCache(tab, version, data) {
   try {
-    localStorage.setItem(`tb25_v15_${tab}`, JSON.stringify({ version, data, ts: Date.now() }));
+    localStorage.setItem(`tb25_v16_${tab}`, JSON.stringify({ version, data, ts: Date.now() }));
     localStorage.setItem('tb25_last_update', new Date().toISOString());
   } catch(e){}
 }
@@ -776,19 +788,13 @@ function cardClass(p) { return p >= 70 ? 'card-hot' : p >= 65 ? 'card-mid' : '';
 
 function renderMatches(data) {
   const content = document.getElementById('content');
-  if (!Array.isArray(data)) { content.innerHTML = '<div class="empty">Нет данных</div>'; return; }
-  let filtered = data.slice();
-  if (currentFilter === 'high') filtered = filtered.filter(m => m.probability >= 70);
-  else if (currentFilter === 'fav') filtered = filtered.filter(m => favorites.includes(`${m.home}_${m.away}`));
-
-  if (!filtered.length) {
-    const msg = currentFilter === 'fav' ? 'В избранном пусто' : 'Нет матчей';
-    content.innerHTML = `<div class="empty">${msg}</div>`;
+  if (!Array.isArray(data) || !data.length) {
+    content.innerHTML = '<div class="empty">Нет матчей</div>';
     return;
   }
 
   let html = '';
-  filtered.forEach((m) => {
+  data.forEach((m) => {
     const prob = parseInt(m.probability) || 0;
     const fav = favorites.includes(`${m.home}_${m.away}`);
     const live = String(m.result || '').includes('Live');
@@ -947,7 +953,7 @@ function renderStats(data) {
         <span class="num">${data.total}</span>
         <span class="name">📈 Всего матчей →</span>
       </div>
-      <div class="disclaimer" style="margin-top:20px;">
+      <div class="disclaimer">
         <div class="disclaimer-title">Важно</div>
         <div class="disclaimer-text">
           Все прогнозы — это <strong>сбор информации и аналитика</strong>. Они <strong>не являются гарантией победы</strong>, а показывают лишь вероятность. Играйте ответственно.
@@ -975,7 +981,7 @@ function renderBonus() {
     <div class="disclaimer">
       <div class="disclaimer-title">Важно</div>
       <div class="disclaimer-text">
-        Все прогнозы — это <strong>аналитика и сбор информации</strong>. Они <strong>не гарантируют победу</strong>, а показывают вероятность. Играйте ответственно.
+        Все прогнозы — это <strong>аналитика и сбор информации</strong>. Они <strong>не гарантируют победу</strong>. Играйте ответственно.
       </div>
     </div>
   `;
@@ -1014,7 +1020,7 @@ function renderFaq() {
         <div class="faq-a">
           Данные обновляются <strong>автоматически</strong>:
           <ul>
-            <li>🔍 <strong>Поиск новых матчей</strong> — каждые 6 часов</li>
+            <li>🔍 <strong>Поиск новых матчей</strong> — каждые 5 часов</li>
             <li>📈 <strong>Обновление коэффициентов</strong> — каждые 15 минут</li>
             <li>⚽ <strong>Счёт и результаты</strong> — каждые 30 минут</li>
             <li>📨 <strong>Уведомления</strong> — каждую минуту</li>
@@ -1041,7 +1047,7 @@ function renderFaq() {
     <div class="disclaimer">
       <div class="disclaimer-title">Дисклеймер</div>
       <div class="disclaimer-text">
-        Все публикуемые прогнозы — это <strong>исключительно аналитика и сбор информации</strong>. Они <strong>не являются гарантией победы</strong> и не призывают к ставкам. Материалы носят информационный характер и показывают только вероятность события. Играйте ответственно и только на средства, которые готовы потерять.
+        Все публикуемые прогнозы — это <strong>исключительно аналитика и сбор информации</strong>. Они <strong>не являются гарантией победы</strong>. Материалы носят информационный характер и показывают только вероятность события. Играйте ответственно.
       </div>
     </div>
   `;
@@ -1056,7 +1062,7 @@ async function openHistory(filter) {
     const resp = await fetch(`${API_URL}?action=history&filter=${filter}`);
     const raw = await resp.json();
     const data = Array.isArray(raw) ? raw : (raw.data || []);
-    let html = `<button class="filter" onclick="loadData()" style="margin-bottom:14px;">← Назад</button>`;
+    let html = `<button class="filter" onclick="loadData()" style="margin-bottom:14px;padding:6px 14px;border-radius:18px;font-size:11px;font-weight:700;background:var(--card);color:var(--text-dim);border:1px solid var(--border);cursor:pointer;">← Назад</button>`;
     html += `<div class="section-title">${titles[filter]}</div>`;
     html += `<div class="section-sub">Найдено: ${data.length}</div>`;
     if (!data.length) {
