@@ -8,9 +8,6 @@
 <style>
 :root {
   --bg: #05140a;
-  --bg2: #0a2412;
-  --field: #0d2818;
-  --field-light: #143d24;
   --card: #0e2916;
   --card2: #123821;
   --border: rgba(74, 222, 128, 0.15);
@@ -24,6 +21,8 @@
   --gold-bright: #fbbf24;
   --red: #ef4444;
   --cyan: #06b6d4;
+  --purple: #8b5cf6;
+  --purple-bright: #a78bfa;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body {
@@ -88,19 +87,73 @@ body::before {
   0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
   50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.15; }
 }
-.header-logo {
-  width: 68px; height: 68px;
-  margin: 0 auto 10px;
-  display: block;
+
+/* ===== МЯЧ С АНИМАЦИЕЙ НАБИВАНИЯ ===== */
+.ball-wrap {
   position: relative;
+  width: 80px;
+  height: 92px;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
   z-index: 2;
-  filter: drop-shadow(0 4px 20px rgba(34, 197, 94, 0.6));
-  animation: shieldFloat 4s ease-in-out infinite;
 }
-@keyframes shieldFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+.ball-shadow {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 8px;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.7) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: shadowPulse 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
+@keyframes shadowPulse {
+  0%, 100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateX(-50%) scale(0.55);
+    opacity: 0.3;
+  }
+}
+.ball {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  animation: ballBounce 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  transform-origin: center bottom;
+  filter: drop-shadow(0 4px 12px rgba(34, 197, 94, 0.5));
+}
+.ball svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+@keyframes ballBounce {
+  0% {
+    transform: translateY(-28px) scaleY(1) scaleX(1) rotate(0deg);
+    animation-timing-function: cubic-bezier(0.5, 0, 1, 0.5);
+  }
+  45% {
+    transform: translateY(0) scaleY(1) scaleX(1) rotate(180deg);
+    animation-timing-function: cubic-bezier(0.5, 0, 1, 0.5);
+  }
+  50% {
+    transform: translateY(2px) scaleY(0.85) scaleX(1.15) rotate(200deg);
+  }
+  55% {
+    transform: translateY(0) scaleY(1) scaleX(1) rotate(220deg);
+    animation-timing-function: cubic-bezier(0, 0.5, 0.5, 1);
+  }
+  100% {
+    transform: translateY(-28px) scaleY(1) scaleX(1) rotate(360deg);
+  }
+}
+
 .header h1 {
   font-size: 26px;
   font-weight: 900;
@@ -214,7 +267,6 @@ body::before {
   box-shadow: 0 4px 15px rgba(34, 197, 94, 0.5);
 }
 
-/* ===== КОНТЕНТ ===== */
 #content { padding: 14px 16px; position: relative; z-index: 1; }
 
 /* ===== КАРТОЧКА ===== */
@@ -294,7 +346,6 @@ body::before {
   border-radius: 8px;
   letter-spacing: 1px;
 }
-
 .card-meta {
   display: flex;
   align-items: center;
@@ -364,7 +415,7 @@ body::before {
   margin-bottom: 6px;
 }
 .outcome-line.double {
-  background: linear-gradient(90deg, rgba(59, 130, 246, 0.12), rgba(139, 92, 246, 0.06));
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.12), rgba(167, 139, 250, 0.06));
   border-color: rgba(139, 92, 246, 0.3);
 }
 .outcome-line .label { color: var(--text-dim); font-weight: 700; letter-spacing: 0.3px; }
@@ -374,7 +425,7 @@ body::before {
   text-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
 }
 .outcome-line.double .fav {
-  color: #a78bfa;
+  color: var(--purple-bright);
   text-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
 }
 
@@ -753,7 +804,6 @@ body::before {
   font-size: 11px; font-weight: 800;
   margin-top: 8px; letter-spacing: 0.5px;
 }
-
 .sync-info {
   text-align: center; font-size: 10px;
   color: var(--text-mute); padding: 10px 16px;
@@ -775,26 +825,44 @@ body::before {
 <body>
 
 <div class="header">
-  <svg class="header-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="shieldGrad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#22c55e"/>
-        <stop offset="100%" stop-color="#15803d"/>
-      </linearGradient>
-      <linearGradient id="shieldStroke" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#4ade80"/>
-        <stop offset="100%" stop-color="#fbbf24"/>
-      </linearGradient>
-    </defs>
-    <path d="M32 4 L56 14 V32 C56 46 44 56 32 60 C20 56 8 46 8 32 V14 Z"
-          fill="url(#shieldGrad)" stroke="url(#shieldStroke)" stroke-width="2"/>
-    <path d="M32 10 L50 18 V32 C50 43 41 51 32 54 C23 51 14 43 14 32 V18 Z"
-          fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-    <circle cx="32" cy="28" r="9" fill="#ffffff"/>
-    <path d="M32 21 L36 25 L34.5 30 L29.5 30 L28 25 Z" fill="#0a2412"/>
-    <circle cx="32" cy="28" r="9" fill="none" stroke="#0a2412" stroke-width="1.2"/>
-    <path d="M31 38 L29 44 H33 L31 50 L36 43 H32 L34 38 Z" fill="#fbbf24"/>
-  </svg>
+  <div class="ball-wrap">
+    <div class="ball-shadow"></div>
+    <div class="ball">
+      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="ballShine" cx="35%" cy="30%" r="70%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="80%" stop-color="#e5e7eb"/>
+            <stop offset="100%" stop-color="#a3a3a3"/>
+          </radialGradient>
+        </defs>
+        <circle cx="32" cy="32" r="28" fill="url(#ballShine)" stroke="#1f2937" stroke-width="2"/>
+        <polygon points="32,14 40,20 37,30 27,30 24,20" fill="#1f2937"/>
+        <polygon points="10,26 17,28 17,38 10,42 6,34" fill="#1f2937"/>
+        <polygon points="54,26 58,34 54,42 47,38 47,28" fill="#1f2937"/>
+        <polygon points="32,50 40,44 37,36 27,36 24,44" fill="#1f2937"/>
+        <line x1="32" y1="14" x2="32" y2="6" stroke="#1f2937" stroke-width="1.5"/>
+        <line x1="40" y1="20" x2="52" y2="14" stroke="#1f2937" stroke-width="1.5"/>
+        <line x1="24" y1="20" x2="12" y2="14" stroke="#1f2937" stroke-width="1.5"/>
+        <line x1="10" y1="26" x2="4" y2="26" stroke="#1f2937" stroke-width="1.5"/>
+        <line x1="54" y1="26" x2="60" y2="26" stroke="#1f2937" stroke-width="1.5"/>
+        <line x1="10" y1="42" x2="6" y2="50" stroke="#1f2937" stroke-width="1.5"/>
+        <line x1="54" y1="42" x2="58" y2="50" stroke="#1f2937" stroke-width="1.5"/>
+        <line x1="24" y1="44" x2="16" y2="54" stroke="#1f2937" stroke-width="1.5"/>
+        <line x1="40" y1="44" x2="48" y2="54" stroke="#1f2937" stroke-width="1.5"/>
+        <line x1="32" y1="50" x2="32" y2="58" stroke="#1f2937" stroke-width="1.5"/>
+        <line x1="17" y1="28" x2="24" y2="20" stroke="#1f2937" stroke-width="1.5"/>
+        <line x1="47" y1="28" x2="40" y2="20" stroke="#1f2937" stroke-width="1.5"/>
+        <line x1="17" y1="38" x2="27" y2="36" stroke="#1f2937" stroke-width="1.5"/>
+        <line x1="47" y1="38" x2="37" y2="36" stroke="#1f2937" stroke-width="1.5"/>
+        <line x1="17" y1="38" x2="24" y2="44" stroke="#1f2937" stroke-width="1.5"/>
+        <line x1="47" y1="38" x2="40" y2="44" stroke="#1f2937" stroke-width="1.5"/>
+        <line x1="27" y1="30" x2="27" y2="36" stroke="#1f2937" stroke-width="1.5"/>
+        <line x1="37" y1="30" x2="37" y2="36" stroke="#1f2937" stroke-width="1.5"/>
+        <ellipse cx="22" cy="20" rx="6" ry="4" fill="#ffffff" opacity="0.7" transform="rotate(-30 22 20)"/>
+      </svg>
+    </div>
+  </div>
   <h1>ПРОГНОЗЫ</h1>
   <div class="sub">⚽ ТОТАЛ БОЛЬШЕ 2.5 ⚽</div>
   <div class="live-badge">на поле</div>
@@ -892,11 +960,11 @@ document.getElementById('filters').addEventListener('click', e => {
 });
 
 function getCache(tab) {
-  try { const r = localStorage.getItem(`tb25_v12_${tab}`); return r ? JSON.parse(r) : null; } catch(e){ return null; }
+  try { const r = localStorage.getItem(`tb25_v13_${tab}`); return r ? JSON.parse(r) : null; } catch(e){ return null; }
 }
 function setCache(tab, version, data) {
   try {
-    localStorage.setItem(`tb25_v12_${tab}`, JSON.stringify({ version, data, ts: Date.now() }));
+    localStorage.setItem(`tb25_v13_${tab}`, JSON.stringify({ version, data, ts: Date.now() }));
     localStorage.setItem('tb25_last_update', new Date().toISOString());
   } catch(e){}
 }
@@ -1005,16 +1073,13 @@ function renderMatches(data) {
       let mainLabel = 'X';
       if (best === p1) mainLabel = 'П1';
       else if (best === p2) mainLabel = 'П2';
-
       const chance1X = p1 + px;
       const chance2X = p2 + px;
       const chance12 = p1 + p2;
-
       let doubleLabel = '1X';
       let bestDouble = chance1X;
       if (chance2X > bestDouble) { doubleLabel = '2X'; bestDouble = chance2X; }
       if (chance12 > bestDouble) { doubleLabel = '12'; bestDouble = chance12; }
-
       outcomeHtml = `
         <div class="outcome-line">
           <span class="label">🏆 Прогноз</span>
@@ -1170,7 +1235,6 @@ function renderFaq() {
 
     <div class="faq-section">
       <div class="faq-section-title">🎯 Логика прогнозов</div>
-
       <div class="faq-item">
         <div class="faq-q"><div class="faq-q-icon">?</div>По какому принципу выбираются матчи?</div>
         <div class="faq-a">
@@ -1181,9 +1245,7 @@ function renderFaq() {
             <li>Применяет <strong>распределение Пуассона</strong> для расчёта вероятности ТБ 2.5</li>
             <li>Отсеивает матчи с вероятностью ниже <span class="faq-stat">55%</span></li>
           </ul>
-          <div class="faq-highlight">
-            📈 В итоге вы видите <strong>самые вероятные исходы</strong> на «Тотал Больше 2.5 голов».
-          </div>
+          <div class="faq-highlight">📈 В итоге вы видите <strong>самые вероятные исходы</strong> на «Тотал Больше 2.5 голов».</div>
         </div>
       </div>
 
@@ -1203,12 +1265,12 @@ function renderFaq() {
       <div class="faq-item">
         <div class="faq-q"><div class="faq-q-icon">?</div>Что означает цвет карточки?</div>
         <div class="faq-a">
-          Цвет верхней полосы карточки показывает <strong>надёжность прогноза</strong>:
+          Цвет верхней полосы показывает <strong>надёжность прогноза</strong>:
           <ul>
-            <li>🟡 <strong>Золотой</strong> — вероятность >70% (супер-прогноз)</li>
-            <li>🟢 <strong>Зелёный</strong> — вероятность 65-70%</li>
-            <li>🔵 <strong>Синий</strong> — вероятность 55-65%</li>
-            <li>🔴 <strong>Красный</strong> — Live (матч идёт прямо сейчас)</li>
+            <li>🟡 <strong>Золотой</strong> — вероятность >70%</li>
+            <li>🟢 <strong>Зелёный</strong> — 65-70%</li>
+            <li>🔵 <strong>Синий</strong> — 55-65%</li>
+            <li>🔴 <strong>Красный</strong> — Live (матч идёт)</li>
           </ul>
         </div>
       </div>
@@ -1216,16 +1278,15 @@ function renderFaq() {
 
     <div class="faq-section">
       <div class="faq-section-title">⚙️ Обновление данных</div>
-
       <div class="faq-item">
         <div class="faq-q"><div class="faq-q-icon">?</div>Как часто обновляются прогнозы?</div>
         <div class="faq-a">
-          Данные обновляются <strong>автоматически</strong> — без вашего участия:
+          Данные обновляются <strong>автоматически</strong>:
           <ul>
             <li>🔍 <strong>Поиск новых матчей</strong> — каждые 6 часов</li>
             <li>📈 <strong>Обновление коэффициентов</strong> — каждые 15 минут</li>
-            <li>⚽ <strong>Счёт и результаты матчей</strong> — каждые 30 минут</li>
-            <li>📨 <strong>Уведомления о матчах</strong> — каждую минуту</li>
+            <li>⚽ <strong>Счёт и результаты</strong> — каждые 30 минут</li>
+            <li>📨 <strong>Уведомления</strong> — каждую минуту</li>
           </ul>
         </div>
       </div>
@@ -1233,48 +1294,40 @@ function renderFaq() {
       <div class="faq-item">
         <div class="faq-q"><div class="faq-q-icon">?</div>Как узнать когда обновились данные?</div>
         <div class="faq-a">
-          Внизу экрана есть <strong>индикатор времени</strong> — покажет, когда данные последний раз получены с сервера. Если прошло больше 30 минут, бот подтянет свежие автоматически.
+          Внизу экрана есть <strong>индикатор времени</strong> — покажет, когда данные получены с сервера.
         </div>
       </div>
     </div>
 
     <div class="faq-section">
       <div class="faq-section-title">🎁 Уведомления</div>
-
       <div class="faq-item">
         <div class="faq-q"><div class="faq-q-icon">?</div>Какие уведомления я получу?</div>
         <div class="faq-a">
-          Бот пришлёт вам:
+          Бот пришлёт:
           <ul>
             <li>⏰ <strong>За 15 минут</strong> до матча — напоминание с прогнозом</li>
             <li>🎉 <strong>После завершения</strong> — зашёл прогноз или нет</li>
-            <li>📊 <strong>Раз в день в 9:00</strong> — утренний дайджест</li>
-            <li>🎁 <strong>Раз в день в 19:00</strong> — бонус от букмекера</li>
+            <li>📊 <strong>В 9:00</strong> — утренний дайджест</li>
+            <li>🎁 <strong>В 19:00</strong> — бонус от букмекера</li>
           </ul>
         </div>
       </div>
     </div>
 
     <div class="faq-section">
-      <div class="faq-section-title">📊 Статистика и избранное</div>
-
+      <div class="faq-section-title">📊 Статистика</div>
       <div class="faq-item">
         <div class="faq-q"><div class="faq-q-icon">?</div>Откуда берётся статистика?</div>
         <div class="faq-a">
-          Все <strong>завершённые прогнозы</strong> автоматически попадают в архив. В разделе <strong>«Статистика»</strong>:
-          <ul>
-            <li>🎯 Общая точность прогнозов</li>
-            <li>✅ Сколько зашло</li>
-            <li>❌ Сколько не зашло</li>
-            <li>📋 Список всех матчей с итоговыми счетами</li>
-          </ul>
+          Все <strong>завершённые прогнозы</strong> автоматически попадают в архив. В разделе <strong>«Статистика»</strong> — точность, зашедшие, незашедшие и список матчей.
         </div>
       </div>
 
       <div class="faq-item">
         <div class="faq-q"><div class="faq-q-icon">?</div>Что такое "Избранное"?</div>
         <div class="faq-a">
-          Нажмите <strong>☆ звёздочку</strong> на карточке матча — он добавится в избранное. Фильтр <strong>«⭐ Избранное»</strong> покажет только выбранные матчи. Список сохраняется на устройстве.
+          Нажмите <strong>☆ звёздочку</strong> — матч добавится в избранное. Фильтр <strong>«⭐ Избранное»</strong> покажет только выбранные.
         </div>
       </div>
     </div>
