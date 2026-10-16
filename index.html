@@ -324,6 +324,7 @@ body.light-theme .stat-box { background: linear-gradient(180deg, rgba(74, 168, 2
 .outcome-line .label { color: var(--text-dim); font-weight: 700; display: flex; align-items: center; gap: 5px; }
 .outcome-line .fav { color: var(--accent); font-weight: 900; font-size: 14px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.3px; text-shadow: 0 0 10px var(--accent-glow); }
 .outcome-line.double .fav { color: var(--gold); text-shadow: 0 0 10px var(--gold-glow); }
+.outcome-line.pending { opacity: 0.55; }
 .live-badge {
   display: inline-block;
   padding: 3px 9px;
@@ -836,6 +837,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbxW52PKcn0Mh2L6yjQ5-5Ii
 const AD_URL = 'https://baltbet.ru/account/register?refpromo=1221753';
 const BOT_URL = 'https://t.me/total25_signals_bot';
 const CACHE_TTL = 30 * 60 * 1000;
+const CACHE_VERSION = 'v33';
 let currentTab = 'today';
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.ready(); tg.expand(); }
@@ -882,6 +884,12 @@ function probGlow(p) {
   if (p >= 70) return 'var(--warn-glow)';
   if (p >= 65) return 'var(--mint-glow)';
   return 'var(--accent-glow)';
+}
+function escapeHtml(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/[&<>"']/g, function(c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
 }
 function checkDailyWelcome() {
   const today = new Date().toISOString().slice(0, 10);
@@ -956,11 +964,11 @@ document.getElementById('tabs').addEventListener('click', e => {
   loadData();
 });
 function getCache(tab) {
-  try { const r = localStorage.getItem('tb25_v32_' + tab); return r ? JSON.parse(r) : null; } catch(e){ return null; }
+  try { const r = localStorage.getItem('tb25_' + CACHE_VERSION + '_' + tab); return r ? JSON.parse(r) : null; } catch(e){ return null; }
 }
 function setCache(tab, version, data) {
   try {
-    localStorage.setItem('tb25_v32_' + tab, JSON.stringify({ version, data, ts: Date.now() }));
+    localStorage.setItem('tb25_' + CACHE_VERSION + '_' + tab, JSON.stringify({ version, data, ts: Date.now() }));
     localStorage.setItem('tb25_last_update', new Date().toISOString());
   } catch(e){}
 }
@@ -1016,7 +1024,7 @@ async function loadData() {
       updateSyncLine();
     }
   } catch (e) {
-    if (!cached) content.innerHTML = '<div class="error">❌ ' + e.message + '</div>';
+    if (!cached) content.innerHTML = '<div class="error">❌ ' + escapeHtml(e.message) + '</div>';
   }
 }
 function renderTab(tab, data) {
@@ -1047,20 +1055,25 @@ function renderMatches(data) {
     if (m.outcome) {
       const o = m.outcome;
       const p1 = o.p1 || 0, px = o.x || 0, p2 = o.p2 || 0;
-      const best = Math.max(p1, px, p2);
-      let mainLabel = 'X';
-      if (best === p1) mainLabel = 'П1';
-      else if (best === p2) mainLabel = 'П2';
-      const chance1X = p1 + px, chance2X = p2 + px, chance12 = p1 + p2;
-      let doubleLabel = '1X', bestDouble = chance1X;
-      if (chance2X > bestDouble) { doubleLabel = '2X'; bestDouble = chance2X; }
-      if (chance12 > bestDouble) { doubleLabel = '12'; bestDouble = chance12; }
-      outcomeHtml = '<div class="outcome-line"><span class="label">🏆 Прогноз</span><span class="fav">' + mainLabel + ' · ' + best + '%</span></div><div class="outcome-line double" style="margin-bottom:0;"><span class="label">🎯 Двойной шанс</span><span class="fav">' + doubleLabel + ' · ' + bestDouble + '%</span></div>';
+      if (p1 + px + p2 > 0) {
+        const best = Math.max(p1, px, p2);
+        let mainLabel = 'X';
+        if (best === p1) mainLabel = 'П1';
+        else if (best === p2) mainLabel = 'П2';
+        const chance1X = p1 + px, chance2X = p2 + px, chance12 = p1 + p2;
+        let doubleLabel = '1X', bestDouble = chance1X;
+        if (chance2X > bestDouble) { doubleLabel = '2X'; bestDouble = chance2X; }
+        if (chance12 > bestDouble) { doubleLabel = '12'; bestDouble = chance12; }
+        outcomeHtml = '<div class="outcome-line"><span class="label">🏆 Прогноз</span><span class="fav">' + mainLabel + ' · ' + best + '%</span></div><div class="outcome-line double" style="margin-bottom:0;"><span class="label">🎯 Двойной шанс</span><span class="fav">' + doubleLabel + ' · ' + bestDouble + '%</span></div>';
+      }
+    }
+    if (!outcomeHtml) {
+      outcomeHtml = '<div class="outcome-line pending" style="margin-bottom:0;"><span class="label">🏆 Прогноз</span><span class="fav">—</span></div>';
     }
     html += '<div class="card ' + cardClass(prob) + ' ' + (live ? 'card-live' : '') + '" style="animation-delay:' + (idx * 0.05) + 's;">';
-    html += '<div class="card-header"><span class="card-num-badge">' + idx + '</span><div class="card-teams-block"><div class="card-team">' + m.home + '</div><div class="card-team">' + m.away + '</div></div></div>';
-    html += '<div class="card-meta"><div class="meta-item league">🏆 ' + m.league + '</div><div class="meta-item">📅 ' + (m.date || '') + (m.time ? ' · ' + m.time : '') + '</div>' + (live ? '<div class="meta-item"><span class="live-badge">LIVE</span></div>' : '') + '</div>';
-    html += '<div class="card-stats"><div class="stat-box blue"><div class="label">Тотал</div><div class="value">' + m.total + '</div></div><div class="stat-box green"><div class="label">Вероят.</div><div class="value" style="color:' + probColor(prob) + ';text-shadow:0 0 18px ' + probGlow(prob) + '">' + prob + '%</div></div><div class="stat-box gold"><div class="label">Кэф</div><div class="value">' + m.odd + '</div></div></div>';
+    html += '<div class="card-header"><span class="card-num-badge">' + idx + '</span><div class="card-teams-block"><div class="card-team">' + escapeHtml(m.home) + '</div><div class="card-team">' + escapeHtml(m.away) + '</div></div></div>';
+    html += '<div class="card-meta"><div class="meta-item league">🏆 ' + escapeHtml(m.league) + '</div><div class="meta-item">📅 ' + escapeHtml(m.date || '') + (m.time ? ' · ' + escapeHtml(m.time) : '') + '</div>' + (live ? '<div class="meta-item"><span class="live-badge">LIVE</span></div>' : '') + '</div>';
+    html += '<div class="card-stats"><div class="stat-box blue"><div class="label">Тотал</div><div class="value">' + escapeHtml(m.total) + '</div></div><div class="stat-box green"><div class="label">Вероят.</div><div class="value" style="color:' + probColor(prob) + ';text-shadow:0 0 18px ' + probGlow(prob) + '">' + prob + '%</div></div><div class="stat-box gold"><div class="label">Кэф</div><div class="value">' + escapeHtml(m.odd) + '</div></div></div>';
     html += outcomeHtml + '</div>';
   });
   content.innerHTML = html || '<div class="empty">Нет матчей</div>';
@@ -1073,27 +1086,30 @@ function renderYesterday(data) {
     matches.forEach(m => { if (m.status === 'win') wins++; else if (m.status === 'lose') loses++; });
     total = wins + loses;
     accuracy = total > 0 ? Math.round(wins / total * 100) : 0;
-  } else if (data && data.matches) {
-    matches = data.matches || [];
-    wins = data.wins || 0; loses = data.loses || 0;
-    accuracy = data.accuracy || 0; total = data.total || 0;
-    dateStr = data.date || ''; isYesterday = data.isYesterday !== false;
+  } else if (data && Array.isArray(data.matches)) {
+    matches = data.matches;
+    wins = typeof data.wins === 'number' ? data.wins : 0;
+    loses = typeof data.loses === 'number' ? data.loses : 0;
+    accuracy = typeof data.accuracy === 'number' ? data.accuracy : 0;
+    total = typeof data.total === 'number' ? data.total : (wins + loses);
+    dateStr = data.date || '';
+    isYesterday = data.isYesterday !== false;
   }
   if (!matches.length) { content.innerHTML = '<div class="empty">Вчера матчей не было</div>'; return; }
   const titleText = isYesterday ? '✅ ВЧЕРА' : '📅 ПОСЛЕДНИЕ МАТЧИ';
   const subtitleText = isYesterday ? (dateStr + ' · ' + total + ' матчей') : ('Последние ' + total + ' матчей');
-  let html = '<div class="section-title">' + titleText + '</div><div class="section-sub">' + subtitleText + '</div>';
+  let html = '<div class="section-title">' + titleText + '</div><div class="section-sub">' + escapeHtml(subtitleText) + '</div>';
   html += '<div class="yesterday-summary"><div class="yesterday-stat win"><div class="ys-num">' + wins + '</div><div class="ys-label">✅ Зашло</div></div><div class="yesterday-stat lose"><div class="ys-num">' + loses + '</div><div class="ys-label">❌ Не зашло</div></div><div class="yesterday-stat acc"><div class="ys-num">' + accuracy + '%</div><div class="ys-label">🎯 Точность</div></div></div>';
   matches.forEach((m, idx) => {
     const emoji = m.status === 'win' ? '✅' : m.status === 'lose' ? '❌' : '⏳';
-    const winnerHtml = m.winner ? '<div class="winner-badge">🏆 ' + m.winner + '</div>' : '';
-    html += '<div class="card" style="animation-delay:' + (idx * 0.05) + 's;"><div class="card-header"><div class="card-teams-block" style="padding-left:4px;"><div class="card-team">' + m.home + '</div><div class="card-team">' + m.away + '</div></div><span style="font-size:19px;font-weight:900;font-family:\'JetBrains Mono\',monospace;color:var(--text);">' + (m.score || '—') + '</span></div><div class="card-meta"><div class="meta-item league">🏆 ' + m.league + '</div><div class="meta-item">⚽ ' + m.total + ' голов</div>' + (m.date ? '<div class="meta-item">📅 ' + m.date + (m.time ? ' · ' + m.time : '') + '</div>' : '') + '</div><div class="outcome-line" style="margin-bottom:0;"><span class="label">' + emoji + ' Прогноз</span><span class="fav">' + m.prediction + '</span></div>' + winnerHtml + '</div>';
+    const winnerHtml = m.winner ? '<div class="winner-badge">🏆 ' + escapeHtml(m.winner) + '</div>' : '';
+    html += '<div class="card" style="animation-delay:' + (idx * 0.05) + 's;"><div class="card-header"><div class="card-teams-block" style="padding-left:4px;"><div class="card-team">' + escapeHtml(m.home) + '</div><div class="card-team">' + escapeHtml(m.away) + '</div></div><span style="font-size:19px;font-weight:900;font-family:\'JetBrains Mono\',monospace;color:var(--text);">' + escapeHtml(m.score || '—') + '</span></div><div class="card-meta"><div class="meta-item league">🏆 ' + escapeHtml(m.league) + '</div><div class="meta-item">⚽ ' + escapeHtml(m.total) + ' голов</div>' + (m.date ? '<div class="meta-item">📅 ' + escapeHtml(m.date) + (m.time ? ' · ' + escapeHtml(m.time) : '') + '</div>' : '') + '</div><div class="outcome-line" style="margin-bottom:0;"><span class="label">' + emoji + ' Прогноз</span><span class="fav">' + escapeHtml(m.prediction || '—') + '</span></div>' + winnerHtml + '</div>';
   });
   content.innerHTML = html;
 }
 function renderExpress(data) {
   const content = document.getElementById('content');
-  if (!data || !data.matches || !data.matches.length) { content.innerHTML = '<div class="empty">Экспресс ещё не собран</div>'; return; }
+  if (!data || !Array.isArray(data.matches) || !data.matches.length) { content.innerHTML = '<div class="empty">Экспресс ещё не собран</div>'; return; }
   const todayISO = new Date().toISOString().slice(0, 10);
   let items = data.matches.filter(m => {
     if (!m.home || !m.away) return false;
@@ -1117,9 +1133,9 @@ function renderExpress(data) {
     const prob = parseInt(m.probability) || 0;
     const oddNum = parseFloat(m.odd) || 1;
     html += '<div class="express-card" style="animation-delay:' + (i * 0.07) + 's;">';
-    html += '<div class="express-card-head"><span class="express-num">' + (i + 1) + '</span><span class="express-match">' + m.home + ' — ' + m.away + '</span></div>';
-    html += '<div class="express-league">🏆 ' + m.league + (m.date ? ' · 📅 ' + m.date + (m.time ? ' ' + m.time : '') : '') + '</div>';
-    html += '<div class="express-card-body"><div class="express-stat"><div class="express-stat-label">Тотал</div><div class="express-stat-value">' + m.total + '</div></div><div class="express-stat"><div class="express-stat-label">Вероят.</div><div class="express-stat-value" style="color:' + probColor(prob) + '">' + prob + '%</div></div><div class="express-stat"><div class="express-stat-label">Кэф</div><div class="express-odd">' + oddNum.toFixed(2) + '</div></div></div></div>';
+    html += '<div class="express-card-head"><span class="express-num">' + (i + 1) + '</span><span class="express-match">' + escapeHtml(m.home) + ' — ' + escapeHtml(m.away) + '</span></div>';
+    html += '<div class="express-league">🏆 ' + escapeHtml(m.league) + (m.date ? ' · 📅 ' + escapeHtml(m.date) + (m.time ? ' ' + escapeHtml(m.time) : '') : '') + '</div>';
+    html += '<div class="express-card-body"><div class="express-stat"><div class="express-stat-label">Тотал</div><div class="express-stat-value">' + escapeHtml(m.total) + '</div></div><div class="express-stat"><div class="express-stat-label">Вероят.</div><div class="express-stat-value" style="color:' + probColor(prob) + '">' + prob + '%</div></div><div class="express-stat"><div class="express-stat-label">Кэф</div><div class="express-odd">' + oddNum.toFixed(2) + '</div></div></div></div>';
   });
   html += '<div class="express-footer"><div class="express-footer-row"><span>🎯 Стратегия</span><span>Тотал Больше 2.5</span></div><div class="express-footer-row"><span>📊 Событий</span><span>' + sortedMatches.length + '</span></div><div class="express-footer-row"><span>💰 Общий кэф</span><span class="express-footer-odd">' + totalOdd + '</span></div></div>';
   content.innerHTML = html;
@@ -1137,8 +1153,8 @@ function renderStats(data) {
   if (leagues.length) {
     html += '<div class="leagues-title">📊 ПО ЛИГАМ · НАЖМИ ДЛЯ ДЕТАЛЕЙ</div>';
     leagues.forEach((lg, i) => {
-      const safeName = String(lg.name).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-      html += '<div class="league-item" style="animation-delay:' + (i * 0.04) + 's;" onclick="openLeague(\'' + safeName + '\')"><div class="league-name">🏆 ' + lg.name + '</div><div class="league-stats"><span class="league-win">✅ ' + (lg.wins || 0) + '</span><span class="league-lose">❌ ' + (lg.loses || 0) + '</span><span class="league-acc">' + (lg.accuracy || 0) + '%</span></div><span class="league-arrow">›</span></div>';
+      const safeName = String(lg.name || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+      html += '<div class="league-item" style="animation-delay:' + (i * 0.04) + 's;" onclick="openLeague(\'' + safeName + '\')"><div class="league-name">🏆 ' + escapeHtml(lg.name) + '</div><div class="league-stats"><span class="league-win">✅ ' + (lg.wins || 0) + '</span><span class="league-lose">❌ ' + (lg.loses || 0) + '</span><span class="league-acc">' + (lg.accuracy || 0) + '%</span></div><span class="league-arrow">›</span></div>';
     });
   }
   html += '<div class="disclaimer"><div class="disclaimer-title">Важно</div><div class="disclaimer-text">Все прогнозы — это <strong>сбор информации и аналитика</strong>. Они <strong>не являются гарантией победы</strong>. Играйте ответственно.</div></div></div>';
@@ -1154,20 +1170,20 @@ async function openLeague(leagueName) {
     const raw = await resp.json();
     const data = Array.isArray(raw) ? raw : (raw.data || []);
     let html = '<button style="margin-bottom:14px;padding:9px 18px;border-radius:22px;font-size:12px;font-weight:800;background:var(--glass);color:var(--text-dim);border:1px solid var(--border-mid);cursor:pointer;font-family:inherit;backdrop-filter:blur(12px);" onclick="switchTabDirect(\'stats\')">← Назад к статистике</button>';
-    html += '<div class="section-title">🏆 ' + leagueName + '</div>';
+    html += '<div class="section-title">🏆 ' + escapeHtml(leagueName) + '</div>';
     html += '<div class="section-sub">Матчей в лиге: ' + data.length + '</div>';
     if (!data.length) {
       html += '<div class="empty">По этой лиге пока нет матчей</div>';
     } else {
       data.forEach((m, idx) => {
         const emoji = m.status === 'win' ? '✅' : m.status === 'lose' ? '❌' : '⏳';
-        const winnerHtml = m.winner ? '<div class="winner-badge">🏆 ' + m.winner + '</div>' : '';
-        html += '<div class="card" style="animation-delay:' + (idx * 0.04) + 's;"><div class="card-header"><div class="card-teams-block" style="padding-left:4px;"><div class="card-team">' + m.home + '</div><div class="card-team">' + m.away + '</div></div><span style="font-size:19px;font-weight:900;font-family:\'JetBrains Mono\',monospace;">' + (m.score || '—') + '</span></div><div class="card-meta"><div class="meta-item">⚽ ' + m.total + ' голов</div>' + (m.date ? '<div class="meta-item">📅 ' + m.date + (m.time ? ' · ' + m.time : '') + '</div>' : '') + '</div><div class="outcome-line" style="margin-bottom:0;"><span class="label">' + emoji + ' ' + m.prediction + '</span><span class="fav">' + emoji + '</span></div>' + winnerHtml + '</div>';
+        const winnerHtml = m.winner ? '<div class="winner-badge">🏆 ' + escapeHtml(m.winner) + '</div>' : '';
+        html += '<div class="card" style="animation-delay:' + (idx * 0.04) + 's;"><div class="card-header"><div class="card-teams-block" style="padding-left:4px;"><div class="card-team">' + escapeHtml(m.home) + '</div><div class="card-team">' + escapeHtml(m.away) + '</div></div><span style="font-size:19px;font-weight:900;font-family:\'JetBrains Mono\',monospace;">' + escapeHtml(m.score || '—') + '</span></div><div class="card-meta"><div class="meta-item">⚽ ' + escapeHtml(m.total) + ' голов</div>' + (m.date ? '<div class="meta-item">📅 ' + escapeHtml(m.date) + (m.time ? ' · ' + escapeHtml(m.time) : '') + '</div>' : '') + '</div><div class="outcome-line" style="margin-bottom:0;"><span class="label">' + emoji + ' ' + escapeHtml(m.prediction || '—') + '</span><span class="fav">' + emoji + '</span></div>' + winnerHtml + '</div>';
       });
     }
     content.innerHTML = html;
   } catch (e) {
-    content.innerHTML = '<div class="error">❌ ' + e.message + '</div>';
+    content.innerHTML = '<div class="error">❌ ' + escapeHtml(e.message) + '</div>';
   }
 }
 function renderBonus() {
@@ -1200,13 +1216,13 @@ async function openHistory(filter) {
     } else {
       data.forEach((m, idx) => {
         const emoji = m.status === 'win' ? '✅' : m.status === 'lose' ? '❌' : '⏳';
-        const winnerHtml = m.winner ? '<div class="winner-badge">🏆 ' + m.winner + '</div>' : '';
-        html += '<div class="card" style="animation-delay:' + (idx * 0.04) + 's;"><div class="card-header"><div class="card-teams-block" style="padding-left:4px;"><div class="card-team">' + m.home + '</div><div class="card-team">' + m.away + '</div></div><span style="font-size:19px;font-weight:900;font-family:\'JetBrains Mono\',monospace;">' + (m.score || '—') + '</span></div><div class="card-meta"><div class="meta-item league">🏆 ' + m.league + '</div>' + (m.date ? '<div class="meta-item">📅 ' + m.date + (m.time ? ' · ' + m.time : '') + '</div>' : '') + '<div class="meta-item">⚽ ' + m.total + '</div></div><div class="outcome-line" style="margin-bottom:0;"><span class="label">' + emoji + ' ' + m.prediction + '</span><span class="fav">' + emoji + '</span></div>' + winnerHtml + '</div>';
+        const winnerHtml = m.winner ? '<div class="winner-badge">🏆 ' + escapeHtml(m.winner) + '</div>' : '';
+        html += '<div class="card" style="animation-delay:' + (idx * 0.04) + 's;"><div class="card-header"><div class="card-teams-block" style="padding-left:4px;"><div class="card-team">' + escapeHtml(m.home) + '</div><div class="card-team">' + escapeHtml(m.away) + '</div></div><span style="font-size:19px;font-weight:900;font-family:\'JetBrains Mono\',monospace;">' + escapeHtml(m.score || '—') + '</span></div><div class="card-meta"><div class="meta-item league">🏆 ' + escapeHtml(m.league) + '</div>' + (m.date ? '<div class="meta-item">📅 ' + escapeHtml(m.date) + (m.time ? ' · ' + escapeHtml(m.time) : '') + '</div>' : '') + '<div class="meta-item">⚽ ' + escapeHtml(m.total) + '</div></div><div class="outcome-line" style="margin-bottom:0;"><span class="label">' + emoji + ' ' + escapeHtml(m.prediction || '—') + '</span><span class="fav">' + emoji + '</span></div>' + winnerHtml + '</div>';
       });
     }
     content.innerHTML = html;
   } catch (e) {
-    content.innerHTML = '<div class="error">❌ ' + e.message + '</div>';
+    content.innerHTML = '<div class="error">❌ ' + escapeHtml(e.message) + '</div>';
   }
 }
 checkDailyWelcome();
