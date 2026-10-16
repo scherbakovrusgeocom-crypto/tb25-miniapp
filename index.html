@@ -837,7 +837,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbxW52PKcn0Mh2L6yjQ5-5Ii
 const AD_URL = 'https://baltbet.ru/account/register?refpromo=1221753';
 const BOT_URL = 'https://t.me/total25_signals_bot';
 const CACHE_TTL = 30 * 60 * 1000;
-const CACHE_VERSION = 'v33';
+const CACHE_VERSION = 'v34';
 let currentTab = 'today';
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.ready(); tg.expand(); }
@@ -885,6 +885,47 @@ function probGlow(p) {
   if (p >= 65) return 'var(--mint-glow)';
   return 'var(--accent-glow)';
 }
+
+/* ============ ГЛАВНЫЙ ФИКС: formatDate ============ */
+function formatDate(d) {
+  if (d === null || d === undefined || d === '') return '';
+  // Если объект Date
+  if (d instanceof Date) {
+    if (isNaN(d.getTime())) return '';
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const yyyy = d.getFullYear();
+    return dd + '.' + mm + '.' + yyyy;
+  }
+  const s = String(d).trim();
+  if (!s) return '';
+  // Уже ISO: 2026-10-15 или 2026-10-15 21:45
+  let m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) return m[3] + '.' + m[2] + '.' + m[1];
+  // Уже DD.MM.YYYY
+  m = s.match(/^(\d{2})\.(\d{2})\.(\d{4})/);
+  if (m) return m[1] + '.' + m[2] + '.' + m[3];
+  // Это "Sat Dec 30 1899 22:00:00 GMT+0300 (...)"
+  if (/GMT[+-]\d{4}/.test(s) || /^[A-Z][a-z]{2} [A-Z][a-z]{2}/.test(s)) {
+    const parsed = new Date(s);
+    if (!isNaN(parsed.getTime())) {
+      const dd = String(parsed.getDate()).padStart(2, '0');
+      const mm = String(parsed.getMonth() + 1).padStart(2, '0');
+      const yyyy = parsed.getFullYear();
+      return dd + '.' + mm + '.' + yyyy;
+    }
+  }
+  // Последняя попытка — парсим как дату
+  const parsed = new Date(s);
+  if (!isNaN(parsed.getTime()) && parsed.getFullYear() > 1900) {
+    const dd = String(parsed.getDate()).padStart(2, '0');
+    const mm = String(parsed.getMonth() + 1).padStart(2, '0');
+    const yyyy = parsed.getFullYear();
+    return dd + '.' + mm + '.' + yyyy;
+  }
+  return s;
+}
+
 function escapeHtml(s) {
   if (s === null || s === undefined) return '';
   return String(s).replace(/[&<>"']/g, function(c) {
@@ -1072,7 +1113,7 @@ function renderMatches(data) {
     }
     html += '<div class="card ' + cardClass(prob) + ' ' + (live ? 'card-live' : '') + '" style="animation-delay:' + (idx * 0.05) + 's;">';
     html += '<div class="card-header"><span class="card-num-badge">' + idx + '</span><div class="card-teams-block"><div class="card-team">' + escapeHtml(m.home) + '</div><div class="card-team">' + escapeHtml(m.away) + '</div></div></div>';
-    html += '<div class="card-meta"><div class="meta-item league">🏆 ' + escapeHtml(m.league) + '</div><div class="meta-item">📅 ' + escapeHtml(m.date || '') + (m.time ? ' · ' + escapeHtml(m.time) : '') + '</div>' + (live ? '<div class="meta-item"><span class="live-badge">LIVE</span></div>' : '') + '</div>';
+    html += '<div class="card-meta"><div class="meta-item league">🏆 ' + escapeHtml(m.league) + '</div><div class="meta-item">📅 ' + escapeHtml(formatDate(m.date)) + (m.time ? ' · ' + escapeHtml(m.time) : '') + '</div>' + (live ? '<div class="meta-item"><span class="live-badge">LIVE</span></div>' : '') + '</div>';
     html += '<div class="card-stats"><div class="stat-box blue"><div class="label">Тотал</div><div class="value">' + escapeHtml(m.total) + '</div></div><div class="stat-box green"><div class="label">Вероят.</div><div class="value" style="color:' + probColor(prob) + ';text-shadow:0 0 18px ' + probGlow(prob) + '">' + prob + '%</div></div><div class="stat-box gold"><div class="label">Кэф</div><div class="value">' + escapeHtml(m.odd) + '</div></div></div>';
     html += outcomeHtml + '</div>';
   });
@@ -1097,13 +1138,13 @@ function renderYesterday(data) {
   }
   if (!matches.length) { content.innerHTML = '<div class="empty">Вчера матчей не было</div>'; return; }
   const titleText = isYesterday ? '✅ ВЧЕРА' : '📅 ПОСЛЕДНИЕ МАТЧИ';
-  const subtitleText = isYesterday ? (dateStr + ' · ' + total + ' матчей') : ('Последние ' + total + ' матчей');
+  const subtitleText = isYesterday ? (formatDate(dateStr) + ' · ' + total + ' матчей') : ('Последние ' + total + ' матчей');
   let html = '<div class="section-title">' + titleText + '</div><div class="section-sub">' + escapeHtml(subtitleText) + '</div>';
   html += '<div class="yesterday-summary"><div class="yesterday-stat win"><div class="ys-num">' + wins + '</div><div class="ys-label">✅ Зашло</div></div><div class="yesterday-stat lose"><div class="ys-num">' + loses + '</div><div class="ys-label">❌ Не зашло</div></div><div class="yesterday-stat acc"><div class="ys-num">' + accuracy + '%</div><div class="ys-label">🎯 Точность</div></div></div>';
   matches.forEach((m, idx) => {
     const emoji = m.status === 'win' ? '✅' : m.status === 'lose' ? '❌' : '⏳';
     const winnerHtml = m.winner ? '<div class="winner-badge">🏆 ' + escapeHtml(m.winner) + '</div>' : '';
-    html += '<div class="card" style="animation-delay:' + (idx * 0.05) + 's;"><div class="card-header"><div class="card-teams-block" style="padding-left:4px;"><div class="card-team">' + escapeHtml(m.home) + '</div><div class="card-team">' + escapeHtml(m.away) + '</div></div><span style="font-size:19px;font-weight:900;font-family:\'JetBrains Mono\',monospace;color:var(--text);">' + escapeHtml(m.score || '—') + '</span></div><div class="card-meta"><div class="meta-item league">🏆 ' + escapeHtml(m.league) + '</div><div class="meta-item">⚽ ' + escapeHtml(m.total) + ' голов</div>' + (m.date ? '<div class="meta-item">📅 ' + escapeHtml(m.date) + (m.time ? ' · ' + escapeHtml(m.time) : '') + '</div>' : '') + '</div><div class="outcome-line" style="margin-bottom:0;"><span class="label">' + emoji + ' Прогноз</span><span class="fav">' + escapeHtml(m.prediction || '—') + '</span></div>' + winnerHtml + '</div>';
+    html += '<div class="card" style="animation-delay:' + (idx * 0.05) + 's;"><div class="card-header"><div class="card-teams-block" style="padding-left:4px;"><div class="card-team">' + escapeHtml(m.home) + '</div><div class="card-team">' + escapeHtml(m.away) + '</div></div><span style="font-size:19px;font-weight:900;font-family:\'JetBrains Mono\',monospace;color:var(--text);">' + escapeHtml(m.score || '—') + '</span></div><div class="card-meta"><div class="meta-item league">🏆 ' + escapeHtml(m.league) + '</div><div class="meta-item">⚽ ' + escapeHtml(m.total) + ' голов</div>' + (m.date ? '<div class="meta-item">📅 ' + escapeHtml(formatDate(m.date)) + (m.time ? ' · ' + escapeHtml(m.time) : '') + '</div>' : '') + '</div><div class="outcome-line" style="margin-bottom:0;"><span class="label">' + emoji + ' Прогноз</span><span class="fav">' + escapeHtml(m.prediction || '—') + '</span></div>' + winnerHtml + '</div>';
   });
   content.innerHTML = html;
 }
@@ -1117,7 +1158,7 @@ function renderExpress(data) {
     const oddNum = parseFloat(m.odd) || 0;
     if (prob < 1 || oddNum < 1.01) return false;
     if (!m.date) return true;
-    return m.date.indexOf(todayISO) === 0;
+    return String(m.date).indexOf(todayISO) === 0 || formatDate(m.date).indexOf('.') >= 0;
   });
   if (items.length === 0) {
     items = data.matches.filter(m => m.home && m.away && (parseInt(m.probability) || 0) >= 1 && (parseFloat(m.odd) || 0) >= 1.01);
@@ -1134,7 +1175,7 @@ function renderExpress(data) {
     const oddNum = parseFloat(m.odd) || 1;
     html += '<div class="express-card" style="animation-delay:' + (i * 0.07) + 's;">';
     html += '<div class="express-card-head"><span class="express-num">' + (i + 1) + '</span><span class="express-match">' + escapeHtml(m.home) + ' — ' + escapeHtml(m.away) + '</span></div>';
-    html += '<div class="express-league">🏆 ' + escapeHtml(m.league) + (m.date ? ' · 📅 ' + escapeHtml(m.date) + (m.time ? ' ' + escapeHtml(m.time) : '') : '') + '</div>';
+    html += '<div class="express-league">🏆 ' + escapeHtml(m.league) + (m.date ? ' · 📅 ' + escapeHtml(formatDate(m.date)) + (m.time ? ' ' + escapeHtml(m.time) : '') : '') + '</div>';
     html += '<div class="express-card-body"><div class="express-stat"><div class="express-stat-label">Тотал</div><div class="express-stat-value">' + escapeHtml(m.total) + '</div></div><div class="express-stat"><div class="express-stat-label">Вероят.</div><div class="express-stat-value" style="color:' + probColor(prob) + '">' + prob + '%</div></div><div class="express-stat"><div class="express-stat-label">Кэф</div><div class="express-odd">' + oddNum.toFixed(2) + '</div></div></div></div>';
   });
   html += '<div class="express-footer"><div class="express-footer-row"><span>🎯 Стратегия</span><span>Тотал Больше 2.5</span></div><div class="express-footer-row"><span>📊 Событий</span><span>' + sortedMatches.length + '</span></div><div class="express-footer-row"><span>💰 Общий кэф</span><span class="express-footer-odd">' + totalOdd + '</span></div></div>';
@@ -1178,7 +1219,7 @@ async function openLeague(leagueName) {
       data.forEach((m, idx) => {
         const emoji = m.status === 'win' ? '✅' : m.status === 'lose' ? '❌' : '⏳';
         const winnerHtml = m.winner ? '<div class="winner-badge">🏆 ' + escapeHtml(m.winner) + '</div>' : '';
-        html += '<div class="card" style="animation-delay:' + (idx * 0.04) + 's;"><div class="card-header"><div class="card-teams-block" style="padding-left:4px;"><div class="card-team">' + escapeHtml(m.home) + '</div><div class="card-team">' + escapeHtml(m.away) + '</div></div><span style="font-size:19px;font-weight:900;font-family:\'JetBrains Mono\',monospace;">' + escapeHtml(m.score || '—') + '</span></div><div class="card-meta"><div class="meta-item">⚽ ' + escapeHtml(m.total) + ' голов</div>' + (m.date ? '<div class="meta-item">📅 ' + escapeHtml(m.date) + (m.time ? ' · ' + escapeHtml(m.time) : '') + '</div>' : '') + '</div><div class="outcome-line" style="margin-bottom:0;"><span class="label">' + emoji + ' ' + escapeHtml(m.prediction || '—') + '</span><span class="fav">' + emoji + '</span></div>' + winnerHtml + '</div>';
+        html += '<div class="card" style="animation-delay:' + (idx * 0.04) + 's;"><div class="card-header"><div class="card-teams-block" style="padding-left:4px;"><div class="card-team">' + escapeHtml(m.home) + '</div><div class="card-team">' + escapeHtml(m.away) + '</div></div><span style="font-size:19px;font-weight:900;font-family:\'JetBrains Mono\',monospace;">' + escapeHtml(m.score || '—') + '</span></div><div class="card-meta"><div class="meta-item">⚽ ' + escapeHtml(m.total) + ' голов</div>' + (m.date ? '<div class="meta-item">📅 ' + escapeHtml(formatDate(m.date)) + (m.time ? ' · ' + escapeHtml(m.time) : '') + '</div>' : '') + '</div><div class="outcome-line" style="margin-bottom:0;"><span class="label">' + emoji + ' ' + escapeHtml(m.prediction || '—') + '</span><span class="fav">' + emoji + '</span></div>' + winnerHtml + '</div>';
       });
     }
     content.innerHTML = html;
@@ -1217,7 +1258,7 @@ async function openHistory(filter) {
       data.forEach((m, idx) => {
         const emoji = m.status === 'win' ? '✅' : m.status === 'lose' ? '❌' : '⏳';
         const winnerHtml = m.winner ? '<div class="winner-badge">🏆 ' + escapeHtml(m.winner) + '</div>' : '';
-        html += '<div class="card" style="animation-delay:' + (idx * 0.04) + 's;"><div class="card-header"><div class="card-teams-block" style="padding-left:4px;"><div class="card-team">' + escapeHtml(m.home) + '</div><div class="card-team">' + escapeHtml(m.away) + '</div></div><span style="font-size:19px;font-weight:900;font-family:\'JetBrains Mono\',monospace;">' + escapeHtml(m.score || '—') + '</span></div><div class="card-meta"><div class="meta-item league">🏆 ' + escapeHtml(m.league) + '</div>' + (m.date ? '<div class="meta-item">📅 ' + escapeHtml(m.date) + (m.time ? ' · ' + escapeHtml(m.time) : '') + '</div>' : '') + '<div class="meta-item">⚽ ' + escapeHtml(m.total) + '</div></div><div class="outcome-line" style="margin-bottom:0;"><span class="label">' + emoji + ' ' + escapeHtml(m.prediction || '—') + '</span><span class="fav">' + emoji + '</span></div>' + winnerHtml + '</div>';
+        html += '<div class="card" style="animation-delay:' + (idx * 0.04) + 's;"><div class="card-header"><div class="card-teams-block" style="padding-left:4px;"><div class="card-team">' + escapeHtml(m.home) + '</div><div class="card-team">' + escapeHtml(m.away) + '</div></div><span style="font-size:19px;font-weight:900;font-family:\'JetBrains Mono\',monospace;">' + escapeHtml(m.score || '—') + '</span></div><div class="card-meta"><div class="meta-item league">🏆 ' + escapeHtml(m.league) + '</div>' + (m.date ? '<div class="meta-item">📅 ' + escapeHtml(formatDate(m.date)) + (m.time ? ' · ' + escapeHtml(m.time) : '') + '</div>' : '') + '<div class="meta-item">⚽ ' + escapeHtml(m.total) + '</div></div><div class="outcome-line" style="margin-bottom:0;"><span class="label">' + emoji + ' ' + escapeHtml(m.prediction || '—') + '</span><span class="fav">' + emoji + '</span></div>' + winnerHtml + '</div>';
       });
     }
     content.innerHTML = html;
