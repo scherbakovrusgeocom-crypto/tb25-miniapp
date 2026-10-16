@@ -837,7 +837,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbxW52PKcn0Mh2L6yjQ5-5Ii
 const AD_URL = 'https://baltbet.ru/account/register?refpromo=1221753';
 const BOT_URL = 'https://t.me/total25_signals_bot';
 const CACHE_TTL = 30 * 60 * 1000;
-const CACHE_VERSION = 'v34';
+const CACHE_VERSION = 'v35';
 let currentTab = 'today';
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.ready(); tg.expand(); }
@@ -926,12 +926,42 @@ function formatDate(d) {
   return s;
 }
 
+/* ============ ГЛАВНЫЙ ФИКС: escapeHtml чинит Date и счёт ============ */
 function escapeHtml(s) {
   if (s === null || s === undefined) return '';
-  return String(s).replace(/[&<>"']/g, function(c) {
+
+  // Любой объект Date → в зависимости от контекста
+  if (s instanceof Date) {
+    if (isNaN(s.getTime())) return '';
+    // Проверяем: если год 1899 или 1900 — это Sheets отдал "3:4" как время
+    if (s.getFullYear() < 1901) {
+      return s.getHours() + ':' + s.getMinutes();
+    }
+    const dd = String(s.getDate()).padStart(2, '0');
+    const mm = String(s.getMonth() + 1).padStart(2, '0');
+    const yyyy = s.getFullYear();
+    return dd + '.' + mm + '.' + yyyy;
+  }
+
+  const str = String(s);
+
+  // Строка с GMT (например, "Thu Jan 01 2026 00:00:00 GMT+0300...")
+  if (/GMT[+-]\d{4}/.test(str)) {
+    const d = new Date(str);
+    if (!isNaN(d.getTime())) {
+      if (d.getFullYear() < 1901) return d.getHours() + ':' + d.getMinutes();
+      const dd = String(d.getDate()).padStart(2, '0');
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const yyyy = d.getFullYear();
+      return dd + '.' + mm + '.' + yyyy;
+    }
+  }
+
+  return str.replace(/[&<>"']/g, function(c) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
   });
 }
+
 function checkDailyWelcome() {
   const today = new Date().toISOString().slice(0, 10);
   const lastSeen = localStorage.getItem('tb25_last_seen');
