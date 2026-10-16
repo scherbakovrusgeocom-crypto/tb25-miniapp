@@ -956,11 +956,11 @@ document.getElementById('tabs').addEventListener('click', e => {
   loadData();
 });
 function getCache(tab) {
-  try { const r = localStorage.getItem('tb25_v31_' + tab); return r ? JSON.parse(r) : null; } catch(e){ return null; }
+  try { const r = localStorage.getItem('tb25_v32_' + tab); return r ? JSON.parse(r) : null; } catch(e){ return null; }
 }
 function setCache(tab, version, data) {
   try {
-    localStorage.setItem('tb25_v31_' + tab, JSON.stringify({ version, data, ts: Date.now() }));
+    localStorage.setItem('tb25_v32_' + tab, JSON.stringify({ version, data, ts: Date.now() }));
     localStorage.setItem('tb25_last_update', new Date().toISOString());
   } catch(e){}
 }
