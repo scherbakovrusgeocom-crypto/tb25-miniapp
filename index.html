@@ -618,14 +618,16 @@ function showWelcomeModal() {
   modal.innerHTML = '<div class="modal-box">' +
     '<div class="modal-icon">⚽</div>' +
     '<div class="modal-title">ДОБРО ПОЖАЛОВАТЬ</div>' +
+    
     '<div class="modal-text">Это приложение <strong>спортивной аналитики</strong> для поиска футбольных матчей с высокой вероятностью исхода <strong>«Тотал Больше 2.5 голов»</strong>.</div>' +
-    '<div class="modal-text">Бот ежедневно собирает матчи из топ-чемпионатов и еврокубков, применяет <strong>математическую модель</strong> (xG + распределение Пуассона) и показывает только те, где вероятность ≥ 65%.</div>' +
+    
+    '<div class="modal-text">Бот собирает матчи из топ-чемпионатов и еврокубков, применяет <strong>математическую модель</strong> (xG + распределение Пуассона) и показывает только те, где вероятность <strong>≥ 65%</strong>.</div>' +
+    
     '<div class="modal-warn">' +
       '<div class="modal-warn-title">Это НЕ букмекерская контора</div>' +
       '<div>Мы <strong>не принимаем ставки</strong> и <strong>не храним деньги</strong>. Все прогнозы носят <strong>информационный характер</strong> и <strong>не гарантируют выигрыш</strong>. Любой исход — это вероятность, а не факт.</div>' +
     '</div>' +
-    '<div class="modal-star">⭐ Если проект полезен — поддержи его <strong>звёздочкой</strong> в Telegram. Это помогает развитию и бесплатной работе сервиса.</div>' +
-    '<button class="modal-btn modal-btn-gold" onclick="openDonateFromModal(this)">⭐ ПОДДЕРЖАТЬ</button>' +
+    
     '<button class="modal-btn" onclick="closeModal(this)">ПОНЯЛ, ПОЕХАЛИ 🚀</button>' +
     '</div>';
   document.body.appendChild(modal);
