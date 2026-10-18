@@ -56,7 +56,7 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--text-mute); border-radius: 10px; opacity: 0.5; }
 
-/* ---------- ШАПКА БЕЗ МЯЧА ---------- */
+/* ---------- ШАПКА ---------- */
 .header { position: relative; padding: 24px 20px 18px; text-align: center; }
 .header-top { position: absolute; top: 16px; right: 16px; display: flex; gap: 8px; }
 .icon-btn {
@@ -74,7 +74,6 @@ body {
 .icon-btn.spinning svg { animation: spin 0.9s linear infinite; color: var(--mint); }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
-/* Заголовок «ПРОГНОЗЫ НА ТБ 2.5» */
 .header-title {
   font-size: 26px;
   font-weight: 900;
@@ -94,18 +93,18 @@ body {
   font-weight: 800;
 }
 
-/* Счётчики сегодня/завтра */
+/* Счётчики с датами */
 .counters {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   margin-top: 16px;
 }
 .counter-chip {
   display: flex;
-  align-items: baseline;
-  gap: 6px;
-  padding: 8px 14px;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 100px;
@@ -113,34 +112,50 @@ body {
   font-weight: 700;
   color: var(--text-dim);
 }
+.counter-chip .label {
+  display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15;
+}
+.counter-chip .label b { font-size: 12px; color: var(--text); }
+.counter-chip .label span { font-size: 10px; color: var(--text-mute); font-weight: 600; }
 .counter-chip .num {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 900;
   color: var(--mint);
+  padding-left: 8px;
+  border-left: 1px solid var(--border);
 }
 .counter-chip .num.gold { color: var(--gold); }
 
-/* ---------- ПОД-ВКЛАДКИ ---------- */
+/* ---------- ПОД-ВКЛАДКИ с датой ---------- */
 .sub-tabs {
   display: flex; gap: 6px; padding: 10px 16px 4px;
   position: sticky; top: 0; z-index: 9;
   background: var(--bg);
 }
 .sub-tab {
-  flex: 1; text-align: center;
-  padding: 10px; border-radius: 100px;
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 8px; border-radius: 14px;
   font-size: 13px; font-weight: 700;
   color: var(--text-dim); background: var(--surface);
   border: 1px solid var(--border);
   cursor: pointer; transition: all 0.25s ease;
+  line-height: 1.2;
+}
+.sub-tab .tab-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  opacity: 0.7;
+  margin-top: 2px;
 }
 .sub-tab.active {
   background: var(--mint-glow); color: var(--mint);
   border-color: var(--border-hi);
 }
+.sub-tab.active .tab-date { opacity: 1; }
 
-/* Чипы лиг в «Матчах» */
+/* Чипы лиг */
 .league-chips {
   display: flex; gap: 6px; overflow-x: auto;
   padding: 8px 16px 12px;
@@ -149,7 +164,8 @@ body {
 .league-chips::-webkit-scrollbar { display: none; }
 .league-chip {
   flex: 0 0 auto;
-  padding: 7px 13px;
+  display: flex; align-items: center; gap: 4px;
+  padding: 7px 12px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 100px;
@@ -169,7 +185,7 @@ body {
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
   opacity: 0.85;
-  margin-left: 4px;
+  margin-left: 2px;
 }
 
 #content { padding: 16px; }
@@ -191,9 +207,47 @@ body {
 .card.prob-high::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gold); }
 .card.prob-mid::before  { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--mint); }
 
-.card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+/* Бейдж «ТОП» в углу */
+.top-badge {
+  position: absolute;
+  top: 12px; right: 12px;
+  padding: 3px 8px;
+  background: linear-gradient(135deg, var(--gold), #fbbf24);
+  color: #000;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  border-radius: 6px;
+  box-shadow: 0 3px 10px var(--gold-glow);
+}
+
+.card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; padding-right: 46px; }
 .card-team { font-size: 15px; font-weight: 800; line-height: 1.3; }
 .card-team.away { color: var(--text-dim); margin-top: 3px; }
+
+/* Дата + время в карточке справа сверху */
+.match-time-badge {
+  position: absolute;
+  top: 12px; right: 12px;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
+  font-family: 'JetBrains Mono', monospace;
+  line-height: 1.1;
+}
+.match-time-badge .md {
+  font-size: 13px; font-weight: 900; color: var(--text);
+}
+.match-time-badge .tm {
+  font-size: 11px; font-weight: 700; color: var(--mint);
+}
+.card.prob-high .match-time-badge .tm { color: var(--gold); }
+.match-time-badge .live-dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--danger);
+  margin-right: 3px;
+  animation: livePulse 1.2s ease-in-out infinite;
+}
+@keyframes livePulse { 0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--danger-glow); } 50% { opacity: 0.6; box-shadow: 0 0 0 4px transparent; } }
+
 .card-meta { display: flex; flex-wrap: wrap; gap: 6px; font-size: 11px; color: var(--text-mute); font-weight: 600; margin-bottom: 14px; }
 .meta-badge { display: flex; align-items: center; gap: 4px; background: var(--surface-hi); padding: 4px 9px; border-radius: 8px; }
 .meta-badge.league { color: var(--mint); }
@@ -226,19 +280,21 @@ body {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius-sm); padding: 14px; margin-bottom: 10px;
   display: flex; flex-direction: column; gap: 8px;
-  cursor: pointer; transition: transform 0.2s;
+  cursor: pointer; transition: transform 0.2s, border-color 0.2s;
 }
-.league-row:active { transform: scale(0.98); }
+.league-row:active { transform: scale(0.98); border-color: var(--border-hi); }
 .league-header { display: flex; justify-content: space-between; align-items: center; }
-.league-name { font-size: 13px; font-weight: 800; }
-.league-acc { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 800; color: var(--mint); }
-.league-bar { height: 4px; background: var(--surface-hi); border-radius: 2px; overflow: hidden; }
-.league-fill { height: 100%; background: var(--mint); border-radius: 2px; }
-.league-count {
-  font-size: 11px;
-  color: var(--text-mute);
-  font-weight: 600;
+.league-name { font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+.league-icon { font-size: 18px; }
+.league-acc {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; font-weight: 800; color: var(--mint);
+  background: var(--mint-glow);
+  padding: 3px 9px;
+  border-radius: 8px;
 }
+.league-counts { display: flex; gap: 14px; font-size: 11px; color: var(--text-mute); font-weight: 600; }
+.league-counts b { font-family: 'JetBrains Mono', monospace; }
 
 /* ---------- ЭКСПРЕСС ---------- */
 .express-hero {
@@ -283,7 +339,7 @@ body {
 
 .sync-line { text-align: center; font-size: 11px; color: var(--text-mute); font-weight: 600; margin-top: 16px; padding: 0 16px; }
 
-/* ---------- НИЖНЯЯ НАВИГАЦИЯ (5 кнопок) ---------- */
+/* ---------- НИЖНЯЯ НАВИГАЦИЯ ---------- */
 .bottom-nav {
   position: fixed; bottom: 0; left: 0; right: 0;
   height: var(--nav-h);
@@ -308,7 +364,6 @@ body.light-theme .bottom-nav { background: rgba(255, 255, 255, 0.95); }
 </head>
 <body>
 
-<!-- ШАПКА -->
 <div class="header">
   <div class="header-top">
     <div class="icon-btn" id="refreshBtn" onclick="manualRefresh()" title="Обновить">
@@ -320,38 +375,45 @@ body.light-theme .bottom-nav { background: rgba(255, 255, 255, 0.95); }
   </div>
   <div class="header-title">ПРОГНОЗЫ<br>НА ТБ 2.5</div>
   <div class="header-sub">Тотал больше 2.5</div>
+
+  <!-- Счётчики с датами -->
   <div class="counters" id="counters">
     <div class="counter-chip">
-      <span>Сегодня</span>
+      <div class="label"><b>Сегодня</b><span id="cntTodayDate">—</span></div>
       <span class="num" id="cntToday">—</span>
     </div>
     <div class="counter-chip">
-      <span>Завтра</span>
+      <div class="label"><b>Завтра</b><span id="cntTomorrowDate">—</span></div>
       <span class="num gold" id="cntTomorrow">—</span>
     </div>
   </div>
 </div>
 
-<!-- ПОД-ВКЛАДКИ -->
+<!-- Под-вкладки с датами -->
 <div class="sub-tabs" id="subTabs" style="display:none;">
-  <div class="sub-tab active" data-sub="today" onclick="switchSubTab('today')">Сегодня</div>
-  <div class="sub-tab" data-sub="tomorrow" onclick="switchSubTab('tomorrow')">Завтра</div>
+  <div class="sub-tab active" data-sub="today" onclick="switchSubTab('today')">
+    Сегодня
+    <span class="tab-date" id="tabDateToday">—</span>
+  </div>
+  <div class="sub-tab" data-sub="tomorrow" onclick="switchSubTab('tomorrow')">
+    Завтра
+    <span class="tab-date" id="tabDateTomorrow">—</span>
+  </div>
 </div>
 
-<!-- ЧИПЫ ЛИГ (только в «Матчах») -->
 <div class="league-chips" id="leagueChips" style="display:none;"></div>
 
 <div id="content"></div>
 <div class="sync-line" id="syncLine"></div>
 
-<!-- НИЖНЯЯ НАВИГАЦИЯ (5 кнопок) -->
 <nav class="bottom-nav" id="bottomNav">
   <button class="nav-btn active" data-nav="matches">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
     <span>Матчи</span>
   </button>
   <button class="nav-btn" data-nav="leagues">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    <!-- ⚡ новая иконка для лиг: кубок -->
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 010-5H6M18 9h1.5a2.5 2.5 0 000-5H18"/><path d="M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0012 0V2z"/></svg>
     <span>Лиги</span>
   </button>
   <button class="nav-btn" data-nav="yesterday">
@@ -369,11 +431,10 @@ body.light-theme .bottom-nav { background: rgba(255, 255, 255, 0.95); }
 </nav>
 
 <script>
-// ⚠️ Проверьте, что это актуальный деплой
 const API_URL = 'https://script.google.com/macros/s/AKfycbxW52PKcn0Mh2L6yjQ5-5IiuCdds8FksK1XzY6F_iElSnFuAH4f5Hz9JH97pEDD1hcw/exec';
 const BOT_URL = 'https://t.me/total25_signals_bot';
 
-const CACHE_VERSION = 'v62';
+const CACHE_VERSION = 'v63';
 const CACHE_TTL = 5 * 60 * 1000;
 const MIN_PROBABILITY = 62;
 
@@ -385,6 +446,43 @@ let tomorrowData = [];
 
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.ready(); tg.expand(); }
+
+/* ============================================================
+   ИКОНКИ ЛИГ — сопоставление названий лиг с эмодзи
+   ============================================================ */
+const LEAGUE_ICONS = [
+  // Порядок важен: более специфичные ключи раньше
+  { keys: ['лига чемпионов', 'champions league', 'ucl'], icon: '👑' },
+  { keys: ['лига европы', 'europa league', 'uel'], icon: '🏆' },
+  { keys: ['лига конференций', 'conference league'], icon: '🏅' },
+  { keys: ['апл', 'premier league', 'epl', 'англия'], icon: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
+  { keys: ['ла лига', 'laliga', 'la liga', 'primera', 'испания'], icon: '🇪🇸' },
+  { keys: ['серия а', 'serie a', 'италия'], icon: '🇮🇹' },
+  { keys: ['бундеслига', 'bundesliga', 'германия'], icon: '🇩🇪' },
+  { keys: ['лига 1', 'ligue 1', 'франция'], icon: '🇫🇷' },
+  { keys: ['рфпл', 'россия', 'rpl', 'premier liga'], icon: '🇷🇺' },
+  { keys: ['эрсте', 'eredivisie', 'нидерланды'], icon: '🇳🇱' },
+  { keys: ['примейра', 'primeira', 'португалия'], icon: '🇵🇹' },
+  { keys: ['чемпионшип', 'championship', 'английский'], icon: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
+  { keys: ['млс', 'mls', 'сша'], icon: '🇺🇸' },
+  { keys: ['бразил', 'brasileir', 'brazil'], icon: '🇧🇷' },
+  { keys: ['турция', 'super lig', 'süper'], icon: '🇹🇷' },
+  { keys: ['бельгия', 'pro league'], icon: '🇧🇪' },
+  { keys: ['шотландия', 'premiership'], icon: '🏴󠁧󠁢󠁳󠁣󠁴󠁿' },
+  { keys: ['аргентина', 'primera division'], icon: '🇦🇷' },
+  { keys: ['мексика', 'liga mx'], icon: '🇲🇽' },
+];
+
+function getLeagueIcon(leagueName) {
+  if (!leagueName) return '⚽';
+  const low = String(leagueName).toLowerCase();
+  for (const item of LEAGUE_ICONS) {
+    for (const k of item.keys) {
+      if (low.includes(k)) return item.icon;
+    }
+  }
+  return '🏆'; // дефолтная иконка
+}
 
 /* ---------- ТЕМА ---------- */
 function initTheme() {
@@ -429,9 +527,24 @@ function formatDate(d) {
   if (m) return m[1] + '.' + m[2] + '.' + m[3];
   return s;
 }
+function formatShortDate(d) {
+  // 18.10 — без года (для под-вкладок и счётчиков)
+  if (!d) return '';
+  const s = formatDate(d);
+  const m = s.match(/^(\d{2}\.\d{2})/);
+  return m ? m[1] : s;
+}
+function todayShort() { return formatShortDate(new Date()); }
+function tomorrowShort() {
+  const d = new Date(Date.now() + 864e5);
+  return formatShortDate(d);
+}
 function escapeHtml(str) {
   if (str === null || str === undefined) return '';
   return String(str).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+function escapeAttr(s) {
+  return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
 }
 
 /* ---------- НАВИГАЦИЯ ---------- */
@@ -491,7 +604,6 @@ function updateSyncLine() {
 function showSkeleton() {
   return '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>';
 }
-
 async function fetchAction(action) {
   const url = API_URL + '?action=' + action + '&_t=' + Date.now();
   console.log('[TB25] GET →', url);
@@ -503,7 +615,6 @@ async function fetchAction(action) {
   if (result.error) throw new Error(result.error);
   return result.data !== undefined ? result.data : result;
 }
-
 async function loadData(forceNetwork = false) {
   const content = document.getElementById('content');
   const key = currentNav === 'matches' ? 'matches_' + currentSub : currentNav;
@@ -517,7 +628,6 @@ async function loadData(forceNetwork = false) {
   } else {
     content.innerHTML = showSkeleton();
   }
-
   try {
     const data = await fetchAction(action);
     setCache(key, '1', data);
@@ -536,8 +646,13 @@ async function loadData(forceNetwork = false) {
   }
 }
 
-/* Обновляем счётчики «Сегодня / Завтра» — грузим both */
 async function updateCounters() {
+  // ⚡ Обновляем даты в под-вкладках и счётчиках
+  document.getElementById('cntTodayDate').textContent = todayShort();
+  document.getElementById('cntTomorrowDate').textContent = tomorrowShort();
+  document.getElementById('tabDateToday').textContent = todayShort();
+  document.getElementById('tabDateTomorrow').textContent = tomorrowShort();
+
   try {
     const [today, tomorrow] = await Promise.all([
       fetchAction('today').catch(() => []),
@@ -563,7 +678,6 @@ function renderByNav(data) {
   else if (currentNav === 'express') renderExpress(data);
   else if (currentNav === 'stats') renderStats(data);
 }
-
 function manualRefresh() {
   haptic('medium');
   const btn = document.getElementById('refreshBtn');
@@ -577,14 +691,13 @@ function manualRefresh() {
   });
 }
 
-/* ---------- МАТЧИ + ФИЛЬТР ПО ЛИГАМ ---------- */
+/* ---------- МАТЧИ ---------- */
 function renderMatchesList() {
   const content = document.getElementById('content');
   const chipsEl = document.getElementById('leagueChips');
   const raw = currentSub === 'today' ? todayData : tomorrowData;
   const filtered = raw.filter(m => (parseInt(m.probability) || 0) >= MIN_PROBABILITY);
 
-  // Собираем список лиг
   const leagueCounts = {};
   filtered.forEach(m => {
     const lg = m.league || 'Лига';
@@ -592,19 +705,17 @@ function renderMatchesList() {
   });
   const leagues = Object.keys(leagueCounts).sort((a, b) => leagueCounts[b] - leagueCounts[a]);
 
-  // Чипы
   if (leagues.length > 1) {
     chipsEl.style.display = 'flex';
     let chipsHtml = '<div class="league-chip ' + (currentLeague === 'all' ? 'active' : '') + '" onclick="switchLeague(\'all\')">Все<span class="cnt">' + filtered.length + '</span></div>';
     leagues.forEach(lg => {
-      chipsHtml += '<div class="league-chip ' + (currentLeague === lg ? 'active' : '') + '" onclick="switchLeague(\'' + escapeAttr(lg) + '\')">' + escapeHtml(lg) + '<span class="cnt">' + leagueCounts[lg] + '</span></div>';
+      chipsHtml += '<div class="league-chip ' + (currentLeague === lg ? 'active' : '') + '" onclick="switchLeague(\'' + escapeAttr(lg) + '\')">' + getLeagueIcon(lg) + ' ' + escapeHtml(lg) + '<span class="cnt">' + leagueCounts[lg] + '</span></div>';
     });
     chipsEl.innerHTML = chipsHtml;
   } else {
     chipsEl.style.display = 'none';
   }
 
-  // Сами матчи
   const list = currentLeague === 'all' ? filtered : filtered.filter(m => (m.league || 'Лига') === currentLeague);
 
   if (!list.length) {
@@ -620,7 +731,13 @@ function renderMatchesList() {
   let html = '';
   sorted.forEach((m, i) => {
     const prob = parseInt(m.probability) || 0;
-    const cardClass = prob >= 75 ? 'prob-high' : 'prob-mid';
+    const isTop = prob >= 75;
+    const cardClass = isTop ? 'prob-high' : 'prob-mid';
+    const icon = getLeagueIcon(m.league);
+    const shortDate = formatShortDate(m.date);
+    const live = String(m.result || '').toLowerCase().includes('live');
+
+    // Исходы
     let o = m.outcome || { p1: 33, x: 33, p2: 34 };
     const p1 = o.p1 || 0, px = o.x || 0, p2 = o.p2 || 0;
     const best = Math.max(p1, px, p2);
@@ -633,22 +750,44 @@ function renderMatchesList() {
     if (ch12 > bestDouble) { doubleLabel = '12'; bestDouble = ch12; }
 
     html += '<div class="card ' + cardClass + '" style="animation-delay:' + (i * 0.04) + 's">';
-    html += '<div class="card-header"><div style="flex:1"><div class="card-team">' + escapeHtml(m.home) + '</div><div class="card-team away">' + escapeHtml(m.away) + '</div></div></div>';
-    html += '<div class="card-meta"><div class="meta-badge league">🏆 ' + escapeHtml(m.league) + '</div><div class="meta-badge">📅 ' + formatDate(m.date) + (m.time ? ' · ' + m.time : '') + '</div></div>';
-    html += '<div class="prob-container"><div class="prob-top"><div class="prob-label">Вероятность ТБ 2.5</div><div class="prob-value">' + prob + '%</div></div><div class="prob-bar"><div class="prob-fill" style="width:' + prob + '%"></div></div></div>';
+
+    // Бейдж ТОП + дата-время справа сверху
+    if (isTop) html += '<div class="top-badge">🔥 ТОП</div>';
+    html += '<div class="match-time-badge" style="' + (isTop ? 'top: 38px;' : '') + '">';
+    html += '<div class="md">' + escapeHtml(shortDate || '—') + '</div>';
+    if (live) html += '<div class="tm"><span class="live-dot"></span>LIVE</div>';
+    else if (m.time) html += '<div class="tm">' + escapeHtml(m.time) + '</div>';
+    html += '</div>';
+
+    // Команды
+    html += '<div class="card-header"><div style="flex:1">';
+    html += '<div class="card-team">' + escapeHtml(m.home) + '</div>';
+    html += '<div class="card-team away">' + escapeHtml(m.away) + '</div>';
+    html += '</div></div>';
+
+    // Лига
+    html += '<div class="card-meta">';
+    html += '<div class="meta-badge league">' + icon + ' ' + escapeHtml(m.league) + '</div>';
+    html += '</div>';
+
+    // Вероятность
+    html += '<div class="prob-container">';
+    html += '<div class="prob-top"><div class="prob-label">Вероятность ТБ 2.5</div><div class="prob-value">' + prob + '%</div></div>';
+    html += '<div class="prob-bar"><div class="prob-fill" style="width:' + prob + '%"></div></div>';
+    html += '</div>';
+
+    // Прогноз
     html += '<div class="outcome-grid">';
     html += '<div class="outcome-box main"><div class="outcome-name">🏆 Прогноз</div><div class="outcome-val">' + mainLabel + ' · ' + best + '%</div></div>';
     html += '<div class="outcome-box double"><div class="outcome-name">🎯 Двойной шанс</div><div class="outcome-val" style="color:var(--gold)">' + doubleLabel + ' · ' + bestDouble + '%</div></div>';
-    html += '</div></div>';
+    html += '</div>';
+
+    html += '</div>';
   });
   content.innerHTML = html;
 }
 
-function escapeAttr(s) {
-  return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-}
-
-/* ---------- ЛИГИ (отдельная вкладка) ---------- */
+/* ---------- ЛИГИ ---------- */
 function renderLeagues(data) {
   const content = document.getElementById('content');
   const todayArr = Array.isArray(todayData) ? todayData : [];
@@ -678,9 +817,13 @@ function renderLeagues(data) {
   let html = '<div class="stats-hero"><div class="stats-big" style="font-size:44px">' + list.length + '</div><div class="stats-sub">Лиг с матчами</div></div>';
   list.forEach(lg => {
     const total = lg.today + lg.tomorrow;
+    const icon = getLeagueIcon(lg.name);
     html += '<div class="league-row" onclick="openLeagueFromList(\'' + escapeAttr(lg.name) + '\')">';
-    html += '<div class="league-header"><div class="league-name">🏆 ' + escapeHtml(lg.name) + '</div><div class="league-acc">' + lg.maxProb + '%</div></div>';
-    html += '<div style="display:flex;gap:14px;font-size:11px;color:var(--text-mute);font-weight:600;">';
+    html += '<div class="league-header">';
+    html += '<div class="league-name"><span class="league-icon">' + icon + '</span>' + escapeHtml(lg.name) + '</div>';
+    html += '<div class="league-acc">' + lg.maxProb + '%</div>';
+    html += '</div>';
+    html += '<div class="league-counts">';
     html += '<span>📅 Сегодня: <b style="color:var(--mint)">' + lg.today + '</b></span>';
     html += '<span>📅 Завтра: <b style="color:var(--gold)">' + lg.tomorrow + '</b></span>';
     html += '<span style="margin-left:auto;">Всего: <b style="color:var(--text)">' + total + '</b></span>';
@@ -727,10 +870,11 @@ function renderYesterday(data) {
   matches.forEach((m, idx) => {
     const emoji = m.status === 'win' ? '✅' : m.status === 'lose' ? '❌' : '⏳';
     const scoreColor = m.status === 'win' ? 'var(--mint)' : m.status === 'lose' ? 'var(--danger)' : 'var(--text)';
+    const icon = getLeagueIcon(m.league);
     html += '<div class="card" style="animation-delay:' + (idx * 0.04) + 's">';
     html += '<div class="card-header"><div style="flex:1"><div class="card-team">' + escapeHtml(m.home) + '</div><div class="card-team away">' + escapeHtml(m.away) + '</div></div>';
     html += '<div style="font-family:JetBrains Mono;font-size:18px;font-weight:900;color:' + scoreColor + '">' + escapeHtml(m.score || '—') + '</div></div>';
-    html += '<div class="card-meta"><div class="meta-badge">⚽ ' + escapeHtml(m.total) + '</div><div class="meta-badge">' + emoji + ' ' + escapeHtml(m.prediction || '') + '</div></div>';
+    html += '<div class="card-meta"><div class="meta-badge league">' + icon + ' ' + escapeHtml(m.league || '') + '</div><div class="meta-badge">⚽ ' + escapeHtml(m.total) + '</div><div class="meta-badge">' + emoji + ' ' + escapeHtml(m.prediction || '') + '</div></div>';
     html += '</div>';
   });
   content.innerHTML = html;
@@ -752,9 +896,10 @@ function renderExpress(data) {
   items.forEach((m, i) => {
     const prob = parseInt(m.probability) || 0;
     const odd = parseFloat(m.odd) || 1;
+    const icon = getLeagueIcon(m.league);
     html += '<div class="card" style="animation-delay:' + (i*0.04) + 's">';
     html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><div style="width:26px;height:26px;background:var(--mint);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;">' + (i+1) + '</div><div style="font-weight:800;font-size:14px">' + escapeHtml(m.home) + ' — ' + escapeHtml(m.away) + '</div></div>';
-    html += '<div class="card-meta"><div class="meta-badge league">🏆 ' + escapeHtml(m.league) + '</div><div class="meta-badge">📅 ' + formatDate(m.date) + '</div></div>';
+    html += '<div class="card-meta"><div class="meta-badge league">' + icon + ' ' + escapeHtml(m.league) + '</div><div class="meta-badge">📅 ' + formatShortDate(m.date) + '</div></div>';
     html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
     html += '<div class="outcome-box" style="padding:10px"><div class="outcome-name">Вероятность</div><div class="outcome-val" style="color:var(--mint)">' + prob + '%</div></div>';
     html += '<div class="outcome-box" style="padding:10px"><div class="outcome-name">Кэф</div><div class="outcome-val" style="color:var(--gold)">' + odd.toFixed(2) + '</div></div>';
@@ -778,7 +923,8 @@ function renderStats(data) {
     html += '<div style="font-size:12px;font-weight:800;color:var(--text-dim);margin-bottom:10px;letter-spacing:1px;text-transform:uppercase;">📊 По лигам</div>';
     leagues.forEach(lg => {
       const lAcc = lg.accuracy || 0;
-      html += '<div class="league-row"><div class="league-header"><div class="league-name">' + escapeHtml(lg.name) + '</div><div class="league-acc">' + lAcc + '%</div></div><div class="league-bar"><div class="league-fill" style="width:' + lAcc + '%"></div></div><div style="font-size:11px;color:var(--text-mute);font-weight:600">✅ ' + (lg.wins||0) + ' · ❌ ' + (lg.loses||0) + '</div></div>';
+      const icon = getLeagueIcon(lg.name);
+      html += '<div class="league-row"><div class="league-header"><div class="league-name"><span class="league-icon">' + icon + '</span>' + escapeHtml(lg.name) + '</div><div class="league-acc">' + lAcc + '%</div></div><div class="league-bar"><div class="league-fill" style="width:' + lAcc + '%"></div></div><div style="font-size:11px;color:var(--text-mute);font-weight:600">✅ ' + (lg.wins||0) + ' · ❌ ' + (lg.loses||0) + '</div></div>';
     });
   }
   content.innerHTML = html;
@@ -787,6 +933,10 @@ function renderStats(data) {
 /* ---------- СТАРТ ---------- */
 document.getElementById('subTabs').style.display = 'flex';
 document.getElementById('leagueChips').style.display = 'flex';
+document.getElementById('cntTodayDate').textContent = todayShort();
+document.getElementById('cntTomorrowDate').textContent = tomorrowShort();
+document.getElementById('tabDateToday').textContent = todayShort();
+document.getElementById('tabDateTomorrow').textContent = tomorrowShort();
 loadData();
 updateCounters();
 </script>
