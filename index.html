@@ -6,836 +6,584 @@
 <title>⚽ Прогнозы ТБ 2.5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-/* ... (стили оставляем без изменений) ... */
 :root {
-  --bg: #090d14;
-  --surface: #111823;
-  --surface-hi: #192333;
-  --card-bg: #131c29;
+  --bg: #0a0f16;
+  --surface: #121a24;
+  --surface-hi: #1a2535;
   --border: rgba(255, 255, 255, 0.08);
-  --border-hi: rgba(16, 185, 129, 0.35);
-  --text: #f8fafc;
+  --border-hi: rgba(16, 185, 129, 0.3);
+  --text: #f1f5f9;
   --text-dim: #94a3b8;
   --text-mute: #64748b;
   --mint: #10b981;
-  --mint-glow: rgba(16, 185, 129, 0.18);
+  --mint-glow: rgba(16, 185, 129, 0.25);
   --gold: #f59e0b;
-  --gold-glow: rgba(245, 158, 11, 0.2);
+  --gold-glow: rgba(245, 158, 11, 0.25);
   --danger: #f43f5e;
-  --danger-glow: rgba(244, 63, 94, 0.2);
+  --danger-glow: rgba(244, 63, 94, 0.25);
   --radius: 20px;
-  --nav-h: 68px;
+  --radius-sm: 12px;
 }
 body.light-theme {
-  --bg: #f1f5f9;
+  --bg: #f8fafc;
   --surface: #ffffff;
-  --surface-hi: #e2e8f0;
-  --card-bg: #ffffff;
-  --border: rgba(15, 23, 42, 0.08);
-  --border-hi: rgba(5, 150, 105, 0.35);
+  --surface-hi: #f1f5f9;
+  --border: rgba(0, 0, 0, 0.06);
+  --border-hi: rgba(16, 185, 129, 0.4);
   --text: #0f172a;
   --text-dim: #475569;
   --text-mute: #94a3b8;
   --mint: #059669;
-  --mint-glow: rgba(5, 150, 105, 0.12);
   --gold: #d97706;
-  --gold-glow: rgba(217, 119, 6, 0.14);
   --danger: #e11d48;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Inter', -apple-system, sans-serif;
   background: var(--bg);
   color: var(--text);
-  padding: 0 0 calc(var(--nav-h) + 24px);
+  padding: 0 0 40px;
   min-height: 100vh;
   overflow-x: hidden;
-  transition: background 0.25s, color 0.25s;
+  -webkit-user-select: none; user-select: none;
+  transition: background 0.3s ease, color 0.3s ease;
 }
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-thumb { background: var(--text-mute); border-radius: 10px; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--text-mute); border-radius: 10px; opacity: 0.5; }
 
-.header { padding: 20px 16px 14px; display: flex; align-items: center; justify-content: space-between; }
-.header-left, .header-right { display: flex; align-items: center; gap: 8px; width: 44px; }
-.header-center { text-align: center; flex: 1; }
+.header { position: relative; padding: 30px 20px 20px; text-align: center; }
+.header-top { position: absolute; top: 16px; right: 16px; display: flex; gap: 10px; }
+.icon-btn {
+  width: 42px; height: 42px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--text-dim);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.icon-btn:active { transform: scale(0.92); color: var(--mint); border-color: var(--mint); }
+.icon-btn svg { width: 20px; height: 20px; stroke-width: 2; }
+.ball-wrap { width: 80px; height: 80px; margin: 0 auto 16px; position: relative; display: flex; align-items: center; justify-content: center; }
+.ball-emoji { font-size: 56px; filter: drop-shadow(0 8px 24px var(--mint-glow)); animation: float 4s ease-in-out infinite; }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 .header h1 {
-  font-size: 22px; font-weight: 900; letter-spacing: 1.5px;
-  background: linear-gradient(90deg, var(--text), var(--mint));
+  font-size: 30px; font-weight: 900; letter-spacing: 2px;
+  background: linear-gradient(135deg, var(--text) 20%, var(--text-dim) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
-.header .sub { font-size: 10px; letter-spacing: 2.5px; color: var(--mint); margin-top: 4px; text-transform: uppercase; font-weight: 800; }
-
-.icon-btn {
-  width: 40px; height: 40px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center; color: var(--text-dim);
-  cursor: pointer; transition: all 0.2s;
-}
-.icon-btn:active { transform: scale(0.92); }
-.icon-btn svg { width: 19px; height: 19px; transition: transform 0.5s; }
-.icon-btn.spinning svg { animation: spin 0.9s linear infinite; color: var(--mint); }
-.icon-btn.success { border-color: var(--mint); color: var(--mint); box-shadow: 0 0 12px var(--mint-glow); }
-@keyframes spin { 100% { transform: rotate(360deg); } }
+.header .sub { font-size: 12px; letter-spacing: 3px; color: var(--mint); margin-top: 8px; text-transform: uppercase; font-weight: 800; }
 
 .tabs-wrap {
-  position: sticky; top: 0; background: color-mix(in srgb, var(--bg) 88%, transparent);
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  padding: 10px 16px; z-index: 20; border-bottom: 1px solid var(--border);
+  position: sticky; top: 0;
+  background: rgba(10, 15, 22, 0.85);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  padding: 12px 16px; z-index: 10;
+  border-bottom: 1px solid var(--border);
 }
-.tabs { display: flex; gap: 6px; background: var(--surface); padding: 4px; border-radius: 14px; border: 1px solid var(--border); }
+body.light-theme .tabs-wrap { background: rgba(248, 250, 252, 0.85); }
+.tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
 .tab {
-  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
-  padding: 9px 10px; border-radius: 10px; font-size: 13px; font-weight: 700;
-  color: var(--text-dim); cursor: pointer; transition: all 0.2s;
+  flex: 0 0 auto;
+  display: flex; align-items: center; gap: 6px;
+  padding: 10px 16px; border-radius: 100px;
+  font-size: 13px; font-weight: 700;
+  color: var(--text-dim); background: transparent;
+  border: 1px solid transparent;
+  transition: all 0.25s ease; cursor: pointer;
 }
-.tab.active { background: var(--surface-hi); color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
-.tab-badge { font-size: 10px; font-family: 'JetBrains Mono', monospace; padding: 2px 6px; border-radius: 6px; background: var(--mint-glow); color: var(--mint); }
-
-.filters-container { padding: 10px 16px 2px; display: flex; flex-direction: column; gap: 8px; }
-.prob-filters, .league-filters { display: flex; gap: 7px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
-.prob-filters::-webkit-scrollbar, .league-filters::-webkit-scrollbar { display: none; }
-
-.chip {
-  flex: 0 0 auto; padding: 7px 13px; background: var(--surface); border: 1px solid var(--border);
-  border-radius: 100px; font-size: 12px; font-weight: 700; color: var(--text-dim);
-  cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 5px;
+.tab svg { width: 16px; height: 16px; stroke-width: 2.5; }
+.tab.active {
+  background: var(--surface-hi); color: var(--text);
+  border-color: var(--border);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
-.chip.active { background: var(--mint); color: #fff; border-color: var(--mint); box-shadow: 0 4px 12px var(--mint-glow); }
-.chip-count { font-size: 10px; opacity: 0.85; font-family: 'JetBrains Mono', monospace; }
+.tab.active svg { color: var(--mint); }
 
-#content { padding: 14px 16px; min-height: 55vh; transition: opacity 0.2s; }
+#content { padding: 20px 16px; }
 
-.match-card {
-  background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 18px; margin-bottom: 14px; position: relative; overflow: hidden;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.12); animation: slideUp 0.28s ease both;
+/* Карточки матчей */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px; margin-bottom: 16px;
+  position: relative; overflow: hidden;
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  cursor: pointer; transition: transform 0.2s, border-color 0.2s;
 }
-@keyframes slideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-.match-card.prob-high { border-color: rgba(245, 158, 11, 0.45); box-shadow: 0 8px 26px var(--gold-glow); }
-.match-card.prob-high::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--gold), #fbbf24); }
-.match-card.prob-mid { border-color: var(--border-hi); }
-.match-card.prob-mid::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--mint), #34d399); }
+.card:active { transform: scale(0.98); }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-.mc-top-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 8px; }
-.mc-league-badge { font-size: 11px; font-weight: 800; color: var(--mint); background: var(--mint-glow); padding: 4px 10px; border-radius: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 72%; }
-.mc-date { font-size: 11px; font-weight: 700; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
-.mc-live { background: var(--danger); color: #fff; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; animation: pulse 1.5s infinite; }
-@keyframes pulse { 50% { opacity: 0.6; } }
+.card.prob-high { border-color: var(--gold); box-shadow: 0 8px 30px var(--gold-glow); }
+.card.prob-mid { border-color: var(--border-hi); box-shadow: 0 8px 30px var(--mint-glow); }
+.card.prob-high::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gold); }
+.card.prob-mid::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--mint); }
 
-.mc-matchup { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 8px; }
-.mc-team { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 36%; text-align: center; }
-.mc-logo { width: 44px; height: 44px; border-radius: 14px; background: var(--surface-hi); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; color: var(--text); border: 1px solid var(--border); letter-spacing: 0.5px; }
-.mc-name { font-size: 13px; font-weight: 800; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.mc-time-center { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.mc-time { font-size: 19px; font-weight: 900; font-family: 'JetBrains Mono', monospace; color: var(--text); background: var(--surface); padding: 6px 10px; border-radius: 10px; border: 1px solid var(--border); }
-.mc-odd-pill { font-size: 11px; font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--gold); }
+.card-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px; }
+.card-team { font-size: 16px; font-weight: 800; line-height: 1.3; }
+.card-team.away { color: var(--text-dim); margin-top: 4px; }
+.card-meta { display: flex; flex-wrap: wrap; gap: 8px; font-size: 12px; color: var(--text-mute); font-weight: 600; margin-bottom: 16px; }
+.meta-badge { display: flex; align-items: center; gap: 4px; background: var(--surface-hi); padding: 4px 10px; border-radius: 8px; }
+.meta-badge.league { color: var(--mint); }
 
-.mc-total-main { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; }
-.mc-total-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.mc-total-title { font-size: 11px; color: var(--text-dim); font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
-.mc-total-val { font-size: 26px; font-weight: 900; font-family: 'JetBrains Mono', monospace; color: var(--mint); line-height: 1; }
-.mc-total-val.high { color: var(--gold); }
-.mc-total-val.low { color: var(--text-dim); }
+.prob-container { margin-bottom: 16px; }
+.prob-top { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 6px; }
+.prob-value { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 800; line-height: 1; }
+.prob-label { font-size: 11px; color: var(--text-mute); font-weight: 700; text-transform: uppercase; }
+.prob-bar { height: 6px; background: var(--surface-hi); border-radius: 4px; overflow: hidden; }
+.prob-fill { height: 100%; border-radius: 4px; transition: width 1s cubic-bezier(0.16, 1, 0.3, 1); }
+.prob-high .prob-value { color: var(--gold); text-shadow: 0 0 12px var(--gold-glow); }
+.prob-high .prob-fill { background: linear-gradient(90deg, var(--gold), #fcd34d); }
+.prob-mid .prob-value { color: var(--mint); text-shadow: 0 0 12px var(--mint-glow); }
+.prob-mid .prob-fill { background: linear-gradient(90deg, var(--mint), #34d399); }
 
-.mc-conf-badge { font-size: 11px; font-weight: 800; padding: 5px 10px; border-radius: 8px; }
-.conf-high { background: var(--gold-glow); color: var(--gold); }
-.conf-mid { background: var(--mint-glow); color: var(--mint); }
-.conf-low { background: rgba(148,163,184,0.12); color: var(--text-dim); }
+.outcome-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.outcome-box {
+  background: var(--surface-hi); border-radius: var(--radius-sm);
+  padding: 12px; display: flex; flex-direction: column; align-items: center;
+}
+.outcome-box.main { background: var(--mint-glow); border: 1px solid var(--border-hi); }
+.outcome-box.double { border: 1px solid var(--border); }
+.outcome-name { font-size: 11px; color: var(--text-mute); font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
+.outcome-val { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 800; color: var(--text); }
+.outcome-box.main .outcome-val { color: var(--mint); }
 
-.prob-progress-bg { width: 100%; height: 6px; background: var(--surface-hi); border-radius: 99px; overflow: hidden; }
-.prob-progress-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--mint), #34d399); transition: width 0.4s ease; }
-.prob-progress-fill.high { background: linear-gradient(90deg, var(--gold), #fbbf24); }
+.stats-hero { text-align: center; margin-bottom: 30px; }
+.stats-big { font-family: 'JetBrains Mono', monospace; font-size: 72px; font-weight: 900; line-height: 1; color: var(--text); }
+.stats-sub { font-size: 13px; color: var(--text-dim); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-top: 8px; }
 
-.skeleton { background: var(--surface); border-radius: var(--radius); margin-bottom: 14px; height: 210px; position: relative; overflow: hidden; border: 1px solid var(--border); }
-.skeleton::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent); animation: shimmer 1.4s infinite; }
+.league-row {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 16px; margin-bottom: 10px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.league-header { display: flex; justify-content: space-between; align-items: center; }
+.league-name { font-size: 14px; font-weight: 800; }
+.league-acc { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 800; color: var(--mint); }
+.league-bar { height: 4px; background: var(--surface-hi); border-radius: 2px; overflow: hidden; }
+.league-fill { height: 100%; background: var(--mint); border-radius: 2px; }
+
+.express-hero {
+  background: linear-gradient(135deg, #1e1b4b, #312e81);
+  border-radius: var(--radius); padding: 30px 20px;
+  text-align: center; margin-bottom: 20px;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  box-shadow: 0 10px 40px rgba(99, 102, 241, 0.2);
+}
+.express-title { font-size: 14px; font-weight: 800; color: #a5b4fc; letter-spacing: 2px; text-transform: uppercase; }
+.express-odd { font-family: 'JetBrains Mono', monospace; font-size: 64px; font-weight: 900; color: #fff; line-height: 1; margin: 16px 0; text-shadow: 0 4px 20px rgba(255,255,255,0.2); }
+.express-sub { font-size: 12px; color: #818cf8; font-weight: 600; }
+
+.skeleton { background: var(--surface); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; height: 200px; position: relative; overflow: hidden; }
+.skeleton::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent); animation: shimmer 1.5s infinite; }
 @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
-.empty { text-align: center; padding: 48px 20px; color: var(--text-dim); font-weight: 600; background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius); }
-.empty-icon { font-size: 40px; margin-bottom: 10px; }
-.empty button { margin-top: 14px; padding: 10px 22px; background: var(--mint); border: none; color: #fff; border-radius: 100px; font-weight: 800; cursor: pointer; }
+.empty { text-align: center; padding: 60px 20px; color: var(--text-mute); font-weight: 600; }
+.empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.3; }
 
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.78); backdrop-filter: blur(6px); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px; }
-.modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 24px; width: 100%; max-width: 380px; }
-.modal-title { font-size: 19px; font-weight: 900; text-align: center; margin-bottom: 14px; }
-.modal-btn { display: block; width: 100%; padding: 13px; background: var(--mint); color: #fff; border: none; border-radius: 14px; font-size: 14px; font-weight: 800; cursor: pointer; margin-bottom: 10px; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 28px; width: 100%; max-width: 400px; animation: modalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+.modal-title { font-size: 22px; font-weight: 900; text-align: center; margin-bottom: 16px; color: var(--text); }
+.modal-text { font-size: 14px; color: var(--text-dim); line-height: 1.6; margin-bottom: 16px; }
+.modal-warn { background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.2); border-radius: 12px; padding: 16px; margin-bottom: 20px; }
+.modal-warn-title { color: var(--danger); font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+.modal-btn { display: block; width: 100%; padding: 16px; background: var(--mint); color: #fff; border: none; border-radius: 16px; font-size: 16px; font-weight: 800; cursor: pointer; transition: all 0.2s; }
+.modal-btn:active { transform: scale(0.96); background: #059669; }
 
-.bottom-nav {
-  position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-h);
-  background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-around; z-index: 50; padding-bottom: env(safe-area-inset-bottom, 0);
-}
-.nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 8px 4px; background: none; border: none; color: var(--text-mute); font-size: 10px; font-weight: 700; cursor: pointer; transition: color 0.2s; }
-.nav-btn svg { width: 20px; height: 20px; stroke-width: 2.2; }
-.nav-btn.active { color: var(--mint); }
+.sync-line { text-align: center; font-size: 11px; color: var(--text-mute); font-weight: 600; margin-top: 20px; }
 </style>
 </head>
 <body>
-
 <div class="header">
-  <div class="header-left">
-    <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" title="Сменить тему">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-    </button>
+  <div class="header-top">
+    <div class="icon-btn" onclick="openDonate()" title="Поддержать">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    </div>
+    <div class="icon-btn" onclick="toggleTheme()" title="Тема">
+      <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+    </div>
   </div>
-  <div class="header-center">
-    <h1>ПРОГНОЗЫ</h1>
-    <div class="sub" id="headerDate">Тотал больше 2.5</div>
-  </div>
-  <div class="header-right">
-    <button class="icon-btn" id="refreshBtn" onclick="manualRefresh()" title="Обновить данные">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-    </button>
-  </div>
+  <div class="ball-wrap"><div class="ball-emoji">⚽</div></div>
+  <h1>ПРОГНОЗЫ</h1>
+  <div class="sub">Тотал больше 2.5</div>
 </div>
 
-<div class="tabs-wrap" id="topTabsWrap">
+<div class="tabs-wrap">
   <div class="tabs" id="tabs">
-    <div class="tab active" data-tab="today">Сегодня <span class="tab-badge" id="badge-today" style="display:none">0</span></div>
-    <div class="tab" data-tab="tomorrow">Завтра <span class="tab-badge" id="badge-tomorrow" style="display:none">0</span></div>
-    <div class="tab" data-tab="express">Экспресс</div>
+    <div class="tab active" data-tab="today"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Сегодня</div>
+    <div class="tab" data-tab="tomorrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Завтра</div>
+    <div class="tab" data-tab="yesterday"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Вчера</div>
+    <div class="tab" data-tab="express"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>Экспресс</div>
+    <div class="tab" data-tab="stats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 12l4-4 4 4 5-5"/></svg>Стата</div>
+    <div class="tab" data-tab="bonus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18"/><path d="M7.5 8a2.5 2.5 0 010-5c1.5 0 2.5 1 4.5 5"/><path d="M16.5 8a2.5 2.5 0 000-5c-1.5 0-2.5 1-4.5 5"/></svg>Бонус</div>
+    <div class="tab" data-tab="faq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.5" fill="currentColor"/></svg>FAQ</div>
   </div>
-</div>
-
-<div class="filters-container" id="filtersWrap" style="display:none;">
-  <div class="prob-filters" id="probFilters"></div>
-  <div class="league-filters" id="leagueFilters"></div>
 </div>
 
 <div id="content"></div>
-
-<nav class="bottom-nav" id="bottomNav">
-  <button class="nav-btn active" data-nav="today">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-    <span>Матчи</span>
-  </button>
-  <button class="nav-btn" data-nav="yesterday">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-    <span>Вчера</span>
-  </button>
-  <button class="nav-btn" data-nav="stats">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 12l4-4 4 4 5-5"/></svg>
-    <span>Стата</span>
-  </button>
-  <button class="nav-btn" data-nav="more">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/></svg>
-    <span>Ещё</span>
-  </button>
-</nav>
+<div class="sync-line" id="syncLine"></div>
 
 <script>
-// ⚠️ ВАЖНО: Убедитесь, что эта ссылка рабочая и ведет на ваш текущий Web App
+// ⚡ ИЗМЕНЕНО: URL API и версия кэша
 const API_URL = 'https://script.google.com/macros/s/AKfycbxW52PKcn0Mh2L6yjQ5-5IiuCdds8FksK1XzY6F_iElSnFuAH4f5Hz9JH97pEDD1hcw/exec';
+const AD_URL = 'https://baltbet.ru/account/register?refpromo=1221753';
 const BOT_URL = 'https://t.me/total25_signals_bot';
-const CACHE_VERSION = 'v58'; // Изменил версию кэша, чтобы сбросить старые данные
+
+// ⚡ ИЗМЕНЕНО: CACHE_VERSION = 'v60' (синхронизирован с WEBAPP_VERSION в Code.gs)
+const CACHE_VERSION = 'v60';
+const CACHE_TTL = 30 * 60 * 1000;
+const MIN_PROBABILITY = 62; // ⚡ ИЗМЕНЕНО: синхронизировано с MIN_PROBABILITY_MARKET
 
 let currentTab = 'today';
-let currentLeagueFilter = 'all';
-let currentMinProb = 0;
-let isLoading = false;
-let abortCtrl = null;
-let autoRefreshTimer = null;
-
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.ready(); tg.expand(); }
-if (localStorage.getItem('tb25_theme') === 'light') document.body.classList.add('light-theme');
 
+// Тема
+function initTheme() {
+  const saved = localStorage.getItem('tb25_theme') || 'dark';
+  if (saved === 'light') document.body.classList.add('light-theme');
+  updateThemeIcon(saved);
+}
 function toggleTheme() {
+  haptic('medium');
   const isLight = document.body.classList.toggle('light-theme');
-  localStorage.setItem('tb25_theme', isLight ? 'light' : 'dark');
-  if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+  const theme = isLight ? 'light' : 'dark';
+  localStorage.setItem('tb25_theme', theme);
+  updateThemeIcon(theme);
+}
+function updateThemeIcon(theme) {
+  const icon = document.getElementById('themeIcon');
+  if (!icon) return;
+  if (theme === 'light') icon.innerHTML = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
+  else icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+}
+initTheme();
+
+function haptic(s) {
+  if (tg?.HapticFeedback) try {
+    if (s === 'medium') tg.HapticFeedback.impactOccurred('medium');
+    else if (s === 'heavy') tg.HapticFeedback.impactOccurred('heavy');
+    else tg.HapticFeedback.impactOccurred('light');
+  } catch(e){}
+}
+function getUserId() {
+  if (tg?.initDataUnsafe?.user?.id) return tg.initDataUnsafe.user.id;
+  return 'guest';
 }
 
-function parseProb(val) {
-  if (val === undefined || val === null || val === '') return 0;
-  if (typeof val === 'number') return val > 0 && val <= 1 ? Math.round(val * 100) : Math.round(val);
-  const clean = String(val).trim().replace(',', '.').replace(/[^0-9.]/g, '');
-  const num = parseFloat(clean);
-  if (isNaN(num)) return 0;
-  return num > 0 && num <= 1 ? Math.round(num * 100) : Math.round(num);
-}
-
-function normalizeMatch(raw) {
-  if (!raw || typeof raw !== 'object') return null;
-  const home = raw.home || raw.team1 || raw.homeTeam || raw['Команда 1'] || raw['Хозяева'] || '';
-  const away = raw.away || raw.team2 || raw.awayTeam || raw['Команда 2'] || raw['Гости'] || '';
-  if (!home && !away) return null;
-
-  const probRaw = raw.probability ?? raw.prob ?? raw.tb25 ?? raw.totalProb ?? raw['ТБ 2.5'] ?? raw['Вероятность'] ?? 0;
-  const league = String(raw.league || raw.tournament || raw['Лига'] || 'Лига').trim();
-  const dateRaw = raw.date || raw.datetime || raw['Дата'] || '';
-  const timeRaw = raw.time || raw['Время'] || '';
-
-  return {
-    ...raw,
-    home: String(home).trim(),
-    away: String(away).trim(),
-    league,
-    prob: parseProb(probRaw),
-    odd: parseFloat(String(raw.odd || raw.coef || raw['Кэф'] || 0).replace(',', '.')) || 0,
-    parsedDate: parseDate(dateRaw, timeRaw)
-  };
-}
-
-function parseDate(rawDate, rawTime) {
-  let timeStr = '';
-  let dateStr = '';
-
-  if (rawTime) {
-    const tm = String(rawTime).match(/(\d{1,2}):(\d{2})/);
-    if (tm) timeStr = tm[1].padStart(2, '0') + ':' + tm[2];
+// Форматирование
+function formatDate(d) {
+  if (!d) return '';
+  if (d instanceof Date) {
+    if (isNaN(d.getTime())) return '';
+    if (d.getFullYear() < 1901) return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+    return String(d.getDate()).padStart(2,'0') + '.' + String(d.getMonth()+1).padStart(2,'0') + '.' + d.getFullYear();
   }
-
-  if (!rawDate) return { time: timeStr || '--:--', date: '' };
-  const str = String(rawDate).trim();
-
-  const ruMatch = str.match(/^(\d{1,2})[./-](\d{1,2})(?:[./-](\d{2,4}))?(?:\s+(\d{1,2}):(\d{2}))?/);
-  if (ruMatch) {
-    dateStr = ruMatch[1].padStart(2, '0') + '.' + ruMatch[2].padStart(2, '0');
-    if (ruMatch[4] && ruMatch[5] && !timeStr) {
-      timeStr = ruMatch[4].padStart(2, '0') + ':' + ruMatch[5];
-    }
-    return { time: timeStr || '--:--', date: dateStr };
-  }
-
-  const onlyTime = str.match(/^(\d{1,2}):(\d{2})/);
-  if (onlyTime && str.length <= 8) {
-    return { time: onlyTime[1].padStart(2, '0') + ':' + onlyTime[2], date: '' };
-  }
-
-  const d = new Date(str);
-  if (!isNaN(d.getTime())) {
-    const t = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    if (d.getFullYear() < 2000) {
-      return { time: timeStr || t, date: '' };
-    }
-    return { time: timeStr || t, date: `${day}.${month}` };
-  }
-
-  return { time: timeStr || str.substring(0, 5), date: '' };
+  const s = String(d).trim();
+  let m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) return m[3] + '.' + m[2] + '.' + m[1];
+  m = s.match(/^(\d{2})\.(\d{2})\.(\d{4})/);
+  if (m) return m[1] + '.' + m[2] + '.' + m[3];
+  return s;
 }
 
-function extractMatchesArray(data) {
-  if (!data) return [];
-  if (Array.isArray(data)) return data;
-  if (Array.isArray(data.matches)) return data.matches;
-  if (Array.isArray(data.data)) return data.data;
-  if (Array.isArray(data.rows)) return data.rows;
-  if (Array.isArray(data.items)) return data.items;
-  return [];
-}
-
-function getUserId() { return tg?.initDataUnsafe?.user?.id || 'guest'; }
-
+// Модалки
 function checkDailyWelcome() {
   const today = new Date().toISOString().slice(0, 10);
   if (localStorage.getItem('tb25_last_seen') === today) return;
   localStorage.setItem('tb25_last_seen', today);
+  showWelcomeModal();
+}
+function showWelcomeModal() {
   const modal = document.createElement('div');
   modal.className = 'modal-overlay';
-  modal.innerHTML = `<div class="modal-box">
-    <div class="modal-title">⚽ ДОБРО ПОЖАЛОВАТЬ</div>
-    <div style="font-size:13px;color:var(--text-dim);line-height:1.6;margin-bottom:18px;text-align:center;">
-      Аналитика футбольных матчей по модели <strong>xG + Пуассон</strong> для поиска игр с высокой вероятностью <strong>ТБ 2.5</strong>.
-    </div>
-    <button class="modal-btn" onclick="this.closest('.modal-overlay').remove()">ПОНЯЛ 🚀</button>
-  </div>`;
+  modal.innerHTML = '<div class="modal-box">' +
+    '<div class="modal-icon">⚽</div>' +
+    '<div class="modal-title">ДОБРО ПОЖАЛОВАТЬ</div>' +
+    '<div class="modal-text">Это приложение <strong>спортивной аналитики</strong> для поиска футбольных матчей с высокой вероятностью исхода <strong>«Тотал Больше 2.5 голов»</strong>.</div>' +
+    '<div class="modal-text">Бот собирает матчи из топ-чемпионатов, применяет <strong>математическую модель</strong> (xG + Пуассон) + <strong>ИИ-фильтр Gemini</strong> и показывает только те, где вероятность <strong>≥ 62%</strong>.</div>' +
+    '<div class="modal-warn"><div class="modal-warn-title">Не БК</div><div>Мы <strong>не принимаем ставки</strong>. Все прогнозы носят информационный характер и не гарантируют выигрыш.</div></div>' +
+    '<button class="modal-btn" onclick="closeModal(this)">ПОНЯЛ, ПОЕХАЛИ 🚀</button>' +
+    '</div>';
   document.body.appendChild(modal);
 }
+function closeModal(btn) {
+  haptic('medium');
+  const overlay = btn.closest('.modal-overlay');
+  overlay.style.opacity = '0';
+  setTimeout(() => overlay.remove(), 200);
+}
+function openDonate() {
+  haptic('medium');
+  if (tg && tg.openTelegramLink) tg.openTelegramLink(BOT_URL + '?start=donate');
+  else window.open(BOT_URL + '?start=donate', '_blank');
+}
 
-function switchTab(tabName) {
-  if (tabName === 'more') {
-    const modal = document.createElement('div');
-    modal.className = 'modal-overlay';
-    modal.innerHTML = `<div class="modal-box">
-      <div class="modal-title">Дополнительно</div>
-      <button class="modal-btn" style="background:var(--surface-hi);color:var(--text)" onclick="switchTab('bonus');this.closest('.modal-overlay').remove()">🎁 Приветственный бонус</button>
-      <button class="modal-btn" style="background:var(--surface-hi);color:var(--text)" onclick="switchTab('faq');this.closest('.modal-overlay').remove()">❓ Как работает алгоритм</button>
-      <button class="modal-btn" style="background:var(--surface-hi);color:var(--text)" onclick="if(tg&&tg.openTelegramLink)tg.openTelegramLink('${BOT_URL}?start=donate');this.closest('.modal-overlay').remove()">⭐ Поддержать проект</button>
-      <button class="modal-btn" style="background:transparent;color:var(--text-mute);margin-bottom:0" onclick="this.closest('.modal-overlay').remove()">Закрыть</button>
-    </div>`;
-    document.body.appendChild(modal);
-    return;
-  }
-
-  currentTab = tabName;
-  currentLeagueFilter = 'all';
-
-  const isTopTab = ['today', 'tomorrow', 'express'].includes(tabName);
-  document.getElementById('topTabsWrap').style.display = isTopTab ? 'block' : 'none';
-
+// Навигация
+function switchTabDirect(tabName) {
+  haptic('medium');
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tabName));
-  document.querySelectorAll('.nav-btn').forEach(n => {
-    const activeNav = isTopTab ? 'today' : (['bonus', 'faq'].includes(tabName) ? 'more' : tabName);
-    n.classList.toggle('active', n.dataset.nav === activeNav);
-  });
-
+  currentTab = tabName;
   loadData();
 }
-
 document.getElementById('tabs').addEventListener('click', e => {
   const tab = e.target.closest('.tab');
-  if (tab) switchTab(tab.dataset.tab);
+  if (!tab) return;
+  haptic('medium');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  currentTab = tab.dataset.tab;
+  loadData();
 });
 
-document.getElementById('bottomNav').addEventListener('click', e => {
-  const btn = e.target.closest('.nav-btn');
-  if (btn) switchTab(btn.dataset.nav);
-});
-
+// Кэш и загрузка
 function getCache(tab) {
+  try { const r = localStorage.getItem('tb25_' + CACHE_VERSION + '_' + tab); return r ? JSON.parse(r) : null; } catch(e){ return null; }
+}
+function setCache(tab, version, data) {
   try {
-    const r = localStorage.getItem('tb25_' + CACHE_VERSION + '_' + tab);
-    return r ? JSON.parse(r) : null;
-  } catch(e) { return null; }
+    localStorage.setItem('tb25_' + CACHE_VERSION + '_' + tab, JSON.stringify({ version, data, ts: Date.now() }));
+    localStorage.setItem('tb25_last_update', new Date().toISOString());
+  } catch(e){}
 }
-
-function setCache(tab, data) {
+function updateSyncLine() {
+  const el = document.getElementById('syncLine');
+  if (!el) return;
   try {
-    const hash = JSON.stringify(data);
-    localStorage.setItem('tb25_' + CACHE_VERSION + '_' + tab, JSON.stringify({ hash, data, ts: Date.now() }));
-  } catch(e) {}
+    const iso = localStorage.getItem('tb25_last_update');
+    if (!iso) return;
+    const d = new Date(iso);
+    const diffMin = Math.floor((new Date() - d) / 60000);
+    let ago = diffMin < 1 ? 'только что' : diffMin < 60 ? diffMin + ' мин назад' : Math.floor(diffMin / 60) + ' ч назад';
+    el.textContent = '🕐 Обновлено: ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0') + ' (' + ago + ')';
+  } catch (e) { el.textContent = ''; }
 }
 
-async function fetchWithRetry(url, retries = 1) {
-  for (let i = 0; i <= retries; i++) {
-    try {
-      const sep = url.includes('?') ? '&' : '?';
-      const bustUrl = `${url}${sep}_t=${Date.now()}`;
-      const resp = await fetch(bustUrl, { signal: abortCtrl?.signal, cache: 'no-store' });
-      if (!resp.ok) throw new Error('HTTP ' + resp.status);
-      return await resp.json();
-    } catch (e) {
-      if (e.name === 'AbortError') throw e;
-      if (i === retries) throw e;
-      await new Promise(r => setTimeout(r, 1200));
-    }
-  }
+function showSkeleton() {
+  return '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>';
 }
 
-function setProbFilter(minProb) {
-  if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-  currentMinProb = minProb;
-  const cached = getCache(currentTab);
-  if (cached) renderTab(currentTab, cached.data);
-}
-
-function setLeagueFilter(league) {
-  if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-  currentLeagueFilter = league;
-  const cached = getCache(currentTab);
-  if (cached) renderTab(currentTab, cached.data);
-}
-
-async function loadData(forceNetwork = false) {
-  if (abortCtrl) abortCtrl.abort();
-  abortCtrl = new AbortController();
-  isLoading = true;
-
+async function loadData() {
   const content = document.getElementById('content');
-  document.getElementById('filtersWrap').style.display = 'none';
-
-  if (currentTab === 'faq') { renderFaq(); isLoading = false; return; }
-  if (currentTab === 'bonus') { renderBonus(); isLoading = false; return; }
-
-  const cached = !forceNetwork ? getCache(currentTab) : null;
+  if (currentTab === 'faq') { renderFaq(); updateSyncLine(); return; }
+  if (currentTab === 'bonus') { renderBonus(); updateSyncLine(); return; }
+  const cached = getCache(currentTab);
   if (cached) {
     renderTab(currentTab, cached.data);
+    updateSyncLine();
+    if ((Date.now() - cached.ts) < CACHE_TTL) return;
   } else {
-    content.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div>';
+    content.innerHTML = showSkeleton();
   }
-
   try {
     const uid = getUserId();
-    const result = await fetchWithRetry(`${API_URL}?action=${currentTab}&uid=${uid}`);
-    
-    // ЛОГ ДЛЯ ОТЛАДКИ
-    console.log('SERVER RESPONSE:', result);
-
-    const serverData = result.data !== undefined ? result.data : result;
-    const newHash = JSON.stringify(serverData);
-
-    if (!cached || cached.hash !== newHash) {
-      setCache(currentTab, serverData);
-      renderTab(currentTab, serverData);
-    }
-  } catch (e) {
-    console.error('FETCH ERROR:', e);
-    if (e.name === 'AbortError') return;
-    if (!cached) {
-      content.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>Не удалось загрузить данные из таблицы<br><button onclick="loadData(true)">Повторить</button></div>`;
-    }
-  } finally {
-    isLoading = false;
-  }
-}
-
-async function manualRefresh() {
-  const btn = document.getElementById('refreshBtn');
-  btn.classList.add('spinning');
-  btn.classList.remove('success');
-
-  try {
-    localStorage.removeItem('tb25_' + CACHE_VERSION + '_' + currentTab);
-    await loadData(true);
-    btn.classList.remove('spinning');
-    btn.classList.add('success');
-    setTimeout(() => btn.classList.remove('success'), 1800);
-    if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-  } catch(e) {
-    btn.classList.remove('spinning');
-    if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
-  }
-}
-
-async function silentRefresh() {
-  if (document.hidden || !navigator.onLine || isLoading) return;
-  if (['faq', 'bonus'].includes(currentTab)) return;
-
-  try {
-    const uid = getUserId();
-    const resp = await fetch(`${API_URL}?action=${currentTab}&uid=${uid}&_t=${Date.now()}`, { cache: 'no-store' });
-    if (!resp.ok) return;
+    const resp = await fetch(API_URL + '?action=' + currentTab + '&uid=' + uid);
     const result = await resp.json();
+    if (result.error) throw new Error(result.error);
+    const serverVersion = result.version || '1';
     const serverData = result.data !== undefined ? result.data : result;
-    const newHash = JSON.stringify(serverData);
-    const cached = getCache(currentTab);
-
-    if (!cached || cached.hash !== newHash) {
-      setCache(currentTab, serverData);
-      const scrollY = window.scrollY;
+    if (!cached || cached.version !== serverVersion) {
+      setCache(currentTab, serverVersion, serverData);
       renderTab(currentTab, serverData);
-      window.scrollTo(0, scrollY);
     }
-  } catch (e) {}
-}
-
-function startAutoRefresh() {
-  if (autoRefreshTimer) clearInterval(autoRefreshTimer);
-  autoRefreshTimer = setInterval(silentRefresh, 60000);
-}
-
-function getLogoPlaceholder(teamName) {
-  if (!teamName) return '?';
-  return teamName.replace(/[^a-zA-Zа-яА-ЯёЁ0-9]/g, '').substring(0, 3).toUpperCase();
-}
-
-function escapeHtml(str) {
-  return String(str ?? '')
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    updateSyncLine();
+  } catch (e) {
+    if (!cached) content.innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div>Ошибка: ' + e.message + '</div>';
+  }
 }
 
 function renderTab(tab, data) {
-  if (tab === 'today' || tab === 'tomorrow') {
-    const list = extractMatchesArray(data);
-    renderMatches(list, tab);
-  } else if (tab === 'yesterday') {
-    renderYesterday(data);
-  } else if (tab === 'express') {
-    renderExpress(data);
-  } else if (tab === 'stats') {
-    renderStats(data);
-  }
+  if (tab === 'today' || tab === 'tomorrow') renderMatches(Array.isArray(data) ? data : []);
+  else if (tab === 'yesterday') renderYesterday(data);
+  else if (tab === 'express') renderExpress(data);
+  else if (tab === 'stats') renderStats(data);
 }
 
-function renderMatches(rawList, tabName) {
+// ⚡ ИЗМЕНЕНО: фильтр 62%, обработка пустого outcome, safe-поля
+function renderMatches(data) {
   const content = document.getElementById('content');
-  const filtersWrap = document.getElementById('filtersWrap');
-  const probFiltersEl = document.getElementById('probFilters');
-  const leagueFiltersEl = document.getElementById('leagueFilters');
-
-  const allMatches = rawList.map(normalizeMatch).filter(Boolean);
-
-  const badgeEl = document.getElementById(`badge-${tabName}`);
-  if (badgeEl) {
-    badgeEl.textContent = allMatches.length;
-    badgeEl.style.display = allMatches.length > 0 ? 'inline-block' : 'none';
-  }
-
-  if (!allMatches.length) {
-    filtersWrap.style.display = 'none';
-    content.innerHTML = `<div class="empty"><div class="empty-icon">⚽</div>В таблице пока нет матчей на ${tabName === 'today' ? 'сегодня' : 'завтра'}</div>`;
-    return;
-  }
-
-  filtersWrap.style.display = 'flex';
-
-  const count60 = allMatches.filter(m => m.prob >= 60).length;
-  const count75 = allMatches.filter(m => m.prob >= 75).length;
-
-  probFiltersEl.innerHTML = `
-    <div class="chip ${currentMinProb === 0 ? 'active' : ''}" data-prob="0">Все матчи <span class="chip-count">${allMatches.length}</span></div>
-    <div class="chip ${currentMinProb === 60 ? 'active' : ''}" data-prob="60">🔥 60%+ <span class="chip-count">${count60}</span></div>
-    <div class="chip ${currentMinProb === 75 ? 'active' : ''}" data-prob="75">💎 Топ 75%+ <span class="chip-count">${count75}</span></div>
-  `;
-  probFiltersEl.onclick = e => {
-    const chip = e.target.closest('.chip');
-    if (chip) setProbFilter(Number(chip.dataset.prob));
-  };
-
-  let byProb = allMatches.filter(m => m.prob >= currentMinProb);
-
-  const leagues = [...new Set(byProb.map(m => m.league).filter(Boolean))];
-  if (currentLeagueFilter !== 'all' && !leagues.includes(currentLeagueFilter)) {
-    currentLeagueFilter = 'all';
-  }
-
-  if (leagues.length > 1) {
-    leagueFiltersEl.style.display = 'flex';
-    let lHtml = `<div class="chip ${currentLeagueFilter === 'all' ? 'active' : ''}" data-league="all">Все лиги</div>`;
-    leagues.forEach(l => {
-      const cnt = byProb.filter(m => m.league === l).length;
-      lHtml += `<div class="chip ${currentLeagueFilter === l ? 'active' : ''}" data-league="${escapeHtml(l)}">${escapeHtml(l)} <span class="chip-count">${cnt}</span></div>`;
-    });
-    leagueFiltersEl.innerHTML = lHtml;
-    leagueFiltersEl.onclick = e => {
-      const chip = e.target.closest('.chip');
-      if (chip) setLeagueFilter(chip.dataset.league);
-    };
-  } else {
-    leagueFiltersEl.style.display = 'none';
-  }
-
-  let filtered = currentLeagueFilter === 'all'
-    ? byProb
-    : byProb.filter(m => m.league === currentLeagueFilter);
-
-  if (!filtered.length) {
-    content.innerHTML = `<div class="empty">
-      <div class="empty-icon">🔍</div>
-      Нет матчей под выбранный фильтр (${currentMinProb}%+)
-      <br><button onclick="setProbFilter(0)">Показать все (${allMatches.length})</button>
-    </div>`;
-    return;
-  }
-
-  const sorted = [...filtered].sort((a, b) => b.prob - a.prob);
-
+  // ⚡ Фильтр MIN_PROBABILITY (62%) — страховка на фронте
+  const filtered = data.filter(m => (parseInt(m.probability) || 0) >= MIN_PROBABILITY);
+  if (!filtered.length) { content.innerHTML = '<div class="empty"><div class="empty-icon">⚽</div>Нет матчей с вероятностью ≥ ' + MIN_PROBABILITY + '%</div>'; return; }
+  
+  const sorted = filtered.sort((a, b) => (parseInt(b.probability) || 0) - (parseInt(a.probability) || 0));
   let html = '';
+  
   sorted.forEach((m, i) => {
-    const prob = m.prob;
-    const cls = prob >= 75 ? 'prob-high' : prob >= 65 ? 'prob-mid' : '';
-    const live = String(m.result || m.status || '').toLowerCase().includes('live');
-    const { time, date } = m.parsedDate;
+    const prob = parseInt(m.probability) || 0;
+    const isHigh = prob >= 75;
+    const cardClass = isHigh ? 'prob-high' : 'prob-mid';
+    const live = String(m.result || '').includes('Live');
+    
+    // ⚡ Безопасная обработка outcome
+    let o = m.outcome || { p1: 33, x: 33, p2: 34 };
+    const p1 = o.p1 || 0, px = o.x || 0, p2 = o.p2 || 0;
+    const best = Math.max(p1, px, p2);
+    let mainLabel = 'X';
+    if (best === p1) mainLabel = 'П1';
+    else if (best === p2) mainLabel = 'П2';
+    
+    const ch1X = p1 + px, ch2X = p2 + px, ch12 = p1 + p2;
+    let doubleLabel = '1X', bestDouble = ch1X;
+    if (ch2X > bestDouble) { doubleLabel = '2X'; bestDouble = ch2X; }
+    if (ch12 > bestDouble) { doubleLabel = '12'; bestDouble = ch12; }
 
-    html += `<div class="match-card ${cls}" style="animation-delay:${Math.min(i, 8) * 0.035}s">
-      <div class="mc-top-info">
-        <div class="mc-league-badge">${escapeHtml(m.league)}</div>
-        ${live ? '<div class="mc-live">● LIVE</div>' : `<div class="mc-date">${escapeHtml(date || (tabName === 'today' ? 'Сегодня' : 'Завтра'))}</div>`}
-      </div>
-
-      <div class="mc-matchup">
-        <div class="mc-team">
-          <div class="mc-logo">${escapeHtml(getLogoPlaceholder(m.home))}</div>
-          <div class="mc-name">${escapeHtml(m.home)}</div>
-        </div>
-        <div class="mc-time-center">
-          <div class="mc-time">${escapeHtml(time)}</div>
-          ${m.odd > 1 ? `<div class="mc-odd-pill">Кэф ${m.odd.toFixed(2)}</div>` : ''}
-        </div>
-        <div class="mc-team">
-          <div class="mc-logo">${escapeHtml(getLogoPlaceholder(m.away))}</div>
-          <div class="mc-name">${escapeHtml(m.away)}</div>
-        </div>
-      </div>
-
-      <div class="mc-total-main">
-        <div class="mc-total-row">
-          <div>
-            <div class="mc-total-title">Тотал Больше 2.5</div>
-            <div class="mc-total-val ${prob >= 75 ? 'high' : (prob < 60 ? 'low' : '')}">${prob}%</div>
-          </div>
-          <div class="mc-conf-badge ${prob >= 75 ? 'conf-high' : (prob >= 65 ? 'conf-mid' : 'conf-low')}">
-            ${prob >= 75 ? '🔥 Высокая' : (prob >= 65 ? '✅ Оптимально' : '⚡ Повышенный риск')}
-          </div>
-        </div>
-        <div class="prob-progress-bg">
-          <div class="prob-progress-fill ${prob >= 75 ? 'high' : ''}" style="width:${Math.min(100, Math.max(8, prob))}%"></div>
-        </div>
-      </div>
-    </div>`;
+    html += '<div class="card ' + cardClass + '" style="animation-delay:' + (i * 0.05) + 's;" onclick="haptic(\'light\')">';
+    html += '<div class="card-header"><div style="flex:1"><div class="card-team">' + escapeHtml(m.home) + '</div><div class="card-team away">' + escapeHtml(m.away) + '</div></div>';
+    if (live) html += '<span class="meta-badge" style="background:var(--danger);color:#fff;font-weight:900;font-size:10px;animation:pulse 1.5s infinite;">LIVE</span>';
+    html += '</div>';
+    
+    html += '<div class="card-meta"><div class="meta-badge league">🏆 ' + escapeHtml(m.league) + '</div><div class="meta-badge">📅 ' + formatDate(m.date) + (m.time ? ' · ' + m.time : '') + '</div></div>';
+    
+    html += '<div class="prob-container"><div class="prob-top"><div class="prob-label">Вероятность ТБ 2.5</div><div class="prob-value">' + prob + '%</div></div><div class="prob-bar"><div class="prob-fill" style="width:' + prob + '%"></div></div></div>';
+    
+    html += '<div class="outcome-grid">';
+    html += '<div class="outcome-box main"><div class="outcome-name">🏆 Прогноз</div><div class="outcome-val">' + mainLabel + ' · ' + best + '%</div></div>';
+    html += '<div class="outcome-box double"><div class="outcome-name">🎯 Двойной шанс</div><div class="outcome-val" style="color:var(--gold);">' + doubleLabel + ' · ' + bestDouble + '%</div></div>';
+    html += '</div></div>';
   });
-
+  
   content.innerHTML = html;
 }
 
+// ⚡ ИЗМЕНЕНО: безопасная обработка пустых данных
 function renderYesterday(data) {
   const content = document.getElementById('content');
-  const matches = extractMatchesArray(data);
-  if (!matches.length) {
-    content.innerHTML = '<div class="empty"><div class="empty-icon">📅</div>За вчерашний день данных нет</div>';
-    return;
+  let matches = [], wins = 0, loses = 0, accuracy = 0, total = 0, dateStr = '', isYesterday = true;
+  
+  if (Array.isArray(data)) {
+    matches = data;
+    matches.forEach(m => { if (m.status === 'win') wins++; else if (m.status === 'lose') loses++; });
+    total = wins + loses;
+    accuracy = total > 0 ? Math.round(wins / total * 100) : 0;
+  } else if (data && Array.isArray(data.matches)) {
+    matches = data.matches;
+    wins = data.wins || 0; loses = data.loses || 0; accuracy = data.accuracy || 0; total = data.total || (wins + loses);
+    dateStr = data.date || ''; isYesterday = data.isYesterday !== false;
   }
+  
+  if (!matches.length) { content.innerHTML = '<div class="empty"><div class="empty-icon">📅</div>Вчера матчей не было</div>'; return; }
+  
+  let html = '<div class="stats-hero" style="margin-bottom:20px"><div class="stats-big" style="font-size:48px">' + accuracy + '%</div><div class="stats-sub">Точность за вчера</div></div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;">';
+  html += '<div class="league-row" style="align-items:center;justify-content:center;padding:16px"><div style="font-size:24px;font-weight:900;color:var(--mint);font-family:JetBrains Mono">' + wins + '</div><div style="font-size:11px;color:var(--text-mute);font-weight:700">✅ ЗАШЛО</div></div>';
+  html += '<div class="league-row" style="align-items:center;justify-content:center;padding:16px"><div style="font-size:24px;font-weight:900;color:var(--danger);font-family:JetBrains Mono">' + loses + '</div><div style="font-size:11px;color:var(--text-mute);font-weight:700">❌ НЕ ЗАШЛО</div></div>';
+  html += '</div>';
 
-  const wins = matches.filter(m => m.status === 'win').length;
-  const loses = matches.filter(m => m.status === 'lose').length;
-  const total = wins + loses;
-  const accuracy = total > 0 ? Math.round((wins / total) * 100) : 0;
-
-  let html = `<div style="text-align:center;margin-bottom:20px;background:var(--surface);padding:20px;border-radius:var(--radius);border:1px solid var(--border);">
-    <div style="font-family:'JetBrains Mono';font-size:44px;font-weight:900;color:var(--mint);">${accuracy}%</div>
-    <div style="font-size:11px;color:var(--text-dim);font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-top:4px;">
-      Точность за вчера (✅ ${wins} / ❌ ${loses})
-    </div>
-  </div>`;
-
-  matches.forEach(m => {
+  matches.forEach((m, idx) => {
     const emoji = m.status === 'win' ? '✅' : m.status === 'lose' ? '❌' : '⏳';
     const scoreColor = m.status === 'win' ? 'var(--mint)' : m.status === 'lose' ? 'var(--danger)' : 'var(--text)';
-    html += `<div class="match-card" style="padding:16px;margin-bottom:10px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <div style="font-size:14px;font-weight:800">${escapeHtml(m.home)} — ${escapeHtml(m.away)}</div>
-        <div style="font-family:'JetBrains Mono';font-size:16px;font-weight:900;color:${scoreColor}">${escapeHtml(m.score || '—')}</div>
-      </div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-dim);font-weight:600;">
-        <span>⚽ голов: ${escapeHtml(m.total ?? '-')}</span>
-        <span>${emoji} ${escapeHtml(m.prediction || 'ТБ 2.5')}</span>
-      </div>
-    </div>`;
+    html += '<div class="card" style="animation-delay:' + (idx * 0.05) + 's;">';
+    html += '<div class="card-header"><div style="flex:1"><div class="card-team">' + escapeHtml(m.home) + '</div><div class="card-team away">' + escapeHtml(m.away) + '</div></div>';
+    html += '<div style="font-family:JetBrains Mono;font-size:20px;font-weight:900;color:' + scoreColor + '">' + escapeHtml(m.score || '—') + '</div></div>';
+    html += '<div class="card-meta"><div class="meta-badge">⚽ Тотал: ' + escapeHtml(m.total) + '</div><div class="meta-badge">' + emoji + ' ' + escapeHtml(m.prediction || 'Прогноз') + '</div></div>';
+    if (m.winner) html += '<div style="margin-top:8px;display:inline-block;background:var(--surface-hi);padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;">🏆 ' + escapeHtml(m.winner) + '</div>';
+    html += '</div>';
   });
+  
   content.innerHTML = html;
 }
 
+// ⚡ ИЗМЕНЕНО: фильтр 62%, защита от пустого списка
 function renderExpress(data) {
   const content = document.getElementById('content');
-  const rawItems = extractMatchesArray(data);
-  const items = rawItems.map(normalizeMatch).filter(Boolean);
-
-  if (!items.length) {
-    content.innerHTML = '<div class="empty"><div class="empty-icon">🔥</div>Экспресс дня ещё формируется</div>';
-    return;
-  }
-
+  if (!data || !Array.isArray(data.matches) || !data.matches.length) { content.innerHTML = '<div class="empty"><div class="empty-icon">🔥</div>Экспресс ещё не собран</div>'; return; }
+  
+  // ⚡ Фильтр MIN_PROBABILITY (62%)
+  const items = data.matches.filter(m => (parseInt(m.probability)||0) >= MIN_PROBABILITY);
+  if (!items.length) { content.innerHTML = '<div class="empty"><div class="empty-icon">🔥</div>Нет событий ≥ ' + MIN_PROBABILITY + '% для экспресса</div>'; return; }
+  
   let totalOdd = 1;
-  items.forEach(m => { totalOdd *= (m.odd > 1 ? m.odd : 1.5); });
+  items.forEach(m => { totalOdd *= (parseFloat(m.odd) || 1); });
   totalOdd = totalOdd.toFixed(2);
-
-  let html = `<div style="background:linear-gradient(135deg,#1e1b4b,#312e81);border-radius:20px;padding:24px;text-align:center;margin-bottom:16px;border:1px solid rgba(255,255,255,0.12);">
-    <div style="font-size:11px;font-weight:800;color:#a5b4fc;letter-spacing:2px;text-transform:uppercase;">🔥 Топ-экспресс дня</div>
-    <div style="font-family:'JetBrains Mono';font-size:50px;font-weight:900;color:#fff;line-height:1;margin:10px 0;">${totalOdd}</div>
-    <div style="font-size:11px;color:#c7d2fe;font-weight:600;">Итоговый коэффициент (${items.length} событий)</div>
-  </div>`;
-
+  
+  let html = '<div class="express-hero"><div class="express-title">Топ-экспресс дня</div><div class="express-odd">' + totalOdd + '</div><div class="express-sub">Итоговый коэффициент</div></div>';
+  
   items.forEach((m, i) => {
-    const odd = m.odd > 1 ? m.odd : 1.5;
-    html += `<div class="match-card" style="padding:16px;margin-bottom:12px;">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-        <div style="width:24px;height:24px;background:var(--mint);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:11px;">${i + 1}</div>
-        <div style="font-weight:800;font-size:13px">${escapeHtml(m.home)} — ${escapeHtml(m.away)}</div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <div style="background:var(--surface);padding:10px;border-radius:10px;border:1px solid var(--border);">
-          <div style="font-size:10px;color:var(--text-mute);font-weight:700">ВЕРОЯТНОСТЬ ТБ 2.5</div>
-          <div style="font-family:'JetBrains Mono';font-size:18px;font-weight:800;color:var(--mint);margin-top:2px;">${m.prob}%</div>
-        </div>
-        <div style="background:var(--surface);padding:10px;border-radius:10px;border:1px solid var(--border);">
-          <div style="font-size:10px;color:var(--text-mute);font-weight:700">КОЭФФИЦИЕНТ</div>
-          <div style="font-family:'JetBrains Mono';font-size:18px;font-weight:800;color:var(--gold);margin-top:2px;">${odd.toFixed(2)}</div>
-        </div>
-      </div>
-    </div>`;
+    const prob = parseInt(m.probability) || 0;
+    const odd = parseFloat(m.odd) || 1;
+    html += '<div class="card" style="animation-delay:' + (i*0.05) + 's">';
+    html += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">';
+    html += '<div style="width:28px;height:28px;background:var(--mint);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;">' + (i+1) + '</div>';
+    html += '<div style="font-weight:800;font-size:14px">' + escapeHtml(m.home) + ' — ' + escapeHtml(m.away) + '</div>';
+    html += '</div>';
+    html += '<div class="card-meta"><div class="meta-badge league">🏆 ' + escapeHtml(m.league) + '</div><div class="meta-badge">📅 ' + formatDate(m.date) + '</div></div>';
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+    html += '<div class="outcome-box" style="background:var(--surface-hi);padding:10px"><div class="outcome-name">Вероятность</div><div class="outcome-val" style="color:var(--mint)">' + prob + '%</div></div>';
+    html += '<div class="outcome-box" style="background:var(--surface-hi);padding:10px"><div class="outcome-name">Кэф</div><div class="outcome-val" style="color:var(--gold)">' + odd.toFixed(2) + '</div></div>';
+    html += '</div></div>';
   });
-
-  html += `<div style="margin-top:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;">
-    <label style="font-size:11px;font-weight:800;color:var(--text-dim);text-transform:uppercase;">💰 Калькулятор потенциального выигрыша</label>
-    <div style="display:flex;gap:10px;align-items:center;margin-top:10px;">
-      <input type="number" inputmode="numeric" id="calcInput" placeholder="1000" oninput="calcWin(${totalOdd})" style="flex:1;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'JetBrains Mono';font-size:16px;font-weight:700;outline:none;">
-      <div id="calcResult" style="font-family:'JetBrains Mono';font-size:20px;font-weight:900;color:var(--gold);">—</div>
-    </div>
-  </div>`;
+  
   content.innerHTML = html;
 }
 
-function calcWin(odd) {
-  const input = document.getElementById('calcInput');
-  const result = document.getElementById('calcResult');
-  if (!input || !result) return;
-  const val = parseFloat(input.value);
-  if (isNaN(val) || val <= 0) { result.textContent = '—'; return; }
-  result.textContent = '≈ ' + Math.round(val * odd).toLocaleString('ru-RU') + ' ₽';
-}
-
+// ⚡ ИЗМЕНЕНО: безопасная обработка данных
 function renderStats(data) {
-  const content = document.getElementById('content');
-  if (!data) { content.innerHTML = '<div class="empty">Нет данных статистики</div>'; return; }
-  const acc = parseProb(data.accuracy);
-  const wins = data.wins || 0;
-  const loses = data.loses || 0;
+  if (!data) { document.getElementById('content').innerHTML = '<div class="empty">Нет данных</div>'; return; }
+  const acc = data.accuracy || 0, wins = data.wins || 0, loses = data.loses || 0, total = data.total || 0;
   const leagues = Array.isArray(data.leagues) ? data.leagues : [];
-
-  let html = `<div style="text-align:center;margin-bottom:20px;background:var(--surface);padding:24px;border-radius:var(--radius);border:1px solid var(--border);">
-    <div style="font-family:'JetBrains Mono';font-size:54px;font-weight:900;line-height:1;color:var(--mint);">${acc}%</div>
-    <div style="font-size:11px;color:var(--text-dim);font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin-top:8px;">Общая проходимость прогнозов</div>
-  </div>`;
-
-  html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
-    <div style="padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:14px;text-align:center;">
-      <div style="font-size:26px;font-weight:900;color:var(--mint);font-family:'JetBrains Mono';">${wins}</div>
-      <div style="font-size:10px;color:var(--text-mute);font-weight:800;margin-top:4px;">✅ ЗАШЛО</div>
-    </div>
-    <div style="padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:14px;text-align:center;">
-      <div style="font-size:26px;font-weight:900;color:var(--danger);font-family:'JetBrains Mono';">${loses}</div>
-      <div style="font-size:10px;color:var(--text-mute);font-weight:800;margin-top:4px;">❌ НЕ ЗАШЛО</div>
-    </div>
-  </div>`;
-
+  
+  let html = '<div class="stats-hero"><div class="stats-big">' + acc + '%</div><div class="stats-sub">Общая точность</div></div>';
+  
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">';
+  html += '<div class="league-row" style="align-items:center;justify-content:center;padding:20px"><div style="font-size:28px;font-weight:900;color:var(--mint);font-family:JetBrains Mono">' + wins + '</div><div style="font-size:11px;color:var(--text-mute);font-weight:700">✅ ЗАШЛО</div></div>';
+  html += '<div class="league-row" style="align-items:center;justify-content:center;padding:20px"><div style="font-size:28px;font-weight:900;color:var(--danger);font-family:JetBrains Mono">' + loses + '</div><div style="font-size:11px;color:var(--text-mute);font-weight:700">❌ НЕ ЗАШЛО</div></div>';
+  html += '</div>';
+  
   if (leagues.length) {
-    html += '<div style="font-size:12px;font-weight:800;color:var(--text-dim);margin-bottom:10px;text-transform:uppercase;">📊 Статистика по лигам</div>';
+    html += '<div style="font-size:13px;font-weight:800;color:var(--text-dim);margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;">📊 По лигам</div>';
     leagues.forEach(lg => {
-      const lgAcc = parseProb(lg.accuracy);
-      html += `<div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:8px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <div style="font-size:13px;font-weight:800">${escapeHtml(lg.name)}</div>
-          <div style="font-family:'JetBrains Mono';font-size:14px;font-weight:800;color:var(--mint)">${lgAcc}%</div>
-        </div>
-        <div style="font-size:11px;color:var(--text-mute);font-weight:600">✅ ${lg.wins || 0} · ❌ ${lg.loses || 0}</div>
-      </div>`;
+      const lAcc = lg.accuracy || 0;
+      html += '<div class="league-row">';
+      html += '<div class="league-header"><div class="league-name">' + escapeHtml(lg.name) + '</div><div class="league-acc">' + lAcc + '%</div></div>';
+      html += '<div class="league-bar"><div class="league-fill" style="width:' + lAcc + '%"></div></div>';
+      html += '<div style="font-size:11px;color:var(--text-mute);font-weight:600">✅ ' + (lg.wins||0) + ' · ❌ ' + (lg.loses||0) + '</div>';
+      html += '</div>';
     });
   }
-  content.innerHTML = html;
+  
+  document.getElementById('content').innerHTML = html;
 }
 
-function renderBonus() {
-  document.getElementById('content').innerHTML = `
-    <div style="text-align:center;margin-bottom:20px;">
-      <div style="font-size:46px;">🎁</div>
-      <div style="font-size:12px;color:var(--text-dim);font-weight:800;text-transform:uppercase;margin-top:6px;">Приветственный бонус</div>
-    </div>
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);text-align:center;padding:26px 18px;">
-      <div style="font-size:17px;font-weight:900;margin-bottom:10px;">БОНУС ДЛЯ НОВЫХ ИГРОКОВ</div>
-      <div style="font-size:13px;color:var(--text-dim);line-height:1.6;margin-bottom:22px;">
-        Зарегистрируйся по ссылке и получи фрибет на старт.<br>🔥 Высокие коэффициенты на тоталы<br>⚡ Моментальные выплаты
-      </div>
-      <a href="https://baltbet.ru/account/register?refpromo=1221753" target="_blank" style="display:inline-block;padding:14px 32px;background:var(--gold);color:#000;text-decoration:none;border-radius:100px;font-weight:900;font-size:14px;">ЗАБРАТЬ БОНУС</a>
-    </div>`;
-}
-
+// ⚡ ИЗМЕНЕНО: текст FAQ под 62% + ИИ
 function renderFaq() {
-  document.getElementById('content').innerHTML = `
-    <div style="text-align:center;margin-bottom:20px;">
-      <div style="font-size:44px;">❓</div>
-      <div style="font-size:12px;color:var(--text-dim);font-weight:800;text-transform:uppercase;margin-top:6px;">Как работает алгоритм</div>
-    </div>
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:10px;">
-      <div style="font-weight:800;margin-bottom:6px;">🎯 Математическая модель</div>
-      <div style="font-size:12px;color:var(--text-dim);line-height:1.6;">Анализ ожидаемых голов (xG), атакующего потенциала команд и распределения Пуассона. Дополнительно доступны быстрые фильтры 60%+ и 75%+.</div>
-    </div>
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:10px;">
-      <div style="font-weight:800;margin-bottom:6px;">⚙️ Синхронизация с таблицей</div>
-      <div style="font-size:12px;color:var(--text-dim);line-height:1.6;">Данные проверяются каждую минуту автоматически. При любом изменении в Google Таблице список матчей на экране обновляется без перезагрузки.</div>
-    </div>
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;border-left:3px solid var(--danger);">
-      <div style="font-weight:800;margin-bottom:6px;color:var(--danger);">⚠️ Дисклеймер</div>
-      <div style="font-size:12px;color:var(--text-dim);line-height:1.6;">Приложение носит исключительно информационно-аналитический характер и не принимает ставок. 18+.</div>
-    </div>`;
+  document.getElementById('content').innerHTML = 
+    '<div class="stats-hero"><div class="stats-big" style="font-size:48px">❓</div><div class="stats-sub">Как это работает</div></div>' +
+    '<div class="league-row"><div style="font-weight:800;margin-bottom:6px;">🎯 Логика прогнозов</div><div style="font-size:13px;color:var(--text-dim);line-height:1.6;">Бот анализирует xG (ожидаемые голы), применяет распределение Пуассона, учитывает силу атаки/обороны команд и отсекает матчи через ИИ-фильтр Gemini. Показываются только матчи с вероятностью <strong>≥ 62%</strong>.</div></div>' +
+    '<div class="league-row"><div style="font-weight:800;margin-bottom:6px;">⚙️ Обновление</div><div style="font-size:13px;color:var(--text-dim);line-height:1.6;">Кэфы — каждые 15 мин.<br>Счёт — каждые 30 мин.<br>Поиск матчей — <strong>2 раза в день: 9:00 и 21:00 МСК</strong>.</div></div>' +
+    '<div class="league-row" style="border-color:var(--danger)"><div style="font-weight:800;margin-bottom:6px;color:var(--danger);">⚠️ Дисклеймер</div><div style="font-size:13px;color:var(--text-dim);line-height:1.6;">Это <strong>не букмекерская контора</strong>. Мы не принимаем ставки. Все прогнозы носят информационный характер.</div></div>';
+}
+
+// ⚡ ИЗМЕНЕНО: текст бонуса
+function renderBonus() {
+  document.getElementById('content').innerHTML = 
+    '<div class="stats-hero"><div class="stats-big" style="font-size:48px">🎁</div><div class="stats-sub">Приветственный бонус</div></div>' +
+    '<div class="league-row" style="text-align:center;padding:30px 20px;">' +
+    '<div style="font-size:18px;font-weight:900;margin-bottom:12px;">БОНУС ДЛЯ ТЕБЯ</div>' +
+    '<div style="font-size:14px;color:var(--text-dim);line-height:1.6;margin-bottom:24px;">Зарегистрируйся и получи приветственный бонус.<br>🔥 Лучшие коэффициенты на ТБ 2.5<br>⚡ Быстрые выплаты</div>' +
+    '<a href="' + AD_URL + '" target="_blank" style="display:inline-block;padding:14px 32px;background:var(--gold);color:#000;text-decoration:none;border-radius:100px;font-weight:900;font-size:15px;box-shadow:0 8px 24px var(--gold-glow);">ЗАБРАТЬ БОНУС</a>' +
+    '</div>';
+}
+
+// ⚡ ДОБАВЛЕНО: безопасное экранирование HTML
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str).replace(/[&<>"']/g, function(c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
 }
 
 checkDailyWelcome();
 loadData();
-startAutoRefresh();
 </script>
 </body>
 </html>
