@@ -58,9 +58,23 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--text-mute); border-radius: 10px; }
 
 /* Шапка */
-.header { padding: 24px 20px 16px; text-align: center; }
+.header { padding: 24px 20px 16px; text-align: center; position: relative; }
 .header h1 { font-size: 26px; font-weight: 900; letter-spacing: 2px; }
 .header .sub { font-size: 11px; letter-spacing: 3px; color: var(--mint); margin-top: 6px; text-transform: uppercase; font-weight: 800; }
+
+/* Кнопка Обновить */
+.refresh-btn {
+  position: absolute; top: 24px; right: 20px;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--surface); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-dim); cursor: pointer; transition: all 0.2s;
+}
+.refresh-btn:active { transform: scale(0.9); }
+.refresh-btn svg { width: 20px; height: 20px; transition: transform 0.5s; }
+.refresh-btn.spinning svg { animation: spin 1s linear infinite; color: var(--mint); }
+.refresh-btn.success { border-color: var(--mint); color: var(--mint); }
+@keyframes spin { 100% { transform: rotate(360deg); } }
 
 /* Вкладки */
 .tabs-wrap { position: sticky; top: 0; background: var(--bg); padding: 10px 16px; z-index: 10; border-bottom: 1px solid var(--border); }
@@ -81,7 +95,7 @@ body {
 }
 .league-chip.active { background: var(--mint); color: #fff; border-color: var(--mint); box-shadow: 0 4px 12px var(--mint-glow); }
 
-#content { padding: 16px; min-height: 50vh; }
+#content { padding: 16px; min-height: 50vh; transition: opacity 0.2s; }
 
 /* КАРТОЧКА */
 .match-card {
@@ -146,6 +160,9 @@ body {
 </head>
 <body>
 <div class="header">
+  <div class="refresh-btn" id="refreshBtn" onclick="manualRefresh()" title="Обновить данные">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+  </div>
   <h1>ПРОГНОЗЫ</h1>
   <div class="sub" id="headerDate">Тотал больше 2.5</div>
 </div>
@@ -183,15 +200,13 @@ body {
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycbxW52PKcn0Mh2L6yjQ5-5IiuCdds8FksK1XzY6F_iElSnFuAH4f5Hz9JH97pEDD1hcw/exec';
 const BOT_URL = 'https://t.me/total25_signals_bot';
-const CACHE_VERSION = 'v52'; // Сброс старого кэша
-const MIN_PROB = 60; // Строго от 60%
+const CACHE_VERSION = 'v53'; // Подняли версию для сброса
+const MIN_PROB = 60;
 
 let currentTab = 'today';
 let currentLeagueFilter = 'all';
 let isLoading = false;
 let abortCtrl = null;
-
-// Переменные для автообновления
 let autoRefreshTimer = null;
 let lastServerVersions = {}; 
 
@@ -203,9 +218,7 @@ if (localStorage.getItem('tb25_theme') === 'light') document.body.classList.add(
 function parseDate(rawDate) {
   if (!rawDate) return { time: '--:--', date: '' };
   const d = new Date(rawDate);
-  if (isNaN(d.getTime())) {
-     return { time: String(rawDate).substring(0, 5), date: '' };
-  }
+  if (isNaN(d.getTime())) return { time: String(rawDate).substring(0, 5), date: '' };
   const time = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
   const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -293,7 +306,7 @@ function filterByLeague(league) {
   if (cached) renderTab(currentTab, cached.data);
 }
 
-// Первичная загрузка (с показом скелетона, если кэша нет)
+// Загрузка данных (с скелетоном)
 async function loadData() {
   if (isLoading) return;
   isLoading = true;
@@ -319,8 +332,9 @@ async function loadData() {
     const serverVersion = result.version || '1';
     const serverData = result.data !== undefined ? result.data : result;
     
-    lastServerVersions[currentTab] = serverVersion; // Запоминаем версию
+    lastServerVersions[currentTab] = serverVersion;
     
+    // Если данные новые, обновляем экран
     if (!cached || cached.version !== serverVersion) {
       setCache(currentTab, serverVersion, serverData);
       renderTab(currentTab, serverData);
@@ -333,7 +347,33 @@ async function loadData() {
   }
 }
 
-// Тихое автообновление (каждую минуту)
+// РУЧНОЕ ОБНОВЛЕНИЕ
+async function manualRefresh() {
+  if (isLoading) return;
+  const btn = document.getElementById('refreshBtn');
+  btn.classList.add('spinning');
+  btn.classList.remove('success');
+  
+  try {
+    // Очищаем кэш для текущей вкладки
+    localStorage.removeItem('tb25_' + CACHE_VERSION + '_' + currentTab);
+    
+    // Загружаем заново
+    await loadData();
+    
+    // Показываем успех
+    btn.classList.remove('spinning');
+    btn.classList.add('success');
+    setTimeout(() => btn.classList.remove('success'), 2000);
+    
+    if (window.Telegram?.WebApp?.HapticFeedback) window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+  } catch(e) {
+    btn.classList.remove('spinning');
+    if (window.Telegram?.WebApp?.HapticFeedback) window.Telegram.WebApp.HapticFeedback.notificationOccurred('error');
+  }
+}
+
+// Тихое автообновление (раз в минуту)
 async function silentRefresh() {
   if (document.hidden || !navigator.onLine || isLoading) return;
   if (currentTab === 'faq' || currentTab === 'bonus') return;
@@ -346,33 +386,25 @@ async function silentRefresh() {
     const serverVersion = result.version || '1';
     const serverData = result.data !== undefined ? result.data : result;
 
-    // Если версия на сервере отличается от той, что мы запомнили
     if (lastServerVersions[currentTab] !== serverVersion) {
       lastServerVersions[currentTab] = serverVersion;
-      setCache(currentTab, serverVersion, serverData); // Обновляем кэш
+      setCache(currentTab, serverVersion, serverData);
       
-      // Сохраняем скролл, чтобы страница не прыгала
       const scrollY = window.scrollY;
+      const content = document.getElementById('content');
+      content.style.opacity = '0.4';
+      
       renderTab(currentTab, serverData);
       window.scrollTo(0, scrollY);
       
-      // Легкая вспышка, чтобы показать, что данные обновились
-      const content = document.getElementById('content');
-      if (content) {
-        content.style.transition = 'opacity 0.15s';
-        content.style.opacity = '0.5';
-        setTimeout(() => { content.style.opacity = '1'; }, 150);
-      }
+      setTimeout(() => { content.style.opacity = '1'; }, 150);
     }
-  } catch (e) {
-    // Игнорируем ошибки при тихом обновлении, чтобы не мешать пользователю
-  }
+  } catch (e) {}
 }
 
-// Запуск таймера
 function startAutoRefresh() {
   if (autoRefreshTimer) clearInterval(autoRefreshTimer);
-  autoRefreshTimer = setInterval(silentRefresh, 60000); // 60 секунд
+  autoRefreshTimer = setInterval(silentRefresh, 60000);
 }
 
 function getLogoPlaceholder(teamName) {
@@ -408,9 +440,7 @@ function renderMatches(data) {
     wrap.innerHTML = html;
   }
 
-  if (currentLeagueFilter !== 'all') {
-    filtered = filtered.filter(m => m.league === currentLeagueFilter);
-  }
+  if (currentLeagueFilter !== 'all') filtered = filtered.filter(m => m.league === currentLeagueFilter);
   
   if (!filtered.length) {
     content.innerHTML = '<div class="empty"><div class="empty-icon">⚽</div>Нет матчей с вероятностью от 60%</div>';
@@ -609,7 +639,7 @@ function renderFaq() {
   document.getElementById('content').innerHTML =
     '<div class="stats-hero" style="text-align:center;margin-bottom:24px;"><div style="font-size:44px;">❓</div><div style="font-size:12px;color:var(--text-dim);font-weight:700;text-transform:uppercase;margin-top:6px;">Как это работает</div></div>' +
     '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;"><div style="font-weight:800;margin-bottom:4px;">🎯 Логика</div><div style="font-size:12px;color:var(--text-dim);line-height:1.6;">Анализ xG и распределение Пуассона. Показываем матчи с вероятностью от 60%.</div></div>' +
-    '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;"><div style="font-weight:800;margin-bottom:4px;">⚙️ Обновление</div><div style="font-size:12px;color:var(--text-dim);line-height:1.6;">Данные проверяются автоматически каждую минуту. Если таблица обновилась — экран обновится сам.</div></div>' +
+    '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;"><div style="font-weight:800;margin-bottom:4px;">⚙️ Обновление</div><div style="font-size:12px;color:var(--text-dim);line-height:1.6;">Данные проверяются автоматически каждую минуту. Также можно нажать кнопку вверху справа для ручной синхронизации.</div></div>' +
     '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;border-left:3px solid var(--danger);"><div style="font-weight:800;margin-bottom:4px;color:var(--danger);">⚠️ Дисклеймер</div><div style="font-size:12px;color:var(--text-dim);line-height:1.6;">Не БК. Не принимаем ставки. Прогнозы информационные. 18+.</div></div>';
 }
 
