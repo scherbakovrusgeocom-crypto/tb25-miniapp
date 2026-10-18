@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
+/* ... (стили оставляем без изменений) ... */
 :root {
   --bg: #090d14;
   --surface: #111823;
@@ -28,7 +29,6 @@
   --radius: 20px;
   --nav-h: 68px;
 }
-
 body.light-theme {
   --bg: #f1f5f9;
   --surface: #ffffff;
@@ -45,9 +45,7 @@ body.light-theme {
   --gold-glow: rgba(217, 119, 6, 0.14);
   --danger: #e11d48;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg);
@@ -57,11 +55,9 @@ body {
   overflow-x: hidden;
   transition: background 0.25s, color 0.25s;
 }
-
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-thumb { background: var(--text-mute); border-radius: 10px; }
 
-/* Шапка */
 .header { padding: 20px 16px 14px; display: flex; align-items: center; justify-content: space-between; }
 .header-left, .header-right { display: flex; align-items: center; gap: 8px; width: 44px; }
 .header-center { text-align: center; flex: 1; }
@@ -83,7 +79,6 @@ body {
 .icon-btn.success { border-color: var(--mint); color: var(--mint); box-shadow: 0 0 12px var(--mint-glow); }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
-/* Вкладки */
 .tabs-wrap {
   position: sticky; top: 0; background: color-mix(in srgb, var(--bg) 88%, transparent);
   backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
@@ -98,7 +93,6 @@ body {
 .tab.active { background: var(--surface-hi); color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
 .tab-badge { font-size: 10px; font-family: 'JetBrains Mono', monospace; padding: 2px 6px; border-radius: 6px; background: var(--mint-glow); color: var(--mint); }
 
-/* Панель фильтров */
 .filters-container { padding: 10px 16px 2px; display: flex; flex-direction: column; gap: 8px; }
 .prob-filters, .league-filters { display: flex; gap: 7px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
 .prob-filters::-webkit-scrollbar, .league-filters::-webkit-scrollbar { display: none; }
@@ -113,7 +107,6 @@ body {
 
 #content { padding: 14px 16px; min-height: 55vh; transition: opacity 0.2s; }
 
-/* КАРТОЧКА МАТЧА */
 .match-card {
   background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius);
   padding: 18px; margin-bottom: 14px; position: relative; overflow: hidden;
@@ -139,7 +132,6 @@ body {
 .mc-time { font-size: 19px; font-weight: 900; font-family: 'JetBrains Mono', monospace; color: var(--text); background: var(--surface); padding: 6px 10px; border-radius: 10px; border: 1px solid var(--border); }
 .mc-odd-pill { font-size: 11px; font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--gold); }
 
-/* Блок ТБ 2.5 */
 .mc-total-main { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; }
 .mc-total-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .mc-total-title { font-size: 11px; color: var(--text-dim); font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -156,7 +148,6 @@ body {
 .prob-progress-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--mint), #34d399); transition: width 0.4s ease; }
 .prob-progress-fill.high { background: linear-gradient(90deg, var(--gold), #fbbf24); }
 
-/* Скелетон и пустые состояния */
 .skeleton { background: var(--surface); border-radius: var(--radius); margin-bottom: 14px; height: 210px; position: relative; overflow: hidden; border: 1px solid var(--border); }
 .skeleton::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent); animation: shimmer 1.4s infinite; }
 @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
@@ -165,7 +156,6 @@ body {
 .empty-icon { font-size: 40px; margin-bottom: 10px; }
 .empty button { margin-top: 14px; padding: 10px 22px; background: var(--mint); border: none; color: #fff; border-radius: 100px; font-weight: 800; cursor: pointer; }
 
-/* Модалки и нижнее меню */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.78); backdrop-filter: blur(6px); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px; }
 .modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 24px; width: 100%; max-width: 380px; }
 .modal-title { font-size: 19px; font-weight: 900; text-align: center; margin-bottom: 14px; }
@@ -235,9 +225,10 @@ body {
 </nav>
 
 <script>
+// ⚠️ ВАЖНО: Убедитесь, что эта ссылка рабочая и ведет на ваш текущий Web App
 const API_URL = 'https://script.google.com/macros/s/AKfycbxW52PKcn0Mh2L6yjQ5-5IiuCdds8FksK1XzY6F_iElSnFuAH4f5Hz9JH97pEDD1hcw/exec';
 const BOT_URL = 'https://t.me/total25_signals_bot';
-const CACHE_VERSION = 'v57';
+const CACHE_VERSION = 'v58'; // Изменил версию кэша, чтобы сбросить старые данные
 
 let currentTab = 'today';
 let currentLeagueFilter = 'all';
@@ -460,6 +451,10 @@ async function loadData(forceNetwork = false) {
   try {
     const uid = getUserId();
     const result = await fetchWithRetry(`${API_URL}?action=${currentTab}&uid=${uid}`);
+    
+    // ЛОГ ДЛЯ ОТЛАДКИ
+    console.log('SERVER RESPONSE:', result);
+
     const serverData = result.data !== undefined ? result.data : result;
     const newHash = JSON.stringify(serverData);
 
@@ -468,6 +463,7 @@ async function loadData(forceNetwork = false) {
       renderTab(currentTab, serverData);
     }
   } catch (e) {
+    console.error('FETCH ERROR:', e);
     if (e.name === 'AbortError') return;
     if (!cached) {
       content.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>Не удалось загрузить данные из таблицы<br><button onclick="loadData(true)">Повторить</button></div>`;
