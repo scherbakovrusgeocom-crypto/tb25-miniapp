@@ -25,11 +25,6 @@
   --gold-glow: rgba(245, 158, 11, 0.2);
   --danger: #f43f5e;
   --danger-glow: rgba(244, 63, 94, 0.2);
-
-  --bar-p1: #3b82f6;
-  --bar-x: #64748b;
-  --bar-p2: #a855f7;
-
   --radius: 20px;
   --nav-h: 68px;
 }
@@ -49,17 +44,9 @@ body.light-theme {
   --gold: #d97706;
   --gold-glow: rgba(217, 119, 6, 0.14);
   --danger: #e11d48;
-  --bar-p1: #2563eb;
-  --bar-x: #94a3b8;
-  --bar-p2: #9333ea;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  -webkit-tap-highlight-color: transparent;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -75,48 +62,20 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--text-mute); border-radius: 10px; }
 
 /* Шапка */
-.header {
-  padding: 20px 16px 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.header-left, .header-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 44px;
-}
+.header { padding: 20px 16px 14px; display: flex; align-items: center; justify-content: space-between; }
+.header-left, .header-right { display: flex; align-items: center; gap: 8px; width: 44px; }
 .header-center { text-align: center; flex: 1; }
 .header h1 {
-  font-size: 22px;
-  font-weight: 900;
-  letter-spacing: 1.5px;
+  font-size: 22px; font-weight: 900; letter-spacing: 1.5px;
   background: linear-gradient(90deg, var(--text), var(--mint));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
-.header .sub {
-  font-size: 10px;
-  letter-spacing: 2.5px;
-  color: var(--mint);
-  margin-top: 4px;
-  text-transform: uppercase;
-  font-weight: 800;
-}
+.header .sub { font-size: 10px; letter-spacing: 2.5px; color: var(--mint); margin-top: 4px; text-transform: uppercase; font-weight: 800; }
 
 .icon-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-dim);
-  cursor: pointer;
-  transition: all 0.2s;
+  width: 40px; height: 40px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; color: var(--text-dim);
+  cursor: pointer; transition: all 0.2s;
 }
 .icon-btn:active { transform: scale(0.92); }
 .icon-btn svg { width: 19px; height: 19px; transition: transform 0.5s; }
@@ -126,425 +85,98 @@ body {
 
 /* Вкладки */
 .tabs-wrap {
-  position: sticky;
-  top: 0;
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  padding: 10px 16px;
-  z-index: 20;
-  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  padding: 10px 16px; z-index: 20; border-bottom: 1px solid var(--border);
 }
-.tabs {
-  display: flex;
-  gap: 6px;
-  background: var(--surface);
-  padding: 4px;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-}
+.tabs { display: flex; gap: 6px; background: var(--surface); padding: 4px; border-radius: 14px; border: 1px solid var(--border); }
 .tab {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 9px 10px;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-dim);
-  cursor: pointer;
-  transition: all 0.2s;
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 9px 10px; border-radius: 10px; font-size: 13px; font-weight: 700;
+  color: var(--text-dim); cursor: pointer; transition: all 0.2s;
 }
-.tab.active {
-  background: var(--surface-hi);
-  color: var(--text);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
-}
-.tab-badge {
-  font-size: 10px;
-  font-family: 'JetBrains Mono', monospace;
-  padding: 2px 6px;
-  border-radius: 6px;
-  background: var(--mint-glow);
-  color: var(--mint);
-}
+.tab.active { background: var(--surface-hi); color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
+.tab-badge { font-size: 10px; font-family: 'JetBrains Mono', monospace; padding: 2px 6px; border-radius: 6px; background: var(--mint-glow); color: var(--mint); }
 
 /* Панель фильтров */
-.filters-container {
-  padding: 10px 16px 2px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.prob-filters, .league-filters {
-  display: flex;
-  gap: 7px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  padding-bottom: 2px;
-}
+.filters-container { padding: 10px 16px 2px; display: flex; flex-direction: column; gap: 8px; }
+.prob-filters, .league-filters { display: flex; gap: 7px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
 .prob-filters::-webkit-scrollbar, .league-filters::-webkit-scrollbar { display: none; }
 
 .chip {
-  flex: 0 0 auto;
-  padding: 7px 13px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text-dim);
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 5px;
+  flex: 0 0 auto; padding: 7px 13px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 100px; font-size: 12px; font-weight: 700; color: var(--text-dim);
+  cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 5px;
 }
-.chip.active {
-  background: var(--mint);
-  color: #fff;
-  border-color: var(--mint);
-  box-shadow: 0 4px 12px var(--mint-glow);
-}
-.chip-count {
-  font-size: 10px;
-  opacity: 0.85;
-  font-family: 'JetBrains Mono', monospace;
-}
+.chip.active { background: var(--mint); color: #fff; border-color: var(--mint); box-shadow: 0 4px 12px var(--mint-glow); }
+.chip-count { font-size: 10px; opacity: 0.85; font-family: 'JetBrains Mono', monospace; }
 
 #content { padding: 14px 16px; min-height: 55vh; transition: opacity 0.2s; }
 
 /* КАРТОЧКА МАТЧА */
 .match-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px;
-  margin-bottom: 14px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-  animation: slideUp 0.28s ease both;
+  background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px; margin-bottom: 14px; position: relative; overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12); animation: slideUp 0.28s ease both;
 }
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.match-card.prob-high {
-  border-color: rgba(245, 158, 11, 0.45);
-  box-shadow: 0 8px 26px var(--gold-glow);
-}
-.match-card.prob-high::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--gold), #fbbf24);
-}
-.match-card.prob-mid {
-  border-color: var(--border-hi);
-}
-.match-card.prob-mid::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--mint), #34d399);
-}
+@keyframes slideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.match-card.prob-high { border-color: rgba(245, 158, 11, 0.45); box-shadow: 0 8px 26px var(--gold-glow); }
+.match-card.prob-high::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--gold), #fbbf24); }
+.match-card.prob-mid { border-color: var(--border-hi); }
+.match-card.prob-mid::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--mint), #34d399); }
 
-.mc-top-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-  gap: 8px;
-}
-.mc-league-badge {
-  font-size: 11px;
-  font-weight: 800;
-  color: var(--mint);
-  background: var(--mint-glow);
-  padding: 4px 10px;
-  border-radius: 8px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 72%;
-}
-.mc-date {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text-dim);
-  font-family: 'JetBrains Mono', monospace;
-}
-.mc-live {
-  background: var(--danger);
-  color: #fff;
-  font-size: 10px;
-  font-weight: 800;
-  padding: 3px 8px;
-  border-radius: 6px;
-  animation: pulse 1.5s infinite;
-}
+.mc-top-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 8px; }
+.mc-league-badge { font-size: 11px; font-weight: 800; color: var(--mint); background: var(--mint-glow); padding: 4px 10px; border-radius: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 72%; }
+.mc-date { font-size: 11px; font-weight: 700; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
+.mc-live { background: var(--danger); color: #fff; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; animation: pulse 1.5s infinite; }
 @keyframes pulse { 50% { opacity: 0.6; } }
 
-.mc-matchup {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-  gap: 8px;
-}
-.mc-team {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  width: 36%;
-  text-align: center;
-}
-.mc-logo {
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  background: var(--surface-hi);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 900;
-  color: var(--text);
-  border: 1px solid var(--border);
-  letter-spacing: 0.5px;
-}
-.mc-name {
-  font-size: 13px;
-  font-weight: 800;
-  line-height: 1.25;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.mc-time-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-.mc-time {
-  font-size: 19px;
-  font-weight: 900;
-  font-family: 'JetBrains Mono', monospace;
-  color: var(--text);
-  background: var(--surface);
-  padding: 6px 10px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-}
-.mc-odd-pill {
-  font-size: 11px;
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 700;
-  color: var(--gold);
-}
+.mc-matchup { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 8px; }
+.mc-team { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 36%; text-align: center; }
+.mc-logo { width: 44px; height: 44px; border-radius: 14px; background: var(--surface-hi); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; color: var(--text); border: 1px solid var(--border); letter-spacing: 0.5px; }
+.mc-name { font-size: 13px; font-weight: 800; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.mc-time-center { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.mc-time { font-size: 19px; font-weight: 900; font-family: 'JetBrains Mono', monospace; color: var(--text); background: var(--surface); padding: 6px 10px; border-radius: 10px; border: 1px solid var(--border); }
+.mc-odd-pill { font-size: 11px; font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--gold); }
 
 /* Блок ТБ 2.5 */
-.mc-total-main {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 12px 14px;
-}
-.mc-total-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-.mc-total-title {
-  font-size: 11px;
-  color: var(--text-dim);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-.mc-total-val {
-  font-size: 26px;
-  font-weight: 900;
-  font-family: 'JetBrains Mono', monospace;
-  color: var(--mint);
-  line-height: 1;
-}
+.mc-total-main { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; }
+.mc-total-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.mc-total-title { font-size: 11px; color: var(--text-dim); font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+.mc-total-val { font-size: 26px; font-weight: 900; font-family: 'JetBrains Mono', monospace; color: var(--mint); line-height: 1; }
 .mc-total-val.high { color: var(--gold); }
 .mc-total-val.low { color: var(--text-dim); }
 
-.mc-conf-badge {
-  font-size: 11px;
-  font-weight: 800;
-  padding: 5px 10px;
-  border-radius: 8px;
-}
+.mc-conf-badge { font-size: 11px; font-weight: 800; padding: 5px 10px; border-radius: 8px; }
 .conf-high { background: var(--gold-glow); color: var(--gold); }
 .conf-mid { background: var(--mint-glow); color: var(--mint); }
 .conf-low { background: rgba(148,163,184,0.12); color: var(--text-dim); }
 
-.prob-progress-bg {
-  width: 100%;
-  height: 6px;
-  background: var(--surface-hi);
-  border-radius: 99px;
-  overflow: hidden;
-}
-.prob-progress-fill {
-  height: 100%;
-  border-radius: 99px;
-  background: linear-gradient(90deg, var(--mint), #34d399);
-  transition: width 0.4s ease;
-}
-.prob-progress-fill.high {
-  background: linear-gradient(90deg, var(--gold), #fbbf24);
-}
-
-/* П1 / Х / П2 */
-.mc-outcomes-wrap { margin-top: 12px; }
-.mc-bars {
-  display: flex;
-  height: 24px;
-  gap: 4px;
-  margin-bottom: 6px;
-  border-radius: 8px;
-  overflow: hidden;
-}
-.mc-seg {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  font-weight: 800;
-  font-family: 'JetBrains Mono', monospace;
-  color: #fff;
-  min-width: 28px;
-}
-.mc-seg.p1 { background: var(--bar-p1); }
-.mc-seg.x { background: var(--bar-x); }
-.mc-seg.p2 { background: var(--bar-p2); }
-.mc-outcomes-labels {
-  display: flex;
-  justify-content: space-between;
-  font-size: 10px;
-  color: var(--text-mute);
-  font-weight: 700;
-}
+.prob-progress-bg { width: 100%; height: 6px; background: var(--surface-hi); border-radius: 99px; overflow: hidden; }
+.prob-progress-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--mint), #34d399); transition: width 0.4s ease; }
+.prob-progress-fill.high { background: linear-gradient(90deg, var(--gold), #fbbf24); }
 
 /* Скелетон и пустые состояния */
-.skeleton {
-  background: var(--surface);
-  border-radius: var(--radius);
-  margin-bottom: 14px;
-  height: 210px;
-  position: relative;
-  overflow: hidden;
-  border: 1px solid var(--border);
-}
-.skeleton::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
-  animation: shimmer 1.4s infinite;
-}
+.skeleton { background: var(--surface); border-radius: var(--radius); margin-bottom: 14px; height: 210px; position: relative; overflow: hidden; border: 1px solid var(--border); }
+.skeleton::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent); animation: shimmer 1.4s infinite; }
 @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
-.empty {
-  text-align: center;
-  padding: 48px 20px;
-  color: var(--text-dim);
-  font-weight: 600;
-  background: var(--surface);
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
-}
+.empty { text-align: center; padding: 48px 20px; color: var(--text-dim); font-weight: 600; background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius); }
 .empty-icon { font-size: 40px; margin-bottom: 10px; }
-.empty button {
-  margin-top: 14px;
-  padding: 10px 22px;
-  background: var(--mint);
-  border: none;
-  color: #fff;
-  border-radius: 100px;
-  font-weight: 800;
-  cursor: pointer;
-}
+.empty button { margin-top: 14px; padding: 10px 22px; background: var(--mint); border: none; color: #fff; border-radius: 100px; font-weight: 800; cursor: pointer; }
 
 /* Модалки и нижнее меню */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.78);
-  backdrop-filter: blur(6px);
-  z-index: 999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-.modal-box {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 24px;
-  width: 100%;
-  max-width: 380px;
-}
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.78); backdrop-filter: blur(6px); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 24px; width: 100%; max-width: 380px; }
 .modal-title { font-size: 19px; font-weight: 900; text-align: center; margin-bottom: 14px; }
-.modal-btn {
-  display: block;
-  width: 100%;
-  padding: 13px;
-  background: var(--mint);
-  color: #fff;
-  border: none;
-  border-radius: 14px;
-  font-size: 14px;
-  font-weight: 800;
-  cursor: pointer;
-  margin-bottom: 10px;
-}
+.modal-btn { display: block; width: 100%; padding: 13px; background: var(--mint); color: #fff; border: none; border-radius: 14px; font-size: 14px; font-weight: 800; cursor: pointer; margin-bottom: 10px; }
 
 .bottom-nav {
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  height: var(--nav-h);
-  background: color-mix(in srgb, var(--surface) 92%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-top: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  z-index: 50;
-  padding-bottom: env(safe-area-inset-bottom, 0);
+  position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-h);
+  background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-around; z-index: 50; padding-bottom: env(safe-area-inset-bottom, 0);
 }
-.nav-btn {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 8px 4px;
-  background: none;
-  border: none;
-  color: var(--text-mute);
-  font-size: 10px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: color 0.2s;
-}
+.nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 8px 4px; background: none; border: none; color: var(--text-mute); font-size: 10px; font-weight: 700; cursor: pointer; transition: color 0.2s; }
 .nav-btn svg { width: 20px; height: 20px; stroke-width: 2.2; }
 .nav-btn.active { color: var(--mint); }
 </style>
@@ -554,9 +186,7 @@ body {
 <div class="header">
   <div class="header-left">
     <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" title="Сменить тему">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-      </svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
     </button>
   </div>
   <div class="header-center">
@@ -565,9 +195,7 @@ body {
   </div>
   <div class="header-right">
     <button class="icon-btn" id="refreshBtn" onclick="manualRefresh()" title="Обновить данные">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
-      </svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
     </button>
   </div>
 </div>
@@ -609,11 +237,11 @@ body {
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycbxW52PKcn0Mh2L6yjQ5-5IiuCdds8FksK1XzY6F_iElSnFuAH4f5Hz9JH97pEDD1hcw/exec';
 const BOT_URL = 'https://t.me/total25_signals_bot';
-const CACHE_VERSION = 'v55';
+const CACHE_VERSION = 'v56';
 
 let currentTab = 'today';
 let currentLeagueFilter = 'all';
-let currentMinProb = 0; // По умолчанию показываем ВСЕ матчи из таблицы (можно переключить на 60%+ или 75%+)
+let currentMinProb = 0;
 let isLoading = false;
 let abortCtrl = null;
 let autoRefreshTimer = null;
@@ -628,33 +256,25 @@ function toggleTheme() {
   if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
 }
 
-// Надежный парсер вероятностей: корректно понимает 0.65 (65%), "65.5%", "65,5", 70
 function parseProb(val) {
   if (val === undefined || val === null || val === '') return 0;
-  if (typeof val === 'number') {
-    return val > 0 && val <= 1 ? Math.round(val * 100) : Math.round(val);
-  }
+  if (typeof val === 'number') return val > 0 && val <= 1 ? Math.round(val * 100) : Math.round(val);
   const clean = String(val).trim().replace(',', '.').replace(/[^0-9.]/g, '');
   const num = parseFloat(clean);
   if (isNaN(num)) return 0;
   return num > 0 && num <= 1 ? Math.round(num * 100) : Math.round(num);
 }
 
-// Универсальное извлечение полей строки из Google Таблицы (на случай разных ключей)
 function normalizeMatch(raw) {
   if (!raw || typeof raw !== 'object') return null;
   const home = raw.home || raw.team1 || raw.homeTeam || raw['Команда 1'] || raw['Хозяева'] || '';
   const away = raw.away || raw.team2 || raw.awayTeam || raw['Команда 2'] || raw['Гости'] || '';
-  if (!home && !away) return null; // Пропускаем пустые строки из таблицы
+  if (!home && !away) return null;
 
   const probRaw = raw.probability ?? raw.prob ?? raw.tb25 ?? raw.totalProb ?? raw['ТБ 2.5'] ?? raw['Вероятность'] ?? 0;
   const league = String(raw.league || raw.tournament || raw['Лига'] || 'Лига').trim();
   const dateRaw = raw.date || raw.datetime || raw['Дата'] || '';
   const timeRaw = raw.time || raw['Время'] || '';
-
-  let p1 = parseProb(raw.outcome?.p1 ?? raw.p1 ?? raw['П1']);
-  let px = parseProb(raw.outcome?.x ?? raw.x ?? raw['Х'] ?? raw['X']);
-  let p2 = parseProb(raw.outcome?.p2 ?? raw.p2 ?? raw['П2']);
 
   return {
     ...raw,
@@ -663,12 +283,10 @@ function normalizeMatch(raw) {
     league,
     prob: parseProb(probRaw),
     odd: parseFloat(String(raw.odd || raw.coef || raw['Кэф'] || 0).replace(',', '.')) || 0,
-    parsedDate: parseDate(dateRaw, timeRaw),
-    p1, px, p2
+    parsedDate: parseDate(dateRaw, timeRaw)
   };
 }
 
-// Исправленный парсер дат (понимает ISO, DD.MM.YYYY HH:MM и отдельное время)
 function parseDate(rawDate, rawTime) {
   let timeStr = '';
   let dateStr = '';
@@ -681,7 +299,6 @@ function parseDate(rawDate, rawTime) {
   if (!rawDate) return { time: timeStr || '--:--', date: '' };
   const str = String(rawDate).trim();
 
-  // Формат DD.MM.YYYY HH:MM или DD.MM HH:MM
   const ruMatch = str.match(/^(\d{1,2})[./-](\d{1,2})(?:[./-](\d{2,4}))?(?:\s+(\d{1,2}):(\d{2}))?/);
   if (ruMatch) {
     dateStr = ruMatch[1].padStart(2, '0') + '.' + ruMatch[2].padStart(2, '0');
@@ -691,7 +308,6 @@ function parseDate(rawDate, rawTime) {
     return { time: timeStr || '--:--', date: dateStr };
   }
 
-  // Если пришло просто время "19:30" в колонке даты
   const onlyTime = str.match(/^(\d{1,2}):(\d{2})/);
   if (onlyTime && str.length <= 8) {
     return { time: onlyTime[1].padStart(2, '0') + ':' + onlyTime[2], date: '' };
@@ -702,7 +318,6 @@ function parseDate(rawDate, rawTime) {
     const t = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
     const day = String(d.getDate()).padStart(2, '0');
     const month = String(d.getMonth() + 1).padStart(2, '0');
-    // Если дата 1899/1970 года (особенность Time-ячеек Google Sheets) — берем только время
     if (d.getFullYear() < 2000) {
       return { time: timeStr || t, date: '' };
     }
@@ -712,7 +327,6 @@ function parseDate(rawDate, rawTime) {
   return { time: timeStr || str.substring(0, 5), date: '' };
 }
 
-// Извлечение массива матчей из любого формата ответа Apps Script
 function extractMatchesArray(data) {
   if (!data) return [];
   if (Array.isArray(data)) return data;
@@ -757,7 +371,7 @@ function switchTab(tabName) {
   }
 
   currentTab = tabName;
-  currentLeagueFilter = 'all'; // Сбрасываем фильтр лиги при смене вкладки
+  currentLeagueFilter = 'all';
 
   const isTopTab = ['today', 'tomorrow', 'express'].includes(tabName);
   document.getElementById('topTabsWrap').style.display = isTopTab ? 'block' : 'none';
@@ -849,7 +463,6 @@ async function loadData(forceNetwork = false) {
     const serverData = result.data !== undefined ? result.data : result;
     const newHash = JSON.stringify(serverData);
 
-    // Обновляем кэш и интерфейс при любом изменении данных в Google Таблице
     if (!cached || cached.hash !== newHash) {
       setCache(currentTab, serverData);
       renderTab(currentTab, serverData);
@@ -916,10 +529,7 @@ function getLogoPlaceholder(teamName) {
 
 function escapeHtml(str) {
   return String(str ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 function renderTab(tab, data) {
@@ -943,7 +553,6 @@ function renderMatches(rawList, tabName) {
 
   const allMatches = rawList.map(normalizeMatch).filter(Boolean);
 
-  // Обновляем счётчик на вкладке
   const badgeEl = document.getElementById(`badge-${tabName}`);
   if (badgeEl) {
     badgeEl.textContent = allMatches.length;
@@ -958,7 +567,6 @@ function renderMatches(rawList, tabName) {
 
   filtersWrap.style.display = 'flex';
 
-  // 1. Фильтры по вероятности (чтобы ни один матч из таблицы не терялся)
   const count60 = allMatches.filter(m => m.prob >= 60).length;
   const count75 = allMatches.filter(m => m.prob >= 75).length;
 
@@ -974,7 +582,6 @@ function renderMatches(rawList, tabName) {
 
   let byProb = allMatches.filter(m => m.prob >= currentMinProb);
 
-  // 2. Фильтры по лигам (безопасная обработка кликов без поломки на кавычках)
   const leagues = [...new Set(byProb.map(m => m.league).filter(Boolean))];
   if (currentLeagueFilter !== 'all' && !leagues.includes(currentLeagueFilter)) {
     currentLeagueFilter = 'all';
@@ -1018,11 +625,6 @@ function renderMatches(rawList, tabName) {
     const live = String(m.result || m.status || '').toLowerCase().includes('live');
     const { time, date } = m.parsedDate;
 
-    const sumOutcome = m.p1 + m.px + m.p2;
-    const w1 = sumOutcome > 0 ? Math.round((m.p1 / sumOutcome) * 100) : 0;
-    const wx = sumOutcome > 0 ? Math.round((m.px / sumOutcome) * 100) : 0;
-    const w2 = sumOutcome > 0 ? Math.max(0, 100 - w1 - wx) : 0;
-
     html += `<div class="match-card ${cls}" style="animation-delay:${Math.min(i, 8) * 0.035}s">
       <div class="mc-top-info">
         <div class="mc-league-badge">${escapeHtml(m.league)}</div>
@@ -1058,18 +660,6 @@ function renderMatches(rawList, tabName) {
           <div class="prob-progress-fill ${prob >= 75 ? 'high' : ''}" style="width:${Math.min(100, Math.max(8, prob))}%"></div>
         </div>
       </div>
-
-      ${sumOutcome > 0 ? `
-      <div class="mc-outcomes-wrap">
-        <div class="mc-bars">
-          ${m.p1 > 0 ? `<div class="mc-seg p1" style="width:${w1}%">${m.p1}%</div>` : ''}
-          ${m.px > 0 ? `<div class="mc-seg x" style="width:${wx}%">${m.px}%</div>` : ''}
-          ${m.p2 > 0 ? `<div class="mc-seg p2" style="width:${w2}%">${m.p2}%</div>` : ''}
-        </div>
-        <div class="mc-outcomes-labels">
-          <span>П1</span><span>Ничья (X)</span><span>П2</span>
-        </div>
-      </div>` : ''}
     </div>`;
   });
 
