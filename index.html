@@ -26,7 +26,7 @@
   --danger-glow: rgba(244, 63, 94, 0.25);
   --radius: 20px;
   --radius-sm: 12px;
-  --nav-h: 64px;
+  --nav-h: 66px;
 }
 body.light-theme {
   --bg: #f8fafc;
@@ -46,7 +46,6 @@ body {
   font-family: 'Inter', -apple-system, sans-serif;
   background: var(--bg);
   color: var(--text);
-  /* ⚡ отступ снизу под фиксированную навигацию + safe-area */
   padding: 0 0 calc(var(--nav-h) + 24px + env(safe-area-inset-bottom, 0px));
   min-height: 100vh;
   overflow-x: hidden;
@@ -57,10 +56,11 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--text-mute); border-radius: 10px; opacity: 0.5; }
 
-.header { position: relative; padding: 30px 20px 20px; text-align: center; }
-.header-top { position: absolute; top: 16px; right: 16px; display: flex; gap: 10px; }
+/* ---------- ШАПКА ---------- */
+.header { position: relative; padding: 28px 20px 16px; text-align: center; }
+.header-top { position: absolute; top: 16px; right: 16px; display: flex; gap: 8px; }
 .icon-btn {
-  width: 42px; height: 42px;
+  width: 40px; height: 40px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 50%;
@@ -70,156 +70,160 @@ body {
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 .icon-btn:active { transform: scale(0.92); color: var(--mint); border-color: var(--mint); }
-.icon-btn svg { width: 20px; height: 20px; stroke-width: 2; }
+.icon-btn svg { width: 18px; height: 18px; stroke-width: 2; }
 .icon-btn.spinning svg { animation: spin 0.9s linear infinite; color: var(--mint); }
 @keyframes spin { 100% { transform: rotate(360deg); } }
-.ball-wrap { width: 80px; height: 80px; margin: 0 auto 16px; position: relative; display: flex; align-items: center; justify-content: center; }
-.ball-emoji { font-size: 56px; filter: drop-shadow(0 8px 24px var(--mint-glow)); animation: float 4s ease-in-out infinite; }
-@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.ball-wrap { width: 76px; height: 76px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; }
+.ball-emoji { font-size: 52px; filter: drop-shadow(0 8px 24px var(--mint-glow)); animation: float 4s ease-in-out infinite; }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 .header h1 {
-  font-size: 30px; font-weight: 900; letter-spacing: 2px;
+  font-size: 28px; font-weight: 900; letter-spacing: 2px;
   background: linear-gradient(135deg, var(--text) 20%, var(--text-dim) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
-.header .sub { font-size: 12px; letter-spacing: 3px; color: var(--mint); margin-top: 8px; text-transform: uppercase; font-weight: 800; }
+.header .sub { font-size: 11px; letter-spacing: 3px; color: var(--mint); margin-top: 6px; text-transform: uppercase; font-weight: 800; }
 
-.tabs-wrap {
-  position: sticky; top: 0;
-  background: rgba(10, 15, 22, 0.85);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  padding: 12px 16px; z-index: 10;
-  border-bottom: 1px solid var(--border);
+/* ---------- ПОД-ВКЛАДКИ (Сегодня/Завтра внутри Матчей) ---------- */
+.sub-tabs {
+  display: flex; gap: 6px; padding: 10px 16px 4px;
+  position: sticky; top: 0; z-index: 9;
+  background: var(--bg);
 }
-body.light-theme .tabs-wrap { background: rgba(248, 250, 252, 0.85); }
-.tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
-.tabs::-webkit-scrollbar { display: none; }
-.tab {
-  flex: 0 0 auto;
-  display: flex; align-items: center; gap: 6px;
-  padding: 10px 16px; border-radius: 100px;
+.sub-tab {
+  flex: 1; text-align: center;
+  padding: 10px; border-radius: 100px;
   font-size: 13px; font-weight: 700;
-  color: var(--text-dim); background: transparent;
-  border: 1px solid transparent;
-  transition: all 0.25s ease; cursor: pointer;
+  color: var(--text-dim); background: var(--surface);
+  border: 1px solid var(--border);
+  cursor: pointer; transition: all 0.25s ease;
 }
-.tab svg { width: 16px; height: 16px; stroke-width: 2.5; }
-.tab.active {
-  background: var(--surface-hi); color: var(--text);
-  border-color: var(--border);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+.sub-tab.active {
+  background: var(--mint-glow); color: var(--mint);
+  border-color: var(--border-hi);
 }
-.tab.active svg { color: var(--mint); }
 
-#content { padding: 20px 16px; }
+#content { padding: 16px; }
 
-/* Карточки матчей */
+/* ---------- КАРТОЧКИ ---------- */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 20px; margin-bottom: 16px;
+  padding: 18px; margin-bottom: 14px;
   position: relative; overflow: hidden;
   animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
-  cursor: pointer; transition: transform 0.2s, border-color 0.2s;
+  transition: transform 0.2s, border-color 0.2s;
 }
 .card:active { transform: scale(0.98); }
-@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
 .card.prob-high { border-color: var(--gold); box-shadow: 0 8px 30px var(--gold-glow); }
-.card.prob-mid { border-color: var(--border-hi); box-shadow: 0 8px 30px var(--mint-glow); }
+.card.prob-mid  { border-color: var(--border-hi); box-shadow: 0 8px 30px var(--mint-glow); }
 .card.prob-high::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gold); }
-.card.prob-mid::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--mint); }
+.card.prob-mid::before  { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--mint); }
 
-.card-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px; }
-.card-team { font-size: 16px; font-weight: 800; line-height: 1.3; }
-.card-team.away { color: var(--text-dim); margin-top: 4px; }
-.card-meta { display: flex; flex-wrap: wrap; gap: 8px; font-size: 12px; color: var(--text-mute); font-weight: 600; margin-bottom: 16px; }
-.meta-badge { display: flex; align-items: center; gap: 4px; background: var(--surface-hi); padding: 4px 10px; border-radius: 8px; }
+.card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+.card-team { font-size: 15px; font-weight: 800; line-height: 1.3; }
+.card-team.away { color: var(--text-dim); margin-top: 3px; }
+.card-meta { display: flex; flex-wrap: wrap; gap: 6px; font-size: 11px; color: var(--text-mute); font-weight: 600; margin-bottom: 14px; }
+.meta-badge { display: flex; align-items: center; gap: 4px; background: var(--surface-hi); padding: 4px 9px; border-radius: 8px; }
 .meta-badge.league { color: var(--mint); }
 
-.prob-container { margin-bottom: 16px; }
+.prob-container { margin-bottom: 14px; }
 .prob-top { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 6px; }
 .prob-value { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 800; line-height: 1; }
-.prob-label { font-size: 11px; color: var(--text-mute); font-weight: 700; text-transform: uppercase; }
+.prob-label { font-size: 10px; color: var(--text-mute); font-weight: 700; text-transform: uppercase; }
 .prob-bar { height: 6px; background: var(--surface-hi); border-radius: 4px; overflow: hidden; }
 .prob-fill { height: 100%; border-radius: 4px; transition: width 1s cubic-bezier(0.16, 1, 0.3, 1); }
 .prob-high .prob-value { color: var(--gold); text-shadow: 0 0 12px var(--gold-glow); }
-.prob-high .prob-fill { background: linear-gradient(90deg, var(--gold), #fcd34d); }
-.prob-mid .prob-value { color: var(--mint); text-shadow: 0 0 12px var(--mint-glow); }
-.prob-mid .prob-fill { background: linear-gradient(90deg, var(--mint), #34d399); }
+.prob-high .prob-fill  { background: linear-gradient(90deg, var(--gold), #fcd34d); }
+.prob-mid .prob-value  { color: var(--mint); text-shadow: 0 0 12px var(--mint-glow); }
+.prob-mid .prob-fill   { background: linear-gradient(90deg, var(--mint), #34d399); }
 
-.outcome-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.outcome-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .outcome-box {
   background: var(--surface-hi); border-radius: var(--radius-sm);
-  padding: 12px; display: flex; flex-direction: column; align-items: center;
+  padding: 10px; display: flex; flex-direction: column; align-items: center;
 }
 .outcome-box.main { background: var(--mint-glow); border: 1px solid var(--border-hi); }
 .outcome-box.double { border: 1px solid var(--border); }
-.outcome-name { font-size: 11px; color: var(--text-mute); font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
-.outcome-val { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 800; color: var(--text); }
+.outcome-name { font-size: 10px; color: var(--text-mute); font-weight: 700; text-transform: uppercase; margin-bottom: 3px; }
+.outcome-val { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 800; color: var(--text); }
 .outcome-box.main .outcome-val { color: var(--mint); }
 
-.stats-hero { text-align: center; margin-bottom: 30px; }
-.stats-big { font-family: 'JetBrains Mono', monospace; font-size: 72px; font-weight: 900; line-height: 1; color: var(--text); }
-.stats-sub { font-size: 13px; color: var(--text-dim); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-top: 8px; }
+/* ---------- СТАТИСТИКА ---------- */
+.stats-hero { text-align: center; margin-bottom: 24px; }
+.stats-big { font-family: 'JetBrains Mono', monospace; font-size: 64px; font-weight: 900; line-height: 1; color: var(--text); }
+.stats-sub { font-size: 12px; color: var(--text-dim); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-top: 6px; }
 
 .league-row {
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); padding: 16px; margin-bottom: 10px;
-  display: flex; flex-direction: column; gap: 10px;
+  border-radius: var(--radius-sm); padding: 14px; margin-bottom: 10px;
+  display: flex; flex-direction: column; gap: 8px;
 }
 .league-header { display: flex; justify-content: space-between; align-items: center; }
-.league-name { font-size: 14px; font-weight: 800; }
-.league-acc { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 800; color: var(--mint); }
+.league-name { font-size: 13px; font-weight: 800; }
+.league-acc { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 800; color: var(--mint); }
 .league-bar { height: 4px; background: var(--surface-hi); border-radius: 2px; overflow: hidden; }
 .league-fill { height: 100%; background: var(--mint); border-radius: 2px; }
 
+/* ---------- ЭКСПРЕСС ---------- */
 .express-hero {
   background: linear-gradient(135deg, #1e1b4b, #312e81);
-  border-radius: var(--radius); padding: 30px 20px;
-  text-align: center; margin-bottom: 20px;
+  border-radius: var(--radius); padding: 26px 20px;
+  text-align: center; margin-bottom: 18px;
   border: 1px solid rgba(99, 102, 241, 0.3);
   box-shadow: 0 10px 40px rgba(99, 102, 241, 0.2);
 }
-.express-title { font-size: 14px; font-weight: 800; color: #a5b4fc; letter-spacing: 2px; text-transform: uppercase; }
-.express-odd { font-family: 'JetBrains Mono', monospace; font-size: 64px; font-weight: 900; color: #fff; line-height: 1; margin: 16px 0; text-shadow: 0 4px 20px rgba(255,255,255,0.2); }
-.express-sub { font-size: 12px; color: #818cf8; font-weight: 600; }
+.express-title { font-size: 13px; font-weight: 800; color: #a5b4fc; letter-spacing: 2px; text-transform: uppercase; }
+.express-odd { font-family: 'JetBrains Mono', monospace; font-size: 56px; font-weight: 900; color: #fff; line-height: 1; margin: 12px 0; text-shadow: 0 4px 20px rgba(255,255,255,0.2); }
+.express-sub { font-size: 11px; color: #818cf8; font-weight: 600; }
 
-.skeleton { background: var(--surface); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; height: 200px; position: relative; overflow: hidden; }
+/* ---------- СКЕЛЕТОН / ПУСТО / ОШИБКА ---------- */
+.skeleton { background: var(--surface); border-radius: var(--radius); padding: 20px; margin-bottom: 14px; height: 180px; position: relative; overflow: hidden; }
 .skeleton::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent); animation: shimmer 1.5s infinite; }
 @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
-.empty { text-align: center; padding: 60px 20px; color: var(--text-mute); font-weight: 600; }
-.empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.3; }
+.empty { text-align: center; padding: 50px 20px; color: var(--text-mute); font-weight: 600; }
+.empty-icon { font-size: 44px; margin-bottom: 14px; opacity: 0.3; }
+.empty-btn {
+  margin-top: 16px; padding: 12px 24px;
+  background: var(--mint); color: #fff;
+  border: none; border-radius: 100px;
+  font-weight: 800; font-size: 14px; cursor: pointer;
+  font-family: inherit;
+}
+.empty-btn:active { transform: scale(0.96); }
 
+/* ---------- МОДАЛКИ ---------- */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.3s ease; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 28px; width: 100%; max-width: 400px; animation: modalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 26px; width: 100%; max-width: 400px; animation: modalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
 @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-.modal-icon { font-size: 44px; text-align: center; margin-bottom: 12px; }
-.modal-title { font-size: 22px; font-weight: 900; text-align: center; margin-bottom: 16px; color: var(--text); }
-.modal-text { font-size: 14px; color: var(--text-dim); line-height: 1.6; margin-bottom: 16px; }
-.modal-warn { background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.2); border-radius: 12px; padding: 16px; margin-bottom: 20px; }
-.modal-warn-title { color: var(--danger); font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
-.modal-btn { display: block; width: 100%; padding: 16px; background: var(--mint); color: #fff; border: none; border-radius: 16px; font-size: 16px; font-weight: 800; cursor: pointer; transition: all 0.2s; }
+.modal-icon { font-size: 42px; text-align: center; margin-bottom: 10px; }
+.modal-title { font-size: 20px; font-weight: 900; text-align: center; margin-bottom: 14px; color: var(--text); }
+.modal-text { font-size: 13px; color: var(--text-dim); line-height: 1.6; margin-bottom: 14px; }
+.modal-warn { background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.2); border-radius: 12px; padding: 14px; margin-bottom: 18px; font-size: 13px; }
+.modal-warn-title { color: var(--danger); font-weight: 800; margin-bottom: 6px; }
+.modal-btn { display: block; width: 100%; padding: 14px; background: var(--mint); color: #fff; border: none; border-radius: 16px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: inherit; }
 .modal-btn:active { transform: scale(0.96); background: #059669; }
 
-.sync-line { text-align: center; font-size: 11px; color: var(--text-mute); font-weight: 600; margin-top: 20px; }
+.sync-line { text-align: center; font-size: 11px; color: var(--text-mute); font-weight: 600; margin-top: 16px; padding: 0 16px; }
 
-/* ⚡ ВОЗВРАЩЕНА ФИКСИРОВАННАЯ НИЖНЯЯ НАВИГАЦИЯ */
+/* ---------- НИЖНЯЯ НАВИГАЦИЯ (единственная) ---------- */
 .bottom-nav {
   position: fixed; bottom: 0; left: 0; right: 0;
   height: var(--nav-h);
-  background: rgba(18, 26, 36, 0.92);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  background: rgba(18, 26, 36, 0.95);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   border-top: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-around;
+  display: flex; align-items: stretch;
   z-index: 50;
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
-body.light-theme .bottom-nav { background: rgba(255, 255, 255, 0.92); }
+body.light-theme .bottom-nav { background: rgba(255, 255, 255, 0.95); }
 .nav-btn {
-  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
   padding: 8px 4px; background: none; border: none;
   color: var(--text-mute); font-size: 10px; font-weight: 700;
   cursor: pointer; transition: color 0.2s;
@@ -230,13 +234,12 @@ body.light-theme .bottom-nav { background: rgba(255, 255, 255, 0.92); }
 </style>
 </head>
 <body>
+
+<!-- ШАПКА -->
 <div class="header">
   <div class="header-top">
     <div class="icon-btn" id="refreshBtn" onclick="manualRefresh()" title="Обновить">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-    </div>
-    <div class="icon-btn" onclick="openDonate()" title="Поддержать">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
     </div>
     <div class="icon-btn" onclick="toggleTheme()" title="Тема">
       <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
@@ -247,24 +250,18 @@ body.light-theme .bottom-nav { background: rgba(255, 255, 255, 0.92); }
   <div class="sub">Тотал больше 2.5</div>
 </div>
 
-<div class="tabs-wrap">
-  <div class="tabs" id="tabs">
-    <div class="tab active" data-tab="today"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Сегодня</div>
-    <div class="tab" data-tab="tomorrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Завтра</div>
-    <div class="tab" data-tab="yesterday"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Вчера</div>
-    <div class="tab" data-tab="express"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>Экспресс</div>
-    <div class="tab" data-tab="stats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 12l4-4 4 4 5-5"/></svg>Стата</div>
-    <div class="tab" data-tab="bonus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18"/><path d="M7.5 8a2.5 2.5 0 010-5c1.5 0 2.5 1 4.5 5"/><path d="M16.5 8a2.5 2.5 0 000-5c-1.5 0-2.5 1-4.5 5"/></svg>Бонус</div>
-    <div class="tab" data-tab="faq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.5" fill="currentColor"/></svg>FAQ</div>
-  </div>
+<!-- ПОД-ВКЛАДКИ: Сегодня / Завтра (видны только в разделе «Матчи») -->
+<div class="sub-tabs" id="subTabs" style="display:none;">
+  <div class="sub-tab active" data-sub="today" onclick="switchSubTab('today')">Сегодня</div>
+  <div class="sub-tab" data-sub="tomorrow" onclick="switchSubTab('tomorrow')">Завтра</div>
 </div>
 
 <div id="content"></div>
 <div class="sync-line" id="syncLine"></div>
 
-<!-- ⚡ ВОЗВРАЩЕНА НИЖНЯЯ НАВИГАЦИЯ -->
+<!-- НИЖНЯЯ НАВИГАЦИЯ (единственная) -->
 <nav class="bottom-nav" id="bottomNav">
-  <button class="nav-btn active" data-nav="today">
+  <button class="nav-btn active" data-nav="matches">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
     <span>Матчи</span>
   </button>
@@ -283,20 +280,20 @@ body.light-theme .bottom-nav { background: rgba(255, 255, 255, 0.92); }
 </nav>
 
 <script>
-// ⚡ API_URL — проверьте, что это актуальный деплой (см. инструкцию ниже)
+// ⚠️ ВАЖНО: если вы делали новый деплой — замените URL ниже на новый
 const API_URL = 'https://script.google.com/macros/s/AKfycbxW52PKcn0Mh2L6yjQ5-5IiuCdds8FksK1XzY6F_iElSnFuAH4f5Hz9JH97pEDD1hcw/exec';
-const AD_URL = 'https://baltbet.ru/account/register?refpromo=1221753';
 const BOT_URL = 'https://t.me/total25_signals_bot';
 
-const CACHE_VERSION = 'v60';
-const CACHE_TTL = 30 * 60 * 1000;
+const CACHE_VERSION = 'v61';
+const CACHE_TTL = 5 * 60 * 1000; // 5 минут
 const MIN_PROBABILITY = 62;
 
-let currentTab = 'today';
+let currentNav = 'matches';   // matches | yesterday | express | stats
+let currentSub = 'today';     // today | tomorrow
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.ready(); tg.expand(); }
 
-// Тема
+/* ---------- ТЕМА ---------- */
 function initTheme() {
   const saved = localStorage.getItem('tb25_theme') || 'dark';
   if (saved === 'light') document.body.classList.add('light-theme');
@@ -324,12 +321,8 @@ function haptic(s) {
     else tg.HapticFeedback.impactOccurred('light');
   } catch(e){}
 }
-function getUserId() {
-  if (tg?.initDataUnsafe?.user?.id) return tg.initDataUnsafe.user.id;
-  return 'guest';
-}
 
-// Форматирование
+/* ---------- ФОРМАТ ---------- */
 function formatDate(d) {
   if (!d) return '';
   if (d instanceof Date) {
@@ -344,315 +337,254 @@ function formatDate(d) {
   if (m) return m[1] + '.' + m[2] + '.' + m[3];
   return s;
 }
-
-// Модалки
-function checkDailyWelcome() {
-  const today = new Date().toISOString().slice(0, 10);
-  if (localStorage.getItem('tb25_last_seen') === today) return;
-  localStorage.setItem('tb25_last_seen', today);
-  showWelcomeModal();
-}
-function showWelcomeModal() {
-  const modal = document.createElement('div');
-  modal.className = 'modal-overlay';
-  modal.innerHTML = '<div class="modal-box">' +
-    '<div class="modal-icon">⚽</div>' +
-    '<div class="modal-title">ДОБРО ПОЖАЛОВАТЬ</div>' +
-    '<div class="modal-text">Это приложение <strong>спортивной аналитики</strong> для поиска футбольных матчей с высокой вероятностью исхода <strong>«Тотал Больше 2.5 голов»</strong>.</div>' +
-    '<div class="modal-text">Бот собирает матчи из топ-чемпионатов, применяет <strong>математическую модель</strong> (xG + Пуассон) + <strong>ИИ-фильтр Gemini</strong> и показывает только те, где вероятность <strong>≥ 62%</strong>.</div>' +
-    '<div class="modal-warn"><div class="modal-warn-title">Не БК</div><div>Мы <strong>не принимаем ставки</strong>. Все прогнозы носят информационный характер и не гарантируют выигрыш.</div></div>' +
-    '<button class="modal-btn" onclick="closeModal(this)">ПОНЯЛ, ПОЕХАЛИ 🚀</button>' +
-    '</div>';
-  document.body.appendChild(modal);
-}
-function closeModal(btn) {
-  haptic('medium');
-  const overlay = btn.closest('.modal-overlay');
-  overlay.style.opacity = '0';
-  setTimeout(() => overlay.remove(), 200);
-}
-function openDonate() {
-  haptic('medium');
-  if (tg && tg.openTelegramLink) tg.openTelegramLink(BOT_URL + '?start=donate');
-  else window.open(BOT_URL + '?start=donate', '_blank');
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 }
 
-// ⚡ Ручное обновление: чистим кэш и перезапрашиваем
-function manualRefresh() {
+/* ---------- НАВИГАЦИЯ ---------- */
+function switchNav(nav) {
   haptic('medium');
-  const btn = document.getElementById('refreshBtn');
-  if (btn) { btn.classList.add('spinning'); }
-  try {
-    Object.keys(localStorage).forEach(k => {
-      if (k.indexOf('tb25_' + CACHE_VERSION + '_') === 0) localStorage.removeItem(k);
-    });
-  } catch(e){}
-  loadData(true).finally(() => {
-    if (btn) setTimeout(() => btn.classList.remove('spinning'), 400);
-  });
-}
-
-// Навигация
-function switchTabDirect(tabName) {
-  haptic('medium');
-  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tabName));
-  updateNavActive(tabName);
-  currentTab = tabName;
+  currentNav = nav;
+  document.querySelectorAll('.nav-btn').forEach(n => n.classList.toggle('active', n.dataset.nav === nav));
+  const subTabs = document.getElementById('subTabs');
+  subTabs.style.display = (nav === 'matches') ? 'flex' : 'none';
+  if (nav === 'matches') currentSub = 'today';
   loadData();
 }
-function updateNavActive(tabName) {
-  document.querySelectorAll('.nav-btn').forEach(n => {
-    const map = { today: 'today', tomorrow: 'today', yesterday: 'yesterday', express: 'express', stats: 'stats', bonus: 'stats', faq: 'stats' };
-    n.classList.toggle('active', n.dataset.nav === (map[tabName] || tabName));
-  });
-}
-document.getElementById('tabs').addEventListener('click', e => {
-  const tab = e.target.closest('.tab');
-  if (!tab) return;
-  haptic('medium');
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  tab.classList.add('active');
-  updateNavActive(tab.dataset.tab);
-  currentTab = tab.dataset.tab;
+function switchSubTab(sub) {
+  haptic('light');
+  currentSub = sub;
+  document.querySelectorAll('.sub-tab').forEach(t => t.classList.toggle('active', t.dataset.sub === sub));
   loadData();
-});
+}
 document.getElementById('bottomNav').addEventListener('click', e => {
   const btn = e.target.closest('.nav-btn');
-  if (!btn) return;
-  haptic('medium');
-  const nav = btn.dataset.nav;
-  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === nav));
-  updateNavActive(nav);
-  currentTab = nav;
-  loadData();
+  if (btn) switchNav(btn.dataset.nav);
 });
 
-// Кэш и загрузка
-function getCache(tab) {
-  try { const r = localStorage.getItem('tb25_' + CACHE_VERSION + '_' + tab); return r ? JSON.parse(r) : null; } catch(e){ return null; }
+/* ---------- КЭШ ---------- */
+function cacheKey() {
+  if (currentNav === 'matches') return 'matches_' + currentSub;
+  return currentNav;
 }
-function setCache(tab, version, data) {
+function getCache(key) {
+  try { const r = localStorage.getItem('tb25_' + CACHE_VERSION + '_' + key); return r ? JSON.parse(r) : null; } catch(e){ return null; }
+}
+function setCache(key, version, data) {
   try {
-    localStorage.setItem('tb25_' + CACHE_VERSION + '_' + tab, JSON.stringify({ version, data, ts: Date.now() }));
+    localStorage.setItem('tb25_' + CACHE_VERSION + '_' + key, JSON.stringify({ version, data, ts: Date.now() }));
     localStorage.setItem('tb25_last_update', new Date().toISOString());
   } catch(e){}
 }
+
 function updateSyncLine() {
   const el = document.getElementById('syncLine');
   if (!el) return;
   try {
     const iso = localStorage.getItem('tb25_last_update');
-    if (!iso) return;
+    if (!iso) { el.textContent = ''; return; }
     const d = new Date(iso);
     const diffMin = Math.floor((new Date() - d) / 60000);
     let ago = diffMin < 1 ? 'только что' : diffMin < 60 ? diffMin + ' мин назад' : Math.floor(diffMin / 60) + ' ч назад';
     el.textContent = '🕐 Обновлено: ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0') + ' (' + ago + ')';
-  } catch (e) { el.textContent = ''; }
+  } catch(e) { el.textContent = ''; }
 }
 
+/* ---------- ЗАГРУЗКА ---------- */
 function showSkeleton() {
   return '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>';
 }
 
 async function loadData(forceNetwork = false) {
   const content = document.getElementById('content');
-  if (currentTab === 'faq') { renderFaq(); updateSyncLine(); return; }
-  if (currentTab === 'bonus') { renderBonus(); updateSyncLine(); return; }
-  const cached = !forceNetwork ? getCache(currentTab) : null;
+  const key = cacheKey();
+  const action = (currentNav === 'matches') ? currentSub : currentNav;
+
+  const cached = !forceNetwork ? getCache(key) : null;
   if (cached) {
-    renderTab(currentTab, cached.data);
+    renderByNav(cached.data);
     updateSyncLine();
     if ((Date.now() - cached.ts) < CACHE_TTL) return;
   } else {
     content.innerHTML = showSkeleton();
   }
+
   try {
-    const uid = getUserId();
-    const url = API_URL + '?action=' + currentTab + '&uid=' + uid + '&_t=' + Date.now();
-    // ⚡ Диагностика: смотрим в консоль, что вернул сервер
-    console.log('[TB25] Fetching:', url);
+    const url = API_URL + '?action=' + action + '&_t=' + Date.now();
+    console.log('[TB25] GET →', url);
     const resp = await fetch(url, { cache: 'no-store' });
-    const result = await resp.json();
-    console.log('[TB25] Response:', result);
+    const text = await resp.text();
+    console.log('[TB25] RAW →', text.substring(0, 500));
+    let result;
+    try { result = JSON.parse(text); }
+    catch (e) { throw new Error('Сервер вернул не JSON. Проверьте деплой Web App.'); }
+
     if (result.error) throw new Error(result.error);
     const serverVersion = result.version || '1';
     const serverData = result.data !== undefined ? result.data : result;
-    setCache(currentTab, serverVersion, serverData);
-    renderTab(currentTab, serverData);
+    console.log('[TB25] Parsed →', { version: serverVersion, dataLength: Array.isArray(serverData) ? serverData.length : 'object' });
+
+    setCache(key, serverVersion, serverData);
+    renderByNav(serverData);
     updateSyncLine();
   } catch (e) {
-    console.error('[TB25] Error:', e);
-    if (!cached) content.innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div>Ошибка загрузки: ' + escapeHtml(e.message) + '<br><br><button onclick="manualRefresh()" style="padding:10px 20px;background:var(--mint);color:#fff;border:none;border-radius:100px;font-weight:800;cursor:pointer;">Повторить</button></div>';
+    console.error('[TB25] Error →', e);
+    if (!cached) {
+      content.innerHTML =
+        '<div class="empty">' +
+        '<div class="empty-icon">⚠️</div>' +
+        'Не удалось загрузить данные<br>' +
+        '<div style="font-size:11px;margin-top:8px;opacity:0.6;">' + escapeHtml(e.message) + '</div>' +
+        '<button class="empty-btn" onclick="manualRefresh()">Повторить</button>' +
+        '</div>';
+    }
   }
 }
 
-function renderTab(tab, data) {
-  if (tab === 'today' || tab === 'tomorrow') renderMatches(Array.isArray(data) ? data : []);
-  else if (tab === 'yesterday') renderYesterday(data);
-  else if (tab === 'express') renderExpress(data);
-  else if (tab === 'stats') renderStats(data);
+function renderByNav(data) {
+  if (currentNav === 'matches') renderMatches(Array.isArray(data) ? data : []);
+  else if (currentNav === 'yesterday') renderYesterday(data);
+  else if (currentNav === 'express') renderExpress(data);
+  else if (currentNav === 'stats') renderStats(data);
 }
 
+function manualRefresh() {
+  haptic('medium');
+  const btn = document.getElementById('refreshBtn');
+  if (btn) btn.classList.add('spinning');
+  try {
+    Object.keys(localStorage).forEach(k => { if (k.indexOf('tb25_' + CACHE_VERSION + '_') === 0) localStorage.removeItem(k); });
+  } catch(e){}
+  loadData(true).finally(() => { if (btn) setTimeout(() => btn.classList.remove('spinning'), 500); });
+}
+
+/* ---------- РЕНДЕР: МАТЧИ ---------- */
 function renderMatches(data) {
   const content = document.getElementById('content');
   const filtered = data.filter(m => (parseInt(m.probability) || 0) >= MIN_PROBABILITY);
-  if (!filtered.length) { content.innerHTML = '<div class="empty"><div class="empty-icon">⚽</div>Нет матчей с вероятностью ≥ ' + MIN_PROBABILITY + '%</div>'; return; }
-  
+  if (!filtered.length) {
+    content.innerHTML =
+      '<div class="empty">' +
+      '<div class="empty-icon">⚽</div>' +
+      'Нет матчей с вероятностью ≥ ' + MIN_PROBABILITY + '%<br>' +
+      '<div style="font-size:11px;margin-top:8px;opacity:0.6;">Попробуйте «Обновить» или загляните позже</div>' +
+      '<button class="empty-btn" onclick="manualRefresh()">Обновить</button>' +
+      '</div>';
+    return;
+  }
   const sorted = filtered.sort((a, b) => (parseInt(b.probability) || 0) - (parseInt(a.probability) || 0));
   let html = '';
-  
   sorted.forEach((m, i) => {
     const prob = parseInt(m.probability) || 0;
-    const isHigh = prob >= 75;
-    const cardClass = isHigh ? 'prob-high' : 'prob-mid';
-    const live = String(m.result || '').includes('Live');
-    
+    const cardClass = prob >= 75 ? 'prob-high' : 'prob-mid';
     let o = m.outcome || { p1: 33, x: 33, p2: 34 };
     const p1 = o.p1 || 0, px = o.x || 0, p2 = o.p2 || 0;
     const best = Math.max(p1, px, p2);
     let mainLabel = 'X';
     if (best === p1) mainLabel = 'П1';
     else if (best === p2) mainLabel = 'П2';
-    
     const ch1X = p1 + px, ch2X = p2 + px, ch12 = p1 + p2;
     let doubleLabel = '1X', bestDouble = ch1X;
     if (ch2X > bestDouble) { doubleLabel = '2X'; bestDouble = ch2X; }
     if (ch12 > bestDouble) { doubleLabel = '12'; bestDouble = ch12; }
 
-    html += '<div class="card ' + cardClass + '" style="animation-delay:' + (i * 0.05) + 's;" onclick="haptic(\'light\')">';
-    html += '<div class="card-header"><div style="flex:1"><div class="card-team">' + escapeHtml(m.home) + '</div><div class="card-team away">' + escapeHtml(m.away) + '</div></div>';
-    if (live) html += '<span class="meta-badge" style="background:var(--danger);color:#fff;font-weight:900;font-size:10px;">LIVE</span>';
-    html += '</div>';
+    html += '<div class="card ' + cardClass + '" style="animation-delay:' + (i * 0.04) + 's" onclick="haptic(\'light\')">';
+    html += '<div class="card-header"><div style="flex:1"><div class="card-team">' + escapeHtml(m.home) + '</div><div class="card-team away">' + escapeHtml(m.away) + '</div></div></div>';
     html += '<div class="card-meta"><div class="meta-badge league">🏆 ' + escapeHtml(m.league) + '</div><div class="meta-badge">📅 ' + formatDate(m.date) + (m.time ? ' · ' + m.time : '') + '</div></div>';
     html += '<div class="prob-container"><div class="prob-top"><div class="prob-label">Вероятность ТБ 2.5</div><div class="prob-value">' + prob + '%</div></div><div class="prob-bar"><div class="prob-fill" style="width:' + prob + '%"></div></div></div>';
     html += '<div class="outcome-grid">';
     html += '<div class="outcome-box main"><div class="outcome-name">🏆 Прогноз</div><div class="outcome-val">' + mainLabel + ' · ' + best + '%</div></div>';
-    html += '<div class="outcome-box double"><div class="outcome-name">🎯 Двойной шанс</div><div class="outcome-val" style="color:var(--gold);">' + doubleLabel + ' · ' + bestDouble + '%</div></div>';
+    html += '<div class="outcome-box double"><div class="outcome-name">🎯 Двойной шанс</div><div class="outcome-val" style="color:var(--gold)">' + doubleLabel + ' · ' + bestDouble + '%</div></div>';
     html += '</div></div>';
   });
-  
   content.innerHTML = html;
 }
 
+/* ---------- РЕНДЕР: ВЧЕРА ---------- */
 function renderYesterday(data) {
   const content = document.getElementById('content');
-  let matches = [], wins = 0, loses = 0, accuracy = 0, total = 0, dateStr = '', isYesterday = true;
-  
+  let matches = [], wins = 0, loses = 0, accuracy = 0;
   if (Array.isArray(data)) {
     matches = data;
     matches.forEach(m => { if (m.status === 'win') wins++; else if (m.status === 'lose') loses++; });
-    total = wins + loses;
+    const total = wins + loses;
     accuracy = total > 0 ? Math.round(wins / total * 100) : 0;
   } else if (data && Array.isArray(data.matches)) {
     matches = data.matches;
-    wins = data.wins || 0; loses = data.loses || 0; accuracy = data.accuracy || 0; total = data.total || (wins + loses);
-    dateStr = data.date || ''; isYesterday = data.isYesterday !== false;
+    wins = data.wins || 0; loses = data.loses || 0; accuracy = data.accuracy || 0;
   }
-  
-  if (!matches.length) { content.innerHTML = '<div class="empty"><div class="empty-icon">📅</div>Вчера матчей не было</div>'; return; }
-  
-  let html = '<div class="stats-hero" style="margin-bottom:20px"><div class="stats-big" style="font-size:48px">' + accuracy + '%</div><div class="stats-sub">Точность за вчера</div></div>';
-  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;">';
-  html += '<div class="league-row" style="align-items:center;justify-content:center;padding:16px"><div style="font-size:24px;font-weight:900;color:var(--mint);font-family:JetBrains Mono">' + wins + '</div><div style="font-size:11px;color:var(--text-mute);font-weight:700">✅ ЗАШЛО</div></div>';
-  html += '<div class="league-row" style="align-items:center;justify-content:center;padding:16px"><div style="font-size:24px;font-weight:900;color:var(--danger);font-family:JetBrains Mono">' + loses + '</div><div style="font-size:11px;color:var(--text-mute);font-weight:700">❌ НЕ ЗАШЛО</div></div>';
+  if (!matches.length) {
+    content.innerHTML = '<div class="empty"><div class="empty-icon">📅</div>Вчера матчей не было</div>';
+    return;
+  }
+  let html = '<div class="stats-hero"><div class="stats-big" style="font-size:44px">' + accuracy + '%</div><div class="stats-sub">Точность за вчера</div></div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">';
+  html += '<div class="league-row" style="align-items:center;padding:14px"><div style="font-size:22px;font-weight:900;color:var(--mint);font-family:JetBrains Mono">' + wins + '</div><div style="font-size:10px;color:var(--text-mute);font-weight:700">✅ ЗАШЛО</div></div>';
+  html += '<div class="league-row" style="align-items:center;padding:14px"><div style="font-size:22px;font-weight:900;color:var(--danger);font-family:JetBrains Mono">' + loses + '</div><div style="font-size:10px;color:var(--text-mute);font-weight:700">❌ НЕ ЗАШЛО</div></div>';
   html += '</div>';
-
   matches.forEach((m, idx) => {
     const emoji = m.status === 'win' ? '✅' : m.status === 'lose' ? '❌' : '⏳';
     const scoreColor = m.status === 'win' ? 'var(--mint)' : m.status === 'lose' ? 'var(--danger)' : 'var(--text)';
-    html += '<div class="card" style="animation-delay:' + (idx * 0.05) + 's;">';
+    html += '<div class="card" style="animation-delay:' + (idx * 0.04) + 's">';
     html += '<div class="card-header"><div style="flex:1"><div class="card-team">' + escapeHtml(m.home) + '</div><div class="card-team away">' + escapeHtml(m.away) + '</div></div>';
-    html += '<div style="font-family:JetBrains Mono;font-size:20px;font-weight:900;color:' + scoreColor + '">' + escapeHtml(m.score || '—') + '</div></div>';
-    html += '<div class="card-meta"><div class="meta-badge">⚽ Тотал: ' + escapeHtml(m.total) + '</div><div class="meta-badge">' + emoji + ' ' + escapeHtml(m.prediction || 'Прогноз') + '</div></div>';
-    if (m.winner) html += '<div style="margin-top:8px;display:inline-block;background:var(--surface-hi);padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;">🏆 ' + escapeHtml(m.winner) + '</div>';
+    html += '<div style="font-family:JetBrains Mono;font-size:18px;font-weight:900;color:' + scoreColor + '">' + escapeHtml(m.score || '—') + '</div></div>';
+    html += '<div class="card-meta"><div class="meta-badge">⚽ ' + escapeHtml(m.total) + '</div><div class="meta-badge">' + emoji + ' ' + escapeHtml(m.prediction || '') + '</div></div>';
     html += '</div>';
   });
-  
   content.innerHTML = html;
 }
 
+/* ---------- РЕНДЕР: ЭКСПРЕСС ---------- */
 function renderExpress(data) {
   const content = document.getElementById('content');
-  if (!data || !Array.isArray(data.matches) || !data.matches.length) { content.innerHTML = '<div class="empty"><div class="empty-icon">🔥</div>Экспресс ещё не собран</div>'; return; }
-  const items = data.matches.filter(m => (parseInt(m.probability)||0) >= MIN_PROBABILITY);
+  if (!data || !Array.isArray(data.matches) || !data.matches.length) {
+    content.innerHTML = '<div class="empty"><div class="empty-icon">🔥</div>Экспресс ещё не собран<br><div style="font-size:11px;margin-top:8px;opacity:0.6;">Загляните позже или нажмите «Обновить»</div><button class="empty-btn" onclick="manualRefresh()">Обновить</button></div>';
+    return;
+  }
+  const items = data.matches.filter(m => (parseInt(m.probability) || 0) >= MIN_PROBABILITY);
   if (!items.length) { content.innerHTML = '<div class="empty"><div class="empty-icon">🔥</div>Нет событий ≥ ' + MIN_PROBABILITY + '% для экспресса</div>'; return; }
-  
   let totalOdd = 1;
   items.forEach(m => { totalOdd *= (parseFloat(m.odd) || 1); });
   totalOdd = totalOdd.toFixed(2);
-  
-  let html = '<div class="express-hero"><div class="express-title">Топ-экспресс дня</div><div class="express-odd">' + totalOdd + '</div><div class="express-sub">Итоговый коэффициент</div></div>';
-  
+  let html = '<div class="express-hero"><div class="express-title">Топ-экспресс дня</div><div class="express-odd">' + totalOdd + '</div><div class="express-sub">Итоговый коэффициент · ' + items.length + ' событий</div></div>';
   items.forEach((m, i) => {
     const prob = parseInt(m.probability) || 0;
     const odd = parseFloat(m.odd) || 1;
-    html += '<div class="card" style="animation-delay:' + (i*0.05) + 's">';
-    html += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">';
-    html += '<div style="width:28px;height:28px;background:var(--mint);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;">' + (i+1) + '</div>';
-    html += '<div style="font-weight:800;font-size:14px">' + escapeHtml(m.home) + ' — ' + escapeHtml(m.away) + '</div>';
-    html += '</div>';
+    html += '<div class="card" style="animation-delay:' + (i*0.04) + 's">';
+    html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><div style="width:26px;height:26px;background:var(--mint);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;">' + (i+1) + '</div><div style="font-weight:800;font-size:14px">' + escapeHtml(m.home) + ' — ' + escapeHtml(m.away) + '</div></div>';
     html += '<div class="card-meta"><div class="meta-badge league">🏆 ' + escapeHtml(m.league) + '</div><div class="meta-badge">📅 ' + formatDate(m.date) + '</div></div>';
     html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
-    html += '<div class="outcome-box" style="background:var(--surface-hi);padding:10px"><div class="outcome-name">Вероятность</div><div class="outcome-val" style="color:var(--mint)">' + prob + '%</div></div>';
-    html += '<div class="outcome-box" style="background:var(--surface-hi);padding:10px"><div class="outcome-name">Кэф</div><div class="outcome-val" style="color:var(--gold)">' + odd.toFixed(2) + '</div></div>';
+    html += '<div class="outcome-box" style="padding:10px"><div class="outcome-name">Вероятность</div><div class="outcome-val" style="color:var(--mint)">' + prob + '%</div></div>';
+    html += '<div class="outcome-box" style="padding:10px"><div class="outcome-name">Кэф</div><div class="outcome-val" style="color:var(--gold)">' + odd.toFixed(2) + '</div></div>';
     html += '</div></div>';
   });
-  
   content.innerHTML = html;
 }
 
+/* ---------- РЕНДЕР: СТАТА ---------- */
 function renderStats(data) {
-  if (!data) { document.getElementById('content').innerHTML = '<div class="empty">Нет данных</div>'; return; }
-  const acc = data.accuracy || 0, wins = data.wins || 0, loses = data.loses || 0, total = data.total || 0;
+  const content = document.getElementById('content');
+  if (!data) { content.innerHTML = '<div class="empty"><div class="empty-icon">📊</div>Статистики пока нет</div>'; return; }
+  const acc = data.accuracy || 0, wins = data.wins || 0, loses = data.loses || 0;
   const leagues = Array.isArray(data.leagues) ? data.leagues : [];
-  
   let html = '<div class="stats-hero"><div class="stats-big">' + acc + '%</div><div class="stats-sub">Общая точность</div></div>';
-  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">';
-  html += '<div class="league-row" style="align-items:center;justify-content:center;padding:20px"><div style="font-size:28px;font-weight:900;color:var(--mint);font-family:JetBrains Mono">' + wins + '</div><div style="font-size:11px;color:var(--text-mute);font-weight:700">✅ ЗАШЛО</div></div>';
-  html += '<div class="league-row" style="align-items:center;justify-content:center;padding:20px"><div style="font-size:28px;font-weight:900;color:var(--danger);font-family:JetBrains Mono">' + loses + '</div><div style="font-size:11px;color:var(--text-mute);font-weight:700">❌ НЕ ЗАШЛО</div></div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">';
+  html += '<div class="league-row" style="align-items:center;padding:16px"><div style="font-size:26px;font-weight:900;color:var(--mint);font-family:JetBrains Mono">' + wins + '</div><div style="font-size:10px;color:var(--text-mute);font-weight:700">✅ ЗАШЛО</div></div>';
+  html += '<div class="league-row" style="align-items:center;padding:16px"><div style="font-size:26px;font-weight:900;color:var(--danger);font-family:JetBrains Mono">' + loses + '</div><div style="font-size:10px;color:var(--text-mute);font-weight:700">❌ НЕ ЗАШЛО</div></div>';
   html += '</div>';
-  
   if (leagues.length) {
-    html += '<div style="font-size:13px;font-weight:800;color:var(--text-dim);margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;">📊 По лигам</div>';
+    html += '<div style="font-size:12px;font-weight:800;color:var(--text-dim);margin-bottom:10px;letter-spacing:1px;text-transform:uppercase;">📊 По лигам</div>';
     leagues.forEach(lg => {
       const lAcc = lg.accuracy || 0;
-      html += '<div class="league-row">';
-      html += '<div class="league-header"><div class="league-name">' + escapeHtml(lg.name) + '</div><div class="league-acc">' + lAcc + '%</div></div>';
-      html += '<div class="league-bar"><div class="league-fill" style="width:' + lAcc + '%"></div></div>';
-      html += '<div style="font-size:11px;color:var(--text-mute);font-weight:600">✅ ' + (lg.wins||0) + ' · ❌ ' + (lg.loses||0) + '</div>';
-      html += '</div>';
+      html += '<div class="league-row"><div class="league-header"><div class="league-name">' + escapeHtml(lg.name) + '</div><div class="league-acc">' + lAcc + '%</div></div><div class="league-bar"><div class="league-fill" style="width:' + lAcc + '%"></div></div><div style="font-size:11px;color:var(--text-mute);font-weight:600">✅ ' + (lg.wins||0) + ' · ❌ ' + (lg.loses||0) + '</div></div>';
     });
   }
-  
-  document.getElementById('content').innerHTML = html;
+  content.innerHTML = html;
 }
 
-function renderFaq() {
-  document.getElementById('content').innerHTML = 
-    '<div class="stats-hero"><div class="stats-big" style="font-size:48px">❓</div><div class="stats-sub">Как это работает</div></div>' +
-    '<div class="league-row"><div style="font-weight:800;margin-bottom:6px;">🎯 Логика прогнозов</div><div style="font-size:13px;color:var(--text-dim);line-height:1.6;">Бот анализирует xG (ожидаемые голы), применяет распределение Пуассона, учитывает силу атаки/обороны команд и отсекает матчи через ИИ-фильтр Gemini. Показываются только матчи с вероятностью <strong>≥ 62%</strong>.</div></div>' +
-    '<div class="league-row"><div style="font-weight:800;margin-bottom:6px;">⚙️ Обновление</div><div style="font-size:13px;color:var(--text-dim);line-height:1.6;">Кэфы — каждые 15 мин.<br>Счёт — каждые 30 мин.<br>Поиск матчей — <strong>2 раза в день: 9:00 и 21:00 МСК</strong>.</div></div>' +
-    '<div class="league-row" style="border-color:var(--danger)"><div style="font-weight:800;margin-bottom:6px;color:var(--danger);">⚠️ Дисклеймер</div><div style="font-size:13px;color:var(--text-dim);line-height:1.6;">Это <strong>не букмекерская контора</strong>. Мы не принимаем ставки. Все прогнозы носят информационный характер.</div></div>';
-}
-
-function renderBonus() {
-  document.getElementById('content').innerHTML = 
-    '<div class="stats-hero"><div class="stats-big" style="font-size:48px">🎁</div><div class="stats-sub">Приветственный бонус</div></div>' +
-    '<div class="league-row" style="text-align:center;padding:30px 20px;">' +
-    '<div style="font-size:18px;font-weight:900;margin-bottom:12px;">БОНУС ДЛЯ ТЕБЯ</div>' +
-    '<div style="font-size:14px;color:var(--text-dim);line-height:1.6;margin-bottom:24px;">Зарегистрируйся и получи приветственный бонус.<br>🔥 Лучшие коэффициенты на ТБ 2.5<br>⚡ Быстрые выплаты</div>' +
-    '<a href="' + AD_URL + '" target="_blank" style="display:inline-block;padding:14px 32px;background:var(--gold);color:#000;text-decoration:none;border-radius:100px;font-weight:900;font-size:15px;box-shadow:0 8px 24px var(--gold-glow);">ЗАБРАТЬ БОНУС</a>' +
-    '</div>';
-}
-
-function escapeHtml(str) {
-  if (str === null || str === undefined) return '';
-  return String(str).replace(/[&<>"']/g, function(c) {
-    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-  });
-}
-
-checkDailyWelcome();
+/* ---------- СТАРТ ---------- */
+document.getElementById('subTabs').style.display = 'flex';
 loadData();
 </script>
 </body>
