@@ -13,79 +13,74 @@
   --bg: #0a0f16; 
   --surface: #121a24; 
   --surface-hi: #1a2535;
-  --card-bg: #161f2b; /* Чуть светлее фона, чтобы выделяться */
-  --border: rgba(255, 255, 255, 0.1); 
-  --border-hi: rgba(16, 185, 129, 0.3);
-  --text: #f1f5f9; 
-  --text-dim: #94a3b8; 
+  --card-bg: #16202d;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hi: rgba(16, 185, 129, 0.4);
+  --text: #f1f5f9;
+  --text-dim: #94a3b8;
   --text-mute: #64748b;
-  --mint: #10b981; 
-  --mint-glow: rgba(16, 185, 129, 0.25);
-  --gold: #f59e0b; 
-  --gold-glow: rgba(245, 158, 11, 0.25);
-  --danger: #f43f5e; 
-  --danger-glow: rgba(244, 63, 94, 0.25);
-  --radius: 20px; 
-  --radius-sm: 12px;
+  --mint: #10b981;
+  --mint-glow: rgba(16, 185, 129, 0.3);
+  --gold: #f59e0b;
+  --gold-glow: rgba(245, 158, 11, 0.3);
+  --danger: #f43f5e;
+  
+  --bar-p1: #ef4444;
+  --bar-x: #475569;
+  --bar-p2: #a855f7;
+  
+  --radius: 20px;
   --nav-h: 64px;
 }
 body.light-theme {
-  --bg: #f8fafc; 
-  --surface: #ffffff; 
+  --bg: #f8fafc;
+  --surface: #ffffff;
   --surface-hi: #f1f5f9;
   --card-bg: #ffffff;
-  --border: rgba(0, 0, 0, 0.08); 
-  --border-hi: rgba(16, 185, 129, 0.4);
-  --text: #0f172a; 
-  --text-dim: #475569; 
+  --border: rgba(0, 0, 0, 0.08);
+  --border-hi: rgba(16, 185, 129, 0.5);
+  --text: #0f172a;
+  --text-dim: #475569;
   --text-mute: #94a3b8;
-  --mint: #059669; 
-  --gold: #d97706; 
+  --mint: #059669;
+  --gold: #d97706;
   --danger: #e11d48;
+  --bar-p1: #ef4444;
+  --bar-x: #cbd5e1;
+  --bar-p2: #a855f7;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body {
   font-family: 'Inter', -apple-system, sans-serif;
   background: var(--bg); color: var(--text);
-  padding: 0 0 calc(var(--nav-h) + 20px); min-height: 100vh; overflow-x: hidden;
+  padding: 0 0 calc(var(--nav-h) + 20px); min-height: 100vh;
   -webkit-user-select: none; user-select: none;
 }
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-thumb { background: var(--text-mute); border-radius: 10px; }
 
 /* Шапка */
-.header { position: relative; padding: 24px 20px 16px; text-align: center; }
+.header { padding: 24px 20px 16px; text-align: center; }
 .header h1 {
   font-size: 26px; font-weight: 900; letter-spacing: 2px;
   background: linear-gradient(135deg, var(--text) 20%, var(--text-dim) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
 .header .sub { font-size: 11px; letter-spacing: 3px; color: var(--mint); margin-top: 6px; text-transform: uppercase; font-weight: 800; }
-.live-status { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; font-size: 10px; color: var(--text-mute); font-weight: 700; }
-.live-dot { display: inline-block; width: 8px; height: 8px; background: var(--text-mute); border-radius: 50%; }
-.live-dot.ok { background: var(--mint); box-shadow: 0 0 8px var(--mint-glow); }
-.live-dot.err { background: var(--danger); }
-.live-dot.load { background: var(--gold); animation: pulse 1s infinite; }
-@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-/* Верхние вкладки */
+/* Вкладки */
 .tabs-wrap {
-  position: sticky; top: 0; background: var(--bg);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  padding: 10px 16px; z-index: 10; border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; background: var(--bg); padding: 10px 16px; z-index: 10; border-bottom: 1px solid var(--border);
 }
 .tabs { display: flex; gap: 6px; }
 .tab {
-  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
-  padding: 10px 8px; border-radius: 100px; font-size: 13px; font-weight: 700;
-  color: var(--text-dim); background: transparent; border: 1px solid transparent;
-  transition: all 0.25s ease; cursor: pointer;
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  padding: 10px; border-radius: 100px; font-size: 13px; font-weight: 700;
+  color: var(--text-dim); background: transparent; cursor: pointer; transition: all 0.25s;
 }
-.tab svg { width: 16px; height: 16px; stroke-width: 2.5; }
-.tab.active { background: var(--surface-hi); color: var(--text); border-color: var(--border); }
-.tab.active svg { color: var(--mint); }
+.tab.active { background: var(--surface-hi); color: var(--text); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
 
-/* Фильтр по лигам (Кликабельный) */
+/* Фильтры лиг */
 .league-filters { display: flex; gap: 8px; overflow-x: auto; padding: 12px 16px 4px; scrollbar-width: none; }
 .league-filters::-webkit-scrollbar { display: none; }
 .league-chip { 
@@ -98,88 +93,90 @@ body {
 
 #content { padding: 16px; min-height: 50vh; }
 
-/* ====== НОВАЯ, ВЫДЕЛЕННАЯ КАРТОЧКА ====== */
+/* ====== КАРТОЧКА ====== */
 .match-card {
   background: var(--card-bg); 
   border: 1px solid var(--border);
   border-radius: var(--radius); 
-  padding: 20px 16px; 
+  padding: 20px; 
   margin-bottom: 16px;
   position: relative; 
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15); /* Тень для выделения */
-  transition: transform 0.15s, border-color 0.2s;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  animation: slideUp 0.3s ease both;
 }
-.match-card.prob-high { border-color: var(--gold); }
+@keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.match-card.prob-high { border-color: var(--gold); box-shadow: 0 8px 30px var(--gold-glow); }
 .match-card.prob-high::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--gold); border-radius: var(--radius) var(--radius) 0 0; }
-.match-card.prob-mid { border-color: var(--border-hi); }
+
+.match-card.prob-mid { border-color: var(--border-hi); box-shadow: 0 8px 30px var(--mint-glow); }
 .match-card.prob-mid::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--mint); border-radius: var(--radius) var(--radius) 0 0; }
 
-/* Верхняя часть: Время, Дата, Лига */
-.mc-date-row { text-align: center; margin-bottom: 16px; }
-.mc-date { font-size: 11px; font-weight: 700; color: var(--text-mute); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-.mc-time { font-size: 22px; font-weight: 900; font-family: 'JetBrains Mono', monospace; }
-.mc-live-badge { background: var(--danger); color: #fff; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; display: inline-block; animation: pulse 1.5s infinite; margin-bottom: 4px; }
+/* Верх: Дата и Лига */
+.mc-top-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.mc-league-badge { font-size: 11px; font-weight: 800; color: var(--mint); background: var(--mint-glow); padding: 4px 10px; border-radius: 6px; }
+.mc-date { font-size: 12px; font-weight: 700; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
+.mc-live { background: var(--danger); color: #fff; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; animation: pulse 1.5s infinite; }
 
-/* Команды */
-.mc-teams { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.mc-team { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 35%; text-align: center; }
-.mc-logo { width: 44px; height: 44px; border-radius: 50%; background: var(--surface-hi); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; border: 1px solid var(--border); }
-.mc-name { font-size: 13px; font-weight: 800; line-height: 1.2; }
-
-/* ГЛАВНЫЙ БЛОК: ТОТАЛ */
-.mc-total-block {
-  background: var(--surface); 
-  border: 1px solid var(--border-hi);
-  border-radius: var(--radius-sm); 
-  padding: 16px; 
-  margin-bottom: 16px;
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center;
+/* Команды и Время */
+.mc-matchup { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.mc-team { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 32%; text-align: center; }
+.mc-logo { 
+  width: 46px; height: 46px; border-radius: 50%; background: var(--surface-hi); 
+  display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; 
+  border: 1px solid var(--border); box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
-.mc-total-left { display: flex; flex-direction: column; gap: 4px; }
-.mc-total-title { font-size: 12px; color: var(--text-dim); font-weight: 700; text-transform: uppercase; }
-.mc-total-val { font-size: 32px; font-weight: 900; font-family: 'JetBrains Mono', monospace; line-height: 1; color: var(--mint); }
-.mc-total-val.high { color: var(--gold); }
-.mc-total-badge { font-size: 11px; font-weight: 800; padding: 6px 12px; border-radius: 8px; background: var(--surface-hi); color: var(--text-dim); border: 1px solid var(--border); }
+.mc-name { font-size: 13px; font-weight: 800; line-height: 1.2; text-transform: uppercase; }
+.mc-time-center { display: flex; flex-direction: column; align-items: center; }
+.mc-time { font-size: 20px; font-weight: 900; font-family: 'JetBrains Mono', monospace; color: var(--text); line-height: 1; }
 
-/* Второстепенный блок: Исходы П1/Х/П2 */
-.mc-outcomes { display: flex; height: 36px; gap: 4px; margin-bottom: 8px; }
-.mc-seg { height: 100%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: #fff; }
-.mc-seg.p1 { background: #dc2626; border-radius: 8px 4px 4px 8px; }
-.mc-seg.x { background: #334155; border-radius: 4px; }
-.mc-seg.p2 { background: #9333ea; border-radius: 4px 8px 8px 4px; }
+/* ГЛАВНЫЙ БЛОК ТБ 2.5 */
+.mc-total-main {
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.05), transparent);
+  border: 1px solid var(--border-hi);
+  border-radius: 16px; padding: 16px; margin-bottom: 16px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.mc-total-title { font-size: 12px; color: var(--text-dim); font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.mc-total-val { font-size: 34px; font-weight: 900; font-family: 'JetBrains Mono', monospace; color: var(--mint); line-height: 1; }
+.mc-total-val.high { color: var(--gold); }
+
+.mc-conf-badge { font-size: 11px; font-weight: 800; padding: 6px 12px; border-radius: 8px; }
+.conf-high { background: var(--gold-glow); color: var(--gold); }
+.conf-mid { background: var(--mint-glow); color: var(--mint); }
+.conf-low { background: rgba(148,163,184,0.15); color: var(--text-mute); }
+
+/* Второстепенные Исходы (Бары) */
+.mc-outcomes-wrap { margin-top: 12px; }
+.mc-bars { display: flex; height: 28px; gap: 4px; margin-bottom: 8px; }
+.mc-seg { height: 100%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: #fff; }
+.mc-seg.p1 { background: var(--bar-p1); border-radius: 8px 4px 4px 8px; }
+.mc-seg.x { background: var(--bar-x); border-radius: 4px; }
+.mc-seg.p2 { background: var(--bar-p2); border-radius: 4px 8px 8px 4px; }
 .mc-outcomes-label { text-align: center; font-size: 10px; color: var(--text-mute); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
 
 /* Рекомендация */
 .mc-reco {
-  margin-top: 12px; padding: 10px 14px; background: rgba(255,255,255,0.03);
-  border-radius: 8px; border-left: 3px solid var(--gold);
+  margin-top: 12px; padding: 10px 14px; background: var(--surface-hi);
+  border-radius: 10px; border-left: 3px solid var(--mint);
   font-size: 12px; color: var(--text-dim); font-weight: 600;
 }
-.mc-reco span { color: var(--gold); font-weight: 800; }
+.mc-reco span { color: var(--mint); font-weight: 800; }
 
-/* Остальное (Экспресс и т.д.) */
-.express-hero { background: linear-gradient(135deg, #1e1b4b, #312e81); border-radius: var(--radius); padding: 24px 20px; text-align: center; margin-bottom: 16px; }
-.express-title { font-size: 12px; font-weight: 800; color: #a5b4fc; letter-spacing: 2px; text-transform: uppercase; }
+/* Остальное (Экспресс, Стата, пустые экраны) */
+.express-hero { background: linear-gradient(135deg, #1e1b4b, #312e81); border-radius: var(--radius); padding: 24px; text-align: center; margin-bottom: 16px; }
 .express-odd { font-family: 'JetBrains Mono', monospace; font-size: 52px; font-weight: 900; color: #fff; line-height: 1; margin: 12px 0; }
-.express-sub { font-size: 11px; color: #818cf8; font-weight: 600; }
 
-.calc-box { margin-top: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; }
-.calc-label { font-size: 11px; font-weight: 700; color: var(--text-mute); margin-bottom: 8px; display: block; }
-.calc-input-wrap { display: flex; gap: 10px; align-items: center; }
-.calc-input { flex: 1; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; outline: none; }
+.calc-box { margin-top: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.calc-input-wrap { display: flex; gap: 10px; align-items: center; margin-top: 8px; }
+.calc-input { flex: 1; padding: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; outline: none; }
 .calc-result { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 900; color: var(--gold); }
 
 .stats-hero { text-align: center; margin-bottom: 24px; }
 .stats-big { font-family: 'JetBrains Mono', monospace; font-size: 56px; font-weight: 900; line-height: 1; }
 .stats-sub { font-size: 12px; color: var(--text-dim); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-top: 6px; }
-.league-row { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 8px; }
-.league-header { display: flex; justify-content: space-between; align-items: center; }
-.league-name { font-size: 13px; font-weight: 800; }
-.league-acc { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 800; color: var(--mint); }
+.league-row { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 8px; }
 
-/* Скелетоны */
 .skeleton { background: var(--surface); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; height: 220px; position: relative; overflow: hidden; }
 .skeleton::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent); animation: shimmer 1.5s infinite; }
 @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
@@ -187,31 +184,23 @@ body {
 .empty-icon { font-size: 42px; margin-bottom: 12px; opacity: 0.3; }
 .empty button { margin-top: 16px; padding: 10px 24px; background: var(--surface-hi); border: 1px solid var(--border); color: var(--text); border-radius: 100px; font-weight: 700; cursor: pointer; }
 
-/* Модалки и Нижнее меню */
+/* Модалки */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px; }
 .modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 24px; width: 100%; max-width: 400px; }
 .modal-title { font-size: 20px; font-weight: 900; text-align: center; margin-bottom: 14px; }
-.modal-text { font-size: 13px; color: var(--text-dim); line-height: 1.6; margin-bottom: 14px; }
-.modal-warn { background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.2); border-radius: 12px; padding: 14px; margin-bottom: 16px; }
-.modal-warn-title { color: var(--danger); font-weight: 800; margin-bottom: 6px; }
-.modal-btn { display: block; width: 100%; padding: 14px; background: var(--mint); color: #fff; border: none; border-radius: 14px; font-size: 15px; font-weight: 800; cursor: pointer; }
+.modal-btn { display: block; width: 100%; padding: 14px; background: var(--mint); color: #fff; border: none; border-radius: 14px; font-size: 15px; font-weight: 800; cursor: pointer; margin-bottom: 10px; }
 
+/* Нижнее меню */
 .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-h); background: var(--surface); border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-around; z-index: 50; padding-bottom: env(safe-area-inset-bottom, 0); }
 .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 8px 4px; background: none; border: none; color: var(--text-mute); font-size: 10px; font-weight: 700; cursor: pointer; }
 .nav-btn svg { width: 20px; height: 20px; stroke-width: 2.2; }
 .nav-btn.active { color: var(--mint); }
-
-.sync-line { text-align: center; font-size: 10px; color: var(--text-mute); font-weight: 600; margin: 16px 0; }
 </style>
 </head>
 <body>
 <div class="header">
   <h1>ПРОГНОЗЫ</h1>
   <div class="sub" id="headerDate">Тотал больше 2.5</div>
-  <div class="live-status">
-    <span class="live-dot" id="liveDot"></span>
-    <span id="liveLabel">Автообновление</span>
-  </div>
 </div>
 
 <div class="tabs-wrap">
@@ -224,44 +213,46 @@ body {
 
 <div class="league-filters" id="leagueFilters" style="display:none;"></div>
 <div id="content"></div>
-<div class="sync-line" id="syncLine"></div>
 
 <nav class="bottom-nav" id="bottomNav">
-  <button class="nav-btn active" data-nav="today"><span>Матчи</span></button>
-  <button class="nav-btn" data-nav="yesterday"><span>Вчера</span></button>
-  <button class="nav-btn" data-nav="stats"><span>Стата</span></button>
-  <button class="nav-btn" data-nav="more"><span>Ещё</span></button>
+  <button class="nav-btn active" data-nav="today">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+    <span>Матчи</span>
+  </button>
+  <button class="nav-btn" data-nav="yesterday">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+    <span>Вчера</span>
+  </button>
+  <button class="nav-btn" data-nav="stats">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 12l4-4 4 4 5-5"/></svg>
+    <span>Стата</span>
+  </button>
+  <button class="nav-btn" data-nav="more">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/></svg>
+    <span>Ещё</span>
+  </button>
 </nav>
 
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycbxW52PKcn0Mh2L6yjQ5-5IiuCdds8FksK1XzY6F_iElSnFuAH4f5Hz9JH97pEDD1hcw/exec';
 const BOT_URL = 'https://t.me/total25_signals_bot';
 const CACHE_TTL = 30 * 60 * 1000;
-const CACHE_VERSION = 'v48';
+const CACHE_VERSION = 'v49'; // Подняли версию
 const MIN_PROB = 60;
-const AUTO_REFRESH_MS = 60 * 1000;
 
 let currentTab = 'today';
 let currentLeagueFilter = 'all';
 let isLoading = false;
 let abortCtrl = null;
 
-// Автообновление
-let refreshTimer = null;
-let refreshBackoff = AUTO_REFRESH_MS;
-let lastVersion = {};
-let modalOpen = false;
-
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.ready(); tg.expand(); }
 
-function initTheme() {
-  const saved = localStorage.getItem('tb25_theme') || 'dark';
-  if (saved === 'light') document.body.classList.add('light-theme');
-}
-initTheme();
+// Установка темы
+if (localStorage.getItem('tb25_theme') === 'light') document.body.classList.add('light-theme');
 
-(function setHeaderDate() {
+// Дата в шапке
+(function() {
   const d = new Date();
   const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
   const el = document.getElementById('headerDate');
@@ -278,8 +269,8 @@ function checkDailyWelcome() {
   modal.className = 'modal-overlay';
   modal.innerHTML = '<div class="modal-box">' +
     '<div class="modal-title">ДОБРО ПОЖАЛОВАТЬ</div>' +
-    '<div class="modal-text">Приложение аналитики для поиска матчей с высокой вероятностью <strong>ТБ 2.5</strong>.</div>' +
-    '<div class="modal-warn"><div class="modal-warn-title">18+</div>Не БК. Прогнозы информационные. Играйте ответственно.</div>' +
+    '<div style="font-size:13px;color:var(--text-dim);line-height:1.6;margin-bottom:16px;">Приложение аналитики для поиска матчей с высокой вероятностью <strong>ТБ 2.5</strong>.</div>' +
+    '<div style="background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.2);border-radius:12px;padding:14px;margin-bottom:16px;font-size:12px;color:var(--text-dim);"><span style="color:var(--danger);font-weight:800;">18+</span> Не БК. Прогнозы информационные. Играйте ответственно.</div>' +
     '<button class="modal-btn" onclick="this.closest(\'.modal-overlay\').remove()">ПОНЯЛ 🚀</button>' +
     '</div>';
   document.body.appendChild(modal);
@@ -292,6 +283,7 @@ function switchTabDirect(tabName) {
   loadData();
 }
 
+// Обработчики вкладок
 document.getElementById('tabs').addEventListener('click', e => {
   const tab = e.target.closest('.tab');
   if (!tab) return;
@@ -306,7 +298,14 @@ document.getElementById('bottomNav').addEventListener('click', e => {
   if (!btn) return;
   const nav = btn.dataset.nav;
   if (nav === 'more') {
-    alert("В разработке");
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = '<div class="modal-box"><div class="modal-title">Ещё</div>' +
+      '<button class="modal-btn" style="background:var(--surface-hi);color:var(--text)" onclick="switchTabDirect(\'bonus\');this.closest(\'.modal-overlay\').remove()">🎁 Бонус</button>' +
+      '<button class="modal-btn" style="background:var(--surface-hi);color:var(--text)" onclick="switchTabDirect(\'faq\');this.closest(\'.modal-overlay\').remove()">❓ FAQ</button>' +
+      '<button class="modal-btn" style="background:var(--surface-hi);color:var(--text)" onclick="if(tg&&tg.openTelegramLink)tg.openTelegramLink(\''+BOT_URL+'?start=donate\')">⭐ Поддержать</button>' +
+      '</div>';
+    document.body.appendChild(modal);
     return;
   }
   document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
@@ -323,7 +322,7 @@ function getCache(tab) {
   try { const r = localStorage.getItem('tb25_' + CACHE_VERSION + '_' + tab); return r ? JSON.parse(r) : null; } catch(e){ return null; }
 }
 function setCache(tab, version, data) {
-  try { localStorage.setItem('tb25_' + CACHE_VERSION + '_' + tab, JSON.stringify({ version, data, ts: Date.now() })); localStorage.setItem('tb25_last_update', new Date().toISOString()); } catch(e){}
+  try { localStorage.setItem('tb25_' + CACHE_VERSION + '_' + tab, JSON.stringify({ version, data, ts: Date.now() })); } catch(e){}
 }
 
 async function fetchWithRetry(url, retries = 1) {
@@ -369,7 +368,8 @@ async function loadData() {
   const content = document.getElementById('content');
   document.getElementById('leagueFilters').style.display = 'none';
 
-  if (currentTab === 'faq' || currentTab === 'bonus') { isLoading = false; return; }
+  if (currentTab === 'faq') { renderFaq(); isLoading = false; return; }
+  if (currentTab === 'bonus') { renderBonus(); isLoading = false; return; }
 
   const cached = getCache(currentTab);
   if (cached) {
@@ -384,7 +384,6 @@ async function loadData() {
     const result = await fetchWithRetry(API_URL + '?action=' + currentTab + '&uid=' + uid);
     const serverVersion = result.version || '1';
     const serverData = result.data !== undefined ? result.data : result;
-    lastVersion[currentTab] = serverVersion;
     
     if (!cached || cached.version !== serverVersion) {
       setCache(currentTab, serverVersion, serverData);
@@ -392,7 +391,7 @@ async function loadData() {
     }
   } catch (e) {
     if (e.name === 'AbortError') return;
-    if (!cached) content.innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div>Ошибка. <button onclick="loadData()">Повторить</button></div>';
+    if (!cached) content.innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div>Ошибка загрузки<button onclick="loadData()">Повторить</button></div>';
   } finally {
     isLoading = false;
   }
@@ -403,10 +402,15 @@ function getLogoPlaceholder(teamName) {
   return teamName.replace(/[^a-zA-Zа-яА-Я0-9]/g, '').substring(0, 3).toUpperCase();
 }
 
+function renderTab(tab, data) {
+  if (tab === 'today' || tab === 'tomorrow') renderMatches(Array.isArray(data) ? data : []);
+  else if (tab === 'yesterday') renderYesterday(data);
+  else if (tab === 'express') renderExpress(data);
+  else if (tab === 'stats') renderStats(data);
+}
+
 function renderMatches(data) {
   const content = document.getElementById('content');
-  
-  // Фильтрация по вероятности и лиге
   let filtered = data.filter(m => (parseInt(m.probability) || 0) >= MIN_PROB);
   renderLeagueFilters(filtered);
   if (currentLeagueFilter !== 'all') filtered = filtered.filter(m => m.league === currentLeagueFilter);
@@ -424,54 +428,51 @@ function renderMatches(data) {
     const cls = prob >= 78 ? 'prob-high' : prob >= 68 ? 'prob-mid' : '';
     const live = String(m.result || '').includes('Live');
     
-    // П1/Х/П2 (если нет данных, ставим пустоту, чтобы не наврать)
     let p1 = m.outcome?.p1 || 0, px = m.outcome?.x || 0, p2 = m.outcome?.p2 || 0;
-    if(p1 + px + p2 === 0) { p1 = 0; px = 0; p2 = 0; } // если данных нет
 
-    // Форматирование даты
     let dateDisplay = '';
     if (m.date) {
         const parts = String(m.date).split('-');
         if(parts.length === 3) dateDisplay = parts[2] + '.' + parts[1];
     }
 
-    html += '<div class="match-card ' + cls + '">';
+    html += '<div class="match-card ' + cls + '" style="animation-delay:' + Math.min(i, 6) * 0.04 + 's">';
     
-    // Лига и Дата
-    html += '<div class="mc-date-row">';
-    html += '<div class="mc-date">' + (m.league || 'Лига') + ' • ' + (dateDisplay || 'Сегодня') + '</div>';
-    if (live) {
-        html += '<div class="mc-live-badge">LIVE</div>';
-    } else {
-        html += '<div class="mc-time">' + (m.time || '--:--') + '</div>';
-    }
+    // Верхняя инфа
+    html += '<div class="mc-top-info">';
+    html += '<div class="mc-league-badge">' + (m.league || 'Лига') + '</div>';
+    if (live) html += '<div class="mc-live">LIVE</div>';
+    else html += '<div class="mc-date">' + (dateDisplay || 'Сегодня') + '</div>';
     html += '</div>';
 
-    // Команды
-    html += '<div class="mc-teams">';
-    html += '<div class="mc-team"><div class="mc-logo">' + (m.homeLogo ? '<img src="'+m.homeLogo+'" style="width:100%;border-radius:50%">' : getLogoPlaceholder(m.home)) + '</div><div class="mc-name">' + m.home + '</div></div>';
-    html += '<div class="mc-team"><div class="mc-logo">' + (m.awayLogo ? '<img src="'+m.awayLogo+'" style="width:100%;border-radius:50%">' : getLogoPlaceholder(m.away)) + '</div><div class="mc-name">' + m.away + '</div></div>';
+    // Команды и время
+    html += '<div class="mc-matchup">';
+    html += '<div class="mc-team"><div class="mc-logo">' + getLogoPlaceholder(m.home) + '</div><div class="mc-name">' + m.home + '</div></div>';
+    html += '<div class="mc-time-center"><div class="mc-time">' + (m.time || '--:--') + '</div></div>';
+    html += '<div class="mc-team"><div class="mc-logo">' + getLogoPlaceholder(m.away) + '</div><div class="mc-name">' + m.away + '</div></div>';
     html += '</div>';
 
-    // ГЛАВНОЕ: Тотал больше 2.5
-    html += '<div class="mc-total-block">';
-    html += '<div class="mc-total-left"><div class="mc-total-title">Тотал Больше 2.5</div><div class="mc-total-val ' + (prob>=78?'high':'') + '">' + prob + '%</div></div>';
-    html += '<div class="mc-total-badge">' + (prob>=78?'🔥 Высокая':(prob>=68?'✅ Средняя':'⚡ Риск')) + '</div>';
+    // Блок ТБ 2.5
+    html += '<div class="mc-total-main">';
+    html += '<div><div class="mc-total-title">Тотал Больше 2.5</div><div class="mc-total-val ' + (prob>=78?'high':'') + '">' + prob + '%</div></div>';
+    html += '<div class="mc-conf-badge ' + (prob>=78?'conf-high':(prob>=68?'conf-mid':'conf-low')) + '">' + (prob>=78?'🔥 Высокая':(prob>=68?'✅ Средняя':'⚡ Риск')) + '</div>';
     html += '</div>';
 
-    // Второстепенное: Исходы (П1/Х/П2) - компактно
+    // Второстепенные исходы (П1/Х/П2)
     if (p1 > 0 || px > 0 || p2 > 0) {
-        html += '<div class="mc-outcomes">';
-        if(p1>0) html += '<div class="mc-seg p1" style="width:'+p1+'%">П1 '+p1+'%</div>';
-        if(px>0) html += '<div class="mc-seg x" style="width:'+px+'%">Х '+px+'%</div>';
-        if(p2>0) html += '<div class="mc-seg p2" style="width:'+p2+'%">П2 '+p2+'%</div>';
+        html += '<div class="mc-outcomes-wrap">';
+        html += '<div class="mc-bars">';
+        if(p1>0) html += '<div class="mc-seg p1" style="width:'+p1+'%">' + p1 + '%</div>';
+        if(px>0) html += '<div class="mc-seg x" style="width:'+px+'%">' + px + '%</div>';
+        if(p2>0) html += '<div class="mc-seg p2" style="width:'+p2+'%">' + p2 + '%</div>';
         html += '</div>';
         html += '<div class="mc-outcomes-label">Вероятность победы</div>';
+        html += '</div>';
     }
 
-    // Рекомендация (если бэкенд отдаст)
+    // Рекомендация
     if (m.prediction && m.pred_prob) {
-        html += '<div class="mc-reco">Прогноз системы: <span>' + m.prediction + ' (' + m.pred_prob + '%)</span></div>';
+        html += '<div class="mc-reco">Прогноз: <span>' + m.prediction + ' (' + m.pred_prob + '%)</span></div>';
     }
 
     html += '</div>';
@@ -482,13 +483,7 @@ function renderMatches(data) {
 
 function renderYesterday(data) {
   const content = document.getElementById('content');
-  let matches = [];
-  if (Array.isArray(data)) {
-    matches = data;
-  } else if (data && Array.isArray(data.matches)) {
-    matches = data.matches;
-  }
-  
+  let matches = Array.isArray(data) ? data : (data && Array.isArray(data.matches) ? data.matches : []);
   if (!matches.length) { content.innerHTML = '<div class="empty"><div class="empty-icon">📅</div>Вчера матчей не было</div>'; return; }
   
   let wins = matches.filter(m=>m.status==='win').length;
@@ -497,11 +492,6 @@ function renderYesterday(data) {
   let accuracy = total > 0 ? Math.round(wins / total * 100) : 0;
 
   let html = '<div class="stats-hero"><div class="stats-big" style="font-size:44px">' + accuracy + '%</div><div class="stats-sub">Точность за вчера</div></div>';
-  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">';
-  html += '<div class="league-row" style="align-items:center;justify-content:center;padding:14px"><div style="font-size:22px;font-weight:900;color:var(--mint);font-family:JetBrains Mono">' + wins + '</div><div style="font-size:10px;color:var(--text-mute);font-weight:700">✅ ЗАШЛО</div></div>';
-  html += '<div class="league-row" style="align-items:center;justify-content:center;padding:14px"><div style="font-size:22px;font-weight:900;color:var(--danger);font-family:JetBrains Mono">' + loses + '</div><div style="font-size:10px;color:var(--text-mute);font-weight:700">❌ НЕ ЗАШЛО</div></div>';
-  html += '</div>';
-  
   matches.forEach((m, idx) => {
     const emoji = m.status === 'win' ? '✅' : m.status === 'lose' ? '❌' : '⏳';
     const scoreColor = m.status === 'win' ? 'var(--mint)' : m.status === 'lose' ? 'var(--danger)' : 'var(--text)';
@@ -521,11 +511,12 @@ function renderExpress(data) {
   if (!data || !Array.isArray(data.matches) || !data.matches.length) { content.innerHTML = '<div class="empty"><div class="empty-icon">🔥</div>Экспресс ещё не собран</div>'; return; }
   const items = data.matches.filter(m => (parseInt(m.probability)||0) >= MIN_PROB);
   if (!items.length) { content.innerHTML = '<div class="empty"><div class="empty-icon">🔥</div>Нет событий подходящих</div>'; return; }
+  
   let totalOdd = 1;
   items.forEach(m => { totalOdd *= (parseFloat(m.odd) || 1); });
   totalOdd = totalOdd.toFixed(2);
   
-  let html = '<div class="express-hero"><div class="express-title">Топ-экспресс дня</div><div class="express-odd">' + totalOdd + '</div><div class="express-sub">Итоговый коэффициент</div></div>';
+  let html = '<div class="express-hero"><div style="font-size:12px;font-weight:800;color:#a5b4fc;letter-spacing:2px;text-transform:uppercase;">Топ-экспресс дня</div><div class="express-odd">' + totalOdd + '</div><div style="font-size:11px;color:#818cf8;font-weight:600;">Итоговый коэффициент</div></div>';
   
   items.forEach((m, i) => {
     const prob = parseInt(m.probability) || 0;
@@ -541,7 +532,7 @@ function renderExpress(data) {
     html += '</div></div>';
   });
   
-  html += '<div class="calc-box"><label class="calc-label">💰 Рассчитать выигрыш</label><div class="calc-input-wrap"><input type="number" inputmode="numeric" class="calc-input" id="calcInput" placeholder="1000" oninput="calcWin(' + totalOdd + ')"><div class="calc-result" id="calcResult">—</div></div></div>';
+  html += '<div class="calc-box"><label style="font-size:11px;font-weight:700;color:var(--text-mute);">💰 Рассчитать выигрыш</label><div class="calc-input-wrap"><input type="number" inputmode="numeric" class="calc-input" id="calcInput" placeholder="1000" oninput="calcWin(' + totalOdd + ')"><div class="calc-result" id="calcResult">—</div></div></div>';
   content.innerHTML = html;
 }
 
@@ -568,29 +559,28 @@ function renderStats(data) {
   if (leagues.length) {
     html += '<div style="font-size:12px;font-weight:800;color:var(--text-dim);margin-bottom:10px;text-transform:uppercase;">📊 По лигам</div>';
     leagues.forEach(lg => {
-      const lAcc = lg.accuracy || 0;
-      html += '<div class="league-row"><div class="league-header"><div class="league-name">' + lg.name + '</div><div class="league-acc">' + lAcc + '%</div></div><div style="font-size:10px;color:var(--text-mute);font-weight:600">✅ ' + (lg.wins||0) + ' · ❌ ' + (lg.loses||0) + '</div></div>';
+      html += '<div class="league-row"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><div style="font-size:13px;font-weight:800">' + lg.name + '</div><div style="font-family:JetBrains Mono;font-size:13px;font-weight:800;color:var(--mint)">' + (lg.accuracy||0) + '%</div></div><div style="font-size:10px;color:var(--text-mute);font-weight:600">✅ ' + (lg.wins||0) + ' · ❌ ' + (lg.loses||0) + '</div></div>';
     });
   }
   document.getElementById('content').innerHTML = html;
 }
 
-// Автообновление
-function scheduleAutoRefresh() {
-  clearTimeout(refreshTimer);
-  refreshTimer = setTimeout(async () => {
-    if (document.hidden || !navigator.onLine || modalOpen || isLoading) {
-      scheduleAutoRefresh(); return;
-    }
-    // silent refresh logic здесь...
-    scheduleAutoRefresh();
-  }, refreshBackoff);
+function renderBonus() {
+  document.getElementById('content').innerHTML =
+    '<div class="stats-hero"><div class="stats-big" style="font-size:44px">🎁</div><div class="stats-sub">Приветственный бонус</div></div>' +
+    '<div class="league-row" style="text-align:center;padding:24px 16px;"><div style="font-size:16px;font-weight:900;margin-bottom:10px;">БОНУС ДЛЯ ТЕБЯ</div><div style="font-size:13px;color:var(--text-dim);line-height:1.6;margin-bottom:20px;">Зарегистрируйся и получи бонус.<br>🔥 Лучшие коэффициенты<br>⚡ Быстрые выплаты</div><a href="https://baltbet.ru/account/register?refpromo=1221753" target="_blank" style="display:inline-block;padding:12px 28px;background:var(--gold);color:#000;text-decoration:none;border-radius:100px;font-weight:900;font-size:14px;">ЗАБРАТЬ БОНУС</a></div>';
+}
+
+function renderFaq() {
+  document.getElementById('content').innerHTML =
+    '<div class="stats-hero"><div class="stats-big" style="font-size:44px">❓</div><div class="stats-sub">Как это работает</div></div>' +
+    '<div class="league-row"><div style="font-weight:800;margin-bottom:4px;">🎯 Логика</div><div style="font-size:12px;color:var(--text-dim);line-height:1.6;">Анализ xG и распределение Пуассона. Показываем матчи с вероятностью ≥ 60%.</div></div>' +
+    '<div class="league-row"><div style="font-weight:800;margin-bottom:4px;">⚙️ Обновление</div><div style="font-size:12px;color:var(--text-dim);line-height:1.6;">Кэфы — 15 мин. Счёт — 30 мин. Поиск — 5 ч.</div></div>' +
+    '<div class="league-row" style="border-color:var(--danger)"><div style="font-weight:800;margin-bottom:4px;color:var(--danger);">⚠️ Дисклеймер</div><div style="font-size:12px;color:var(--text-dim);line-height:1.6;">Не БК. Не принимаем ставки. Прогнозы информационные. 18+.</div></div>';
 }
 
 checkDailyWelcome();
 loadData();
-startAutoRefresh = () => scheduleAutoRefresh();
-startAutoRefresh();
 </script>
 </body>
 </html>
