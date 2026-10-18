@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>⚽ Прогнозы ТБ 2.5</title>
+<title>⚽ Прогнозы на ТБ 2.5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
@@ -56,8 +56,8 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--text-mute); border-radius: 10px; opacity: 0.5; }
 
-/* ---------- ШАПКА ---------- */
-.header { position: relative; padding: 28px 20px 16px; text-align: center; }
+/* ---------- ШАПКА БЕЗ МЯЧА ---------- */
+.header { position: relative; padding: 24px 20px 18px; text-align: center; }
 .header-top { position: absolute; top: 16px; right: 16px; display: flex; gap: 8px; }
 .icon-btn {
   width: 40px; height: 40px;
@@ -73,17 +73,55 @@ body {
 .icon-btn svg { width: 18px; height: 18px; stroke-width: 2; }
 .icon-btn.spinning svg { animation: spin 0.9s linear infinite; color: var(--mint); }
 @keyframes spin { 100% { transform: rotate(360deg); } }
-.ball-wrap { width: 76px; height: 76px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; }
-.ball-emoji { font-size: 52px; filter: drop-shadow(0 8px 24px var(--mint-glow)); animation: float 4s ease-in-out infinite; }
-@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-.header h1 {
-  font-size: 28px; font-weight: 900; letter-spacing: 2px;
-  background: linear-gradient(135deg, var(--text) 20%, var(--text-dim) 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-.header .sub { font-size: 11px; letter-spacing: 3px; color: var(--mint); margin-top: 6px; text-transform: uppercase; font-weight: 800; }
 
-/* ---------- ПОД-ВКЛАДКИ (Сегодня/Завтра внутри Матчей) ---------- */
+/* Заголовок «ПРОГНОЗЫ НА ТБ 2.5» */
+.header-title {
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  line-height: 1.15;
+  background: linear-gradient(135deg, var(--mint) 0%, #34d399 40%, var(--gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 6px;
+}
+.header-sub {
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: var(--text-mute);
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+/* Счётчики сегодня/завтра */
+.counters {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+.counter-chip {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-dim);
+}
+.counter-chip .num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  font-weight: 900;
+  color: var(--mint);
+}
+.counter-chip .num.gold { color: var(--gold); }
+
+/* ---------- ПОД-ВКЛАДКИ ---------- */
 .sub-tabs {
   display: flex; gap: 6px; padding: 10px 16px 4px;
   position: sticky; top: 0; z-index: 9;
@@ -102,6 +140,38 @@ body {
   border-color: var(--border-hi);
 }
 
+/* Чипы лиг в «Матчах» */
+.league-chips {
+  display: flex; gap: 6px; overflow-x: auto;
+  padding: 8px 16px 12px;
+  scrollbar-width: none;
+}
+.league-chips::-webkit-scrollbar { display: none; }
+.league-chip {
+  flex: 0 0 auto;
+  padding: 7px 13px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-dim);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+.league-chip.active {
+  background: var(--mint);
+  color: #fff;
+  border-color: var(--mint);
+}
+.league-chip .cnt {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  opacity: 0.85;
+  margin-left: 4px;
+}
+
 #content { padding: 16px; }
 
 /* ---------- КАРТОЧКИ ---------- */
@@ -116,7 +186,6 @@ body {
 }
 .card:active { transform: scale(0.98); }
 @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-
 .card.prob-high { border-color: var(--gold); box-shadow: 0 8px 30px var(--gold-glow); }
 .card.prob-mid  { border-color: var(--border-hi); box-shadow: 0 8px 30px var(--mint-glow); }
 .card.prob-high::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gold); }
@@ -141,17 +210,14 @@ body {
 .prob-mid .prob-fill   { background: linear-gradient(90deg, var(--mint), #34d399); }
 
 .outcome-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.outcome-box {
-  background: var(--surface-hi); border-radius: var(--radius-sm);
-  padding: 10px; display: flex; flex-direction: column; align-items: center;
-}
+.outcome-box { background: var(--surface-hi); border-radius: var(--radius-sm); padding: 10px; display: flex; flex-direction: column; align-items: center; }
 .outcome-box.main { background: var(--mint-glow); border: 1px solid var(--border-hi); }
 .outcome-box.double { border: 1px solid var(--border); }
 .outcome-name { font-size: 10px; color: var(--text-mute); font-weight: 700; text-transform: uppercase; margin-bottom: 3px; }
 .outcome-val { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 800; color: var(--text); }
 .outcome-box.main .outcome-val { color: var(--mint); }
 
-/* ---------- СТАТИСТИКА ---------- */
+/* ---------- ЛИГИ (отдельная вкладка) ---------- */
 .stats-hero { text-align: center; margin-bottom: 24px; }
 .stats-big { font-family: 'JetBrains Mono', monospace; font-size: 64px; font-weight: 900; line-height: 1; color: var(--text); }
 .stats-sub { font-size: 12px; color: var(--text-dim); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-top: 6px; }
@@ -160,12 +226,19 @@ body {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius-sm); padding: 14px; margin-bottom: 10px;
   display: flex; flex-direction: column; gap: 8px;
+  cursor: pointer; transition: transform 0.2s;
 }
+.league-row:active { transform: scale(0.98); }
 .league-header { display: flex; justify-content: space-between; align-items: center; }
 .league-name { font-size: 13px; font-weight: 800; }
 .league-acc { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 800; color: var(--mint); }
 .league-bar { height: 4px; background: var(--surface-hi); border-radius: 2px; overflow: hidden; }
 .league-fill { height: 100%; background: var(--mint); border-radius: 2px; }
+.league-count {
+  font-size: 11px;
+  color: var(--text-mute);
+  font-weight: 600;
+}
 
 /* ---------- ЭКСПРЕСС ---------- */
 .express-hero {
@@ -210,7 +283,7 @@ body {
 
 .sync-line { text-align: center; font-size: 11px; color: var(--text-mute); font-weight: 600; margin-top: 16px; padding: 0 16px; }
 
-/* ---------- НИЖНЯЯ НАВИГАЦИЯ (единственная) ---------- */
+/* ---------- НИЖНЯЯ НАВИГАЦИЯ (5 кнопок) ---------- */
 .bottom-nav {
   position: fixed; bottom: 0; left: 0; right: 0;
   height: var(--nav-h);
@@ -223,13 +296,13 @@ body {
 }
 body.light-theme .bottom-nav { background: rgba(255, 255, 255, 0.95); }
 .nav-btn {
-  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
-  padding: 8px 4px; background: none; border: none;
-  color: var(--text-mute); font-size: 10px; font-weight: 700;
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  padding: 6px 2px; background: none; border: none;
+  color: var(--text-mute); font-size: 9px; font-weight: 700;
   cursor: pointer; transition: color 0.2s;
   font-family: inherit;
 }
-.nav-btn svg { width: 22px; height: 22px; stroke-width: 2.2; }
+.nav-btn svg { width: 20px; height: 20px; stroke-width: 2.2; }
 .nav-btn.active { color: var(--mint); }
 </style>
 </head>
@@ -245,25 +318,41 @@ body.light-theme .bottom-nav { background: rgba(255, 255, 255, 0.95); }
       <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
     </div>
   </div>
-  <div class="ball-wrap"><div class="ball-emoji">⚽</div></div>
-  <h1>ПРОГНОЗЫ</h1>
-  <div class="sub">Тотал больше 2.5</div>
+  <div class="header-title">ПРОГНОЗЫ<br>НА ТБ 2.5</div>
+  <div class="header-sub">Тотал больше 2.5</div>
+  <div class="counters" id="counters">
+    <div class="counter-chip">
+      <span>Сегодня</span>
+      <span class="num" id="cntToday">—</span>
+    </div>
+    <div class="counter-chip">
+      <span>Завтра</span>
+      <span class="num gold" id="cntTomorrow">—</span>
+    </div>
+  </div>
 </div>
 
-<!-- ПОД-ВКЛАДКИ: Сегодня / Завтра (видны только в разделе «Матчи») -->
+<!-- ПОД-ВКЛАДКИ -->
 <div class="sub-tabs" id="subTabs" style="display:none;">
   <div class="sub-tab active" data-sub="today" onclick="switchSubTab('today')">Сегодня</div>
   <div class="sub-tab" data-sub="tomorrow" onclick="switchSubTab('tomorrow')">Завтра</div>
 </div>
 
+<!-- ЧИПЫ ЛИГ (только в «Матчах») -->
+<div class="league-chips" id="leagueChips" style="display:none;"></div>
+
 <div id="content"></div>
 <div class="sync-line" id="syncLine"></div>
 
-<!-- НИЖНЯЯ НАВИГАЦИЯ (единственная) -->
+<!-- НИЖНЯЯ НАВИГАЦИЯ (5 кнопок) -->
 <nav class="bottom-nav" id="bottomNav">
   <button class="nav-btn active" data-nav="matches">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
     <span>Матчи</span>
+  </button>
+  <button class="nav-btn" data-nav="leagues">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    <span>Лиги</span>
   </button>
   <button class="nav-btn" data-nav="yesterday">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
@@ -280,16 +369,20 @@ body.light-theme .bottom-nav { background: rgba(255, 255, 255, 0.95); }
 </nav>
 
 <script>
-// ⚠️ ВАЖНО: если вы делали новый деплой — замените URL ниже на новый
+// ⚠️ Проверьте, что это актуальный деплой
 const API_URL = 'https://script.google.com/macros/s/AKfycbxW52PKcn0Mh2L6yjQ5-5IiuCdds8FksK1XzY6F_iElSnFuAH4f5Hz9JH97pEDD1hcw/exec';
 const BOT_URL = 'https://t.me/total25_signals_bot';
 
-const CACHE_VERSION = 'v61';
-const CACHE_TTL = 5 * 60 * 1000; // 5 минут
+const CACHE_VERSION = 'v62';
+const CACHE_TTL = 5 * 60 * 1000;
 const MIN_PROBABILITY = 62;
 
-let currentNav = 'matches';   // matches | yesterday | express | stats
-let currentSub = 'today';     // today | tomorrow
+let currentNav = 'matches';
+let currentSub = 'today';
+let currentLeague = 'all';
+let todayData = [];
+let tomorrowData = [];
+
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.ready(); tg.expand(); }
 
@@ -327,7 +420,6 @@ function formatDate(d) {
   if (!d) return '';
   if (d instanceof Date) {
     if (isNaN(d.getTime())) return '';
-    if (d.getFullYear() < 1901) return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
     return String(d.getDate()).padStart(2,'0') + '.' + String(d.getMonth()+1).padStart(2,'0') + '.' + d.getFullYear();
   }
   const s = String(d).trim();
@@ -346,17 +438,26 @@ function escapeHtml(str) {
 function switchNav(nav) {
   haptic('medium');
   currentNav = nav;
+  currentLeague = 'all';
   document.querySelectorAll('.nav-btn').forEach(n => n.classList.toggle('active', n.dataset.nav === nav));
   const subTabs = document.getElementById('subTabs');
+  const leagueChips = document.getElementById('leagueChips');
   subTabs.style.display = (nav === 'matches') ? 'flex' : 'none';
+  leagueChips.style.display = (nav === 'matches') ? 'flex' : 'none';
   if (nav === 'matches') currentSub = 'today';
   loadData();
 }
 function switchSubTab(sub) {
   haptic('light');
   currentSub = sub;
+  currentLeague = 'all';
   document.querySelectorAll('.sub-tab').forEach(t => t.classList.toggle('active', t.dataset.sub === sub));
-  loadData();
+  renderMatchesList();
+}
+function switchLeague(league) {
+  haptic('light');
+  currentLeague = league;
+  renderMatchesList();
 }
 document.getElementById('bottomNav').addEventListener('click', e => {
   const btn = e.target.closest('.nav-btn');
@@ -364,10 +465,6 @@ document.getElementById('bottomNav').addEventListener('click', e => {
 });
 
 /* ---------- КЭШ ---------- */
-function cacheKey() {
-  if (currentNav === 'matches') return 'matches_' + currentSub;
-  return currentNav;
-}
 function getCache(key) {
   try { const r = localStorage.getItem('tb25_' + CACHE_VERSION + '_' + key); return r ? JSON.parse(r) : null; } catch(e){ return null; }
 }
@@ -377,7 +474,6 @@ function setCache(key, version, data) {
     localStorage.setItem('tb25_last_update', new Date().toISOString());
   } catch(e){}
 }
-
 function updateSyncLine() {
   const el = document.getElementById('syncLine');
   if (!el) return;
@@ -396,10 +492,22 @@ function showSkeleton() {
   return '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>';
 }
 
+async function fetchAction(action) {
+  const url = API_URL + '?action=' + action + '&_t=' + Date.now();
+  console.log('[TB25] GET →', url);
+  const resp = await fetch(url, { cache: 'no-store' });
+  const text = await resp.text();
+  let result;
+  try { result = JSON.parse(text); }
+  catch (e) { throw new Error('Сервер вернул не JSON'); }
+  if (result.error) throw new Error(result.error);
+  return result.data !== undefined ? result.data : result;
+}
+
 async function loadData(forceNetwork = false) {
   const content = document.getElementById('content');
-  const key = cacheKey();
-  const action = (currentNav === 'matches') ? currentSub : currentNav;
+  const key = currentNav === 'matches' ? 'matches_' + currentSub : currentNav;
+  const action = currentNav === 'matches' ? currentSub : currentNav;
 
   const cached = !forceNetwork ? getCache(key) : null;
   if (cached) {
@@ -411,39 +519,46 @@ async function loadData(forceNetwork = false) {
   }
 
   try {
-    const url = API_URL + '?action=' + action + '&_t=' + Date.now();
-    console.log('[TB25] GET →', url);
-    const resp = await fetch(url, { cache: 'no-store' });
-    const text = await resp.text();
-    console.log('[TB25] RAW →', text.substring(0, 500));
-    let result;
-    try { result = JSON.parse(text); }
-    catch (e) { throw new Error('Сервер вернул не JSON. Проверьте деплой Web App.'); }
-
-    if (result.error) throw new Error(result.error);
-    const serverVersion = result.version || '1';
-    const serverData = result.data !== undefined ? result.data : result;
-    console.log('[TB25] Parsed →', { version: serverVersion, dataLength: Array.isArray(serverData) ? serverData.length : 'object' });
-
-    setCache(key, serverVersion, serverData);
-    renderByNav(serverData);
+    const data = await fetchAction(action);
+    setCache(key, '1', data);
+    renderByNav(data);
     updateSyncLine();
+    updateCounters();
   } catch (e) {
     console.error('[TB25] Error →', e);
     if (!cached) {
       content.innerHTML =
-        '<div class="empty">' +
-        '<div class="empty-icon">⚠️</div>' +
+        '<div class="empty"><div class="empty-icon">⚠️</div>' +
         'Не удалось загрузить данные<br>' +
         '<div style="font-size:11px;margin-top:8px;opacity:0.6;">' + escapeHtml(e.message) + '</div>' +
-        '<button class="empty-btn" onclick="manualRefresh()">Повторить</button>' +
-        '</div>';
+        '<button class="empty-btn" onclick="manualRefresh()">Повторить</button></div>';
     }
   }
 }
 
+/* Обновляем счётчики «Сегодня / Завтра» — грузим both */
+async function updateCounters() {
+  try {
+    const [today, tomorrow] = await Promise.all([
+      fetchAction('today').catch(() => []),
+      fetchAction('tomorrow').catch(() => [])
+    ]);
+    todayData = Array.isArray(today) ? today : [];
+    tomorrowData = Array.isArray(tomorrow) ? tomorrow : [];
+    const cntT = todayData.filter(m => (parseInt(m.probability) || 0) >= MIN_PROBABILITY).length;
+    const cntTm = tomorrowData.filter(m => (parseInt(m.probability) || 0) >= MIN_PROBABILITY).length;
+    document.getElementById('cntToday').textContent = cntT;
+    document.getElementById('cntTomorrow').textContent = cntTm;
+  } catch(e) { console.warn('counters error', e); }
+}
+
 function renderByNav(data) {
-  if (currentNav === 'matches') renderMatches(Array.isArray(data) ? data : []);
+  if (currentNav === 'matches') {
+    const arr = Array.isArray(data) ? data : [];
+    if (currentSub === 'today') todayData = arr; else tomorrowData = arr;
+    renderMatchesList();
+  }
+  else if (currentNav === 'leagues') renderLeagues(data);
   else if (currentNav === 'yesterday') renderYesterday(data);
   else if (currentNav === 'express') renderExpress(data);
   else if (currentNav === 'stats') renderStats(data);
@@ -456,24 +571,52 @@ function manualRefresh() {
   try {
     Object.keys(localStorage).forEach(k => { if (k.indexOf('tb25_' + CACHE_VERSION + '_') === 0) localStorage.removeItem(k); });
   } catch(e){}
-  loadData(true).finally(() => { if (btn) setTimeout(() => btn.classList.remove('spinning'), 500); });
+  loadData(true).finally(() => {
+    updateCounters();
+    if (btn) setTimeout(() => btn.classList.remove('spinning'), 500);
+  });
 }
 
-/* ---------- РЕНДЕР: МАТЧИ ---------- */
-function renderMatches(data) {
+/* ---------- МАТЧИ + ФИЛЬТР ПО ЛИГАМ ---------- */
+function renderMatchesList() {
   const content = document.getElementById('content');
-  const filtered = data.filter(m => (parseInt(m.probability) || 0) >= MIN_PROBABILITY);
-  if (!filtered.length) {
+  const chipsEl = document.getElementById('leagueChips');
+  const raw = currentSub === 'today' ? todayData : tomorrowData;
+  const filtered = raw.filter(m => (parseInt(m.probability) || 0) >= MIN_PROBABILITY);
+
+  // Собираем список лиг
+  const leagueCounts = {};
+  filtered.forEach(m => {
+    const lg = m.league || 'Лига';
+    leagueCounts[lg] = (leagueCounts[lg] || 0) + 1;
+  });
+  const leagues = Object.keys(leagueCounts).sort((a, b) => leagueCounts[b] - leagueCounts[a]);
+
+  // Чипы
+  if (leagues.length > 1) {
+    chipsEl.style.display = 'flex';
+    let chipsHtml = '<div class="league-chip ' + (currentLeague === 'all' ? 'active' : '') + '" onclick="switchLeague(\'all\')">Все<span class="cnt">' + filtered.length + '</span></div>';
+    leagues.forEach(lg => {
+      chipsHtml += '<div class="league-chip ' + (currentLeague === lg ? 'active' : '') + '" onclick="switchLeague(\'' + escapeAttr(lg) + '\')">' + escapeHtml(lg) + '<span class="cnt">' + leagueCounts[lg] + '</span></div>';
+    });
+    chipsEl.innerHTML = chipsHtml;
+  } else {
+    chipsEl.style.display = 'none';
+  }
+
+  // Сами матчи
+  const list = currentLeague === 'all' ? filtered : filtered.filter(m => (m.league || 'Лига') === currentLeague);
+
+  if (!list.length) {
     content.innerHTML =
-      '<div class="empty">' +
-      '<div class="empty-icon">⚽</div>' +
+      '<div class="empty"><div class="empty-icon">⚽</div>' +
       'Нет матчей с вероятностью ≥ ' + MIN_PROBABILITY + '%<br>' +
       '<div style="font-size:11px;margin-top:8px;opacity:0.6;">Попробуйте «Обновить» или загляните позже</div>' +
-      '<button class="empty-btn" onclick="manualRefresh()">Обновить</button>' +
-      '</div>';
+      '<button class="empty-btn" onclick="manualRefresh()">Обновить</button></div>';
     return;
   }
-  const sorted = filtered.sort((a, b) => (parseInt(b.probability) || 0) - (parseInt(a.probability) || 0));
+
+  const sorted = list.sort((a, b) => (parseInt(b.probability) || 0) - (parseInt(a.probability) || 0));
   let html = '';
   sorted.forEach((m, i) => {
     const prob = parseInt(m.probability) || 0;
@@ -489,7 +632,7 @@ function renderMatches(data) {
     if (ch2X > bestDouble) { doubleLabel = '2X'; bestDouble = ch2X; }
     if (ch12 > bestDouble) { doubleLabel = '12'; bestDouble = ch12; }
 
-    html += '<div class="card ' + cardClass + '" style="animation-delay:' + (i * 0.04) + 's" onclick="haptic(\'light\')">';
+    html += '<div class="card ' + cardClass + '" style="animation-delay:' + (i * 0.04) + 's">';
     html += '<div class="card-header"><div style="flex:1"><div class="card-team">' + escapeHtml(m.home) + '</div><div class="card-team away">' + escapeHtml(m.away) + '</div></div></div>';
     html += '<div class="card-meta"><div class="meta-badge league">🏆 ' + escapeHtml(m.league) + '</div><div class="meta-badge">📅 ' + formatDate(m.date) + (m.time ? ' · ' + m.time : '') + '</div></div>';
     html += '<div class="prob-container"><div class="prob-top"><div class="prob-label">Вероятность ТБ 2.5</div><div class="prob-value">' + prob + '%</div></div><div class="prob-bar"><div class="prob-fill" style="width:' + prob + '%"></div></div></div>';
@@ -501,7 +644,65 @@ function renderMatches(data) {
   content.innerHTML = html;
 }
 
-/* ---------- РЕНДЕР: ВЧЕРА ---------- */
+function escapeAttr(s) {
+  return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
+/* ---------- ЛИГИ (отдельная вкладка) ---------- */
+function renderLeagues(data) {
+  const content = document.getElementById('content');
+  const todayArr = Array.isArray(todayData) ? todayData : [];
+  const tomorrowArr = Array.isArray(tomorrowData) ? tomorrowData : [];
+
+  const map = {};
+  const addTo = (arr, dayLabel) => {
+    arr.forEach(m => {
+      const prob = parseInt(m.probability) || 0;
+      if (prob < MIN_PROBABILITY) return;
+      const lg = m.league || 'Лига';
+      if (!map[lg]) map[lg] = { name: lg, today: 0, tomorrow: 0, maxProb: 0 };
+      map[lg][dayLabel]++;
+      if (prob > map[lg].maxProb) map[lg].maxProb = prob;
+    });
+  };
+  addTo(todayArr, 'today');
+  addTo(tomorrowArr, 'tomorrow');
+
+  const list = Object.values(map).sort((a, b) => (b.today + b.tomorrow) - (a.today + a.tomorrow));
+
+  if (!list.length) {
+    content.innerHTML = '<div class="empty"><div class="empty-icon">🏆</div>Пока нет лиг с матчами ≥ ' + MIN_PROBABILITY + '%<br><button class="empty-btn" onclick="manualRefresh()">Обновить</button></div>';
+    return;
+  }
+
+  let html = '<div class="stats-hero"><div class="stats-big" style="font-size:44px">' + list.length + '</div><div class="stats-sub">Лиг с матчами</div></div>';
+  list.forEach(lg => {
+    const total = lg.today + lg.tomorrow;
+    html += '<div class="league-row" onclick="openLeagueFromList(\'' + escapeAttr(lg.name) + '\')">';
+    html += '<div class="league-header"><div class="league-name">🏆 ' + escapeHtml(lg.name) + '</div><div class="league-acc">' + lg.maxProb + '%</div></div>';
+    html += '<div style="display:flex;gap:14px;font-size:11px;color:var(--text-mute);font-weight:600;">';
+    html += '<span>📅 Сегодня: <b style="color:var(--mint)">' + lg.today + '</b></span>';
+    html += '<span>📅 Завтра: <b style="color:var(--gold)">' + lg.tomorrow + '</b></span>';
+    html += '<span style="margin-left:auto;">Всего: <b style="color:var(--text)">' + total + '</b></span>';
+    html += '</div>';
+    html += '</div>';
+  });
+  content.innerHTML = html;
+}
+
+function openLeagueFromList(leagueName) {
+  haptic('medium');
+  currentLeague = leagueName;
+  currentNav = 'matches';
+  currentSub = 'today';
+  document.querySelectorAll('.nav-btn').forEach(n => n.classList.toggle('active', n.dataset.nav === 'matches'));
+  document.getElementById('subTabs').style.display = 'flex';
+  document.getElementById('leagueChips').style.display = 'flex';
+  document.querySelectorAll('.sub-tab').forEach(t => t.classList.toggle('active', t.dataset.sub === 'today'));
+  renderMatchesList();
+}
+
+/* ---------- ВЧЕРА ---------- */
 function renderYesterday(data) {
   const content = document.getElementById('content');
   let matches = [], wins = 0, loses = 0, accuracy = 0;
@@ -535,7 +736,7 @@ function renderYesterday(data) {
   content.innerHTML = html;
 }
 
-/* ---------- РЕНДЕР: ЭКСПРЕСС ---------- */
+/* ---------- ЭКСПРЕСС ---------- */
 function renderExpress(data) {
   const content = document.getElementById('content');
   if (!data || !Array.isArray(data.matches) || !data.matches.length) {
@@ -562,7 +763,7 @@ function renderExpress(data) {
   content.innerHTML = html;
 }
 
-/* ---------- РЕНДЕР: СТАТА ---------- */
+/* ---------- СТАТА ---------- */
 function renderStats(data) {
   const content = document.getElementById('content');
   if (!data) { content.innerHTML = '<div class="empty"><div class="empty-icon">📊</div>Статистики пока нет</div>'; return; }
@@ -585,7 +786,9 @@ function renderStats(data) {
 
 /* ---------- СТАРТ ---------- */
 document.getElementById('subTabs').style.display = 'flex';
+document.getElementById('leagueChips').style.display = 'flex';
 loadData();
+updateCounters();
 </script>
 </body>
 </html>
