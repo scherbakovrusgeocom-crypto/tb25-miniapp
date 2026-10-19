@@ -29,12 +29,12 @@
   --nav-h: 66px;
 }
 body.light-theme {
-  --bg: #f5f1e8;            /* тёплый беж */
-  --surface: #fffdf8;       /* почти белый с тёплым */
-  --surface-hi: #efe9dc;    /* беж для вложенных блоков */
+  --bg: #f5f1e8;
+  --surface: #fffdf8;
+  --surface-hi: #efe9dc;
   --border: rgba(120, 90, 40, 0.12);
   --border-hi: rgba(5, 150, 105, 0.4);
-  --text: #2a2418;          /* тёмно-коричневый */
+  --text: #2a2418;
   --text-dim: #6b5d47;
   --text-mute: #a89980;
   --mint: #059669;
@@ -191,7 +191,7 @@ body {
 
 #content { padding: 16px; }
 
-/* ---------- КАРТОЧКА МАТЧА (новая структура) ---------- */
+/* ---------- КАРТОЧКА МАТЧА ---------- */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -339,7 +339,7 @@ body {
 .modal-btn { display: block; width: 100%; padding: 14px; background: var(--mint); color: #fff; border: none; border-radius: 16px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: inherit; }
 .modal-btn:active { transform: scale(0.96); background: #059669; }
 
-.sync-line { text-align: center; font-size: 11px; color: var(--text-mute); font-weight: 600; margin-top: 16px; padding: 0 16px; }
+.sync-line { text-align: center; font-size: 11px; color: var(--text-mute); font-weight: 600; margin-top: 16px; padding: 0 16px; line-height: 1.5; }
 
 /* Нижняя навигация */
 .bottom-nav {
@@ -368,7 +368,7 @@ body.light-theme .bottom-nav { background: rgba(255, 253, 248, 0.95); }
 
 <div class="header">
   <div class="header-top">
-    <div class="icon-btn" id="refreshBtn" onclick="manualRefresh()" title="Обновить">
+    <div class="icon-btn" id="refreshBtn" onclick="manualRefresh()" title="Перечитать данные из таблицы">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
     </div>
     <div class="icon-btn" onclick="toggleTheme()" title="Тема">
@@ -433,7 +433,7 @@ body.light-theme .bottom-nav { background: rgba(255, 253, 248, 0.95); }
 const API_URL = 'https://script.google.com/macros/s/AKfycbxW52PKcn0Mh2L6yjQ5-5IiuCdds8FksK1XzY6F_iElSnFuAH4f5Hz9JH97pEDD1hcw/exec';
 const BOT_URL = 'https://t.me/total25_signals_bot';
 
-const CACHE_VERSION = 'v66';
+const CACHE_VERSION = 'v67';
 const CACHE_TTL = 5 * 60 * 1000;
 const MIN_PROBABILITY = 62;
 
@@ -473,6 +473,16 @@ function haptic(s) {
     else if (s === 'heavy') tg.HapticFeedback.impactOccurred('heavy');
     else tg.HapticFeedback.impactOccurred('light');
   } catch(e){}
+}
+
+/* ---------- TOAST ---------- */
+function showToast(text) {
+  var el = document.createElement('div');
+  el.style.cssText = 'position:fixed;bottom:calc(var(--nav-h) + 16px);left:16px;right:16px;background:var(--surface-hi);color:var(--text);padding:12px 16px;border-radius:14px;font-size:12px;font-weight:600;text-align:center;z-index:100;box-shadow:0 8px 30px rgba(0,0,0,0.3);border:1px solid var(--border);';
+  el.textContent = text;
+  document.body.appendChild(el);
+  setTimeout(function() { el.style.transition = 'opacity 0.3s'; el.style.opacity = '0'; }, 2700);
+  setTimeout(function() { el.remove(); }, 3000);
 }
 
 /* ---------- ФОРМАТ ---------- */
@@ -589,11 +599,11 @@ function updateSyncLine() {
   if (!el) return;
   try {
     var iso = localStorage.getItem('tb25_last_update');
-    if (!iso) { el.textContent = ''; return; }
+    if (!iso) { el.innerHTML = '🕐 Новые матчи — ежедневно ~00:02 МСК'; return; }
     var d = new Date(iso);
     var diffMin = Math.floor((new Date() - d) / 60000);
     var ago = diffMin < 1 ? 'только что' : diffMin < 60 ? diffMin + ' мин назад' : Math.floor(diffMin / 60) + ' ч назад';
-    el.textContent = 'Обновлено: ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0') + ' (' + ago + ')';
+    el.innerHTML = '🕐 Обновлено: ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0') + ' (' + ago + ')<br><span style="opacity:0.6;font-size:10px;">Новые матчи — ежедневно ~00:02 МСК</span>';
   } catch(e) { el.textContent = ''; }
 }
 
@@ -685,10 +695,11 @@ function manualRefresh() {
   loadData(true).finally(function() {
     updateCounters();
     if (btn) setTimeout(function() { btn.classList.remove('spinning'); }, 500);
+    showToast('🔄 Данные перечитаны. Новые матчи — после 00:02 МСК');
   });
 }
 
-/* ---------- МАТЧИ (НОВОЕ ОТОБРАЖЕНИЕ) ---------- */
+/* ---------- МАТЧИ ---------- */
 function renderMatchesList() {
   var content = document.getElementById('content');
   var chipsEl = document.getElementById('leagueChips');
@@ -733,14 +744,12 @@ function renderMatchesList() {
     var shortDate = formatShortDate(m.date);
     var live = String(m.result || '').toLowerCase().indexOf('live') >= 0;
 
-    // Уровень уверенности по вероятности
     var confLabel, confVal, confSegs;
     if (prob >= 85) { confLabel = 'Уверенность'; confVal = 'Очень высокая'; confSegs = 4; }
     else if (prob >= 75) { confLabel = 'Уверенность'; confVal = 'Высокая'; confSegs = 3; }
     else if (prob >= 68) { confLabel = 'Уверенность'; confVal = 'Средняя'; confSegs = 2; }
     else { confLabel = 'Уверенность'; confVal = 'Умеренная'; confSegs = 1; }
 
-    // Подсказка
     var hintText;
     if (isTop) hintText = 'Сигнал повышенной уверенности — оптимально для ставки на ТБ 2.5';
     else if (prob >= 68) hintText = 'Хороший матч для ТБ 2.5, рекомендуем рассмотреть';
@@ -750,13 +759,11 @@ function renderMatchesList() {
 
     if (isTop) html += '<div class="top-badge">ТОП</div>';
 
-    // Команды
     html += '<div class="match-teams">';
     html += '<div class="team-row"><span class="team-dot"></span>' + escapeHtml(m.home) + '</div>';
     html += '<div class="team-row away"><span class="team-dot"></span>' + escapeHtml(m.away) + '</div>';
     html += '</div>';
 
-    // Мета-информация
     html += '<div class="card-meta">';
     html += '<div class="meta-badge league">' + escapeHtml(m.league || 'Лига') + '</div>';
     if (shortDate) html += '<div class="meta-badge">' + escapeHtml(shortDate) + '</div>';
@@ -764,7 +771,6 @@ function renderMatchesList() {
     else if (m.time) html += '<div class="meta-badge time">' + escapeHtml(m.time) + '</div>';
     html += '</div>';
 
-    // Главный блок — вероятность ТБ 2.5
     html += '<div class="main-prob">';
     html += '<div class="prob-row">';
     html += '<div class="prob-title">Вероятность ТБ 2.5</div>';
@@ -782,7 +788,6 @@ function renderMatchesList() {
     html += '</div>';
     html += '</div>';
 
-    // Подсказка
     html += '<div class="hint"><span class="hint-icon">🎯</span>' + hintText + '</div>';
 
     html += '</div>';
@@ -848,7 +853,7 @@ function openLeagueFromList(leagueName) {
   renderMatchesList();
 }
 
-/* ---------- ВЧЕРА ---------- */
+/* ---------- ВЧЕРА (исправленные стили) ---------- */
 function renderYesterday(data) {
   var content = document.getElementById('content');
   var matches = [], wins = 0, loses = 0, accuracy = 0;
@@ -874,15 +879,20 @@ function renderYesterday(data) {
     var emoji = m.status === 'win' ? '✅' : m.status === 'lose' ? '❌' : '⏳';
     var scoreColor = m.status === 'win' ? 'var(--mint)' : m.status === 'lose' ? 'var(--danger)' : 'var(--text)';
     html += '<div class="card" style="animation-delay:' + (idx * 0.04) + 's">';
-    html += '<div class="card-header"><div style="flex:1"><div class="card-team">' + escapeHtml(m.home) + '</div><div class="card-team away">' + escapeHtml(m.away) + '</div></div>';
-    html += '<div style="font-family:JetBrains Mono;font-size:18px;font-weight:900;color:' + scoreColor + '">' + escapeHtml(m.score || '—') + '</div></div>';
+    html += '<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;">';
+    html += '<div style="flex:1">';
+    html += '<div class="team-row"><span class="team-dot"></span>' + escapeHtml(m.home) + '</div>';
+    html += '<div class="team-row away"><span class="team-dot"></span>' + escapeHtml(m.away) + '</div>';
+    html += '</div>';
+    html += '<div style="font-family:JetBrains Mono,monospace;font-size:20px;font-weight:900;color:' + scoreColor + ';white-space:nowrap;">' + escapeHtml(m.score || '—') + '</div>';
+    html += '</div>';
     html += '<div class="card-meta"><div class="meta-badge league">' + escapeHtml(m.league || 'Лига') + '</div><div class="meta-badge">Голов: ' + escapeHtml(m.total) + '</div><div class="meta-badge">' + emoji + ' ' + escapeHtml(m.prediction || '') + '</div></div>';
     html += '</div>';
   });
   content.innerHTML = html;
 }
 
-/* ---------- ЭКСПРЕСС ---------- */
+/* ---------- ЭКСПРЕСС (исправленные стили) ---------- */
 function renderExpress(data) {
   var content = document.getElementById('content');
   if (!data || !Array.isArray(data.matches) || !data.matches.length) {
@@ -898,12 +908,15 @@ function renderExpress(data) {
   items.forEach(function(m, i) {
     var prob = parseInt(m.probability) || 0;
     var odd = parseFloat(m.odd) || 1;
-    html += '<div class="card" style="animation-delay:' + (i*0.04) + 's">';
-    html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><div style="width:26px;height:26px;background:var(--mint);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;">' + (i+1) + '</div><div style="font-weight:800;font-size:14px">' + escapeHtml(m.home) + ' — ' + escapeHtml(m.away) + '</div></div>';
+    html += '<div class="card prob-mid" style="animation-delay:' + (i*0.04) + 's">';
+    html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">';
+    html += '<div style="width:26px;height:26px;background:var(--mint);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;flex-shrink:0;">' + (i+1) + '</div>';
+    html += '<div style="font-weight:800;font-size:14px;line-height:1.3;">' + escapeHtml(m.home) + ' — ' + escapeHtml(m.away) + '</div>';
+    html += '</div>';
     html += '<div class="card-meta"><div class="meta-badge league">' + escapeHtml(m.league || 'Лига') + '</div><div class="meta-badge">' + formatShortDate(m.date) + '</div></div>';
     html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
-    html += '<div class="outcome-box" style="padding:10px"><div class="outcome-name">Вероятность</div><div class="outcome-val" style="color:var(--mint)">' + prob + '%</div></div>';
-    html += '<div class="outcome-box" style="padding:10px"><div class="outcome-name">Кэф</div><div class="outcome-val" style="color:var(--gold)">' + odd.toFixed(2) + '</div></div>';
+    html += '<div style="background:var(--surface-hi);border-radius:10px;padding:12px;text-align:center;"><div style="font-size:10px;font-weight:700;color:var(--text-mute);text-transform:uppercase;margin-bottom:4px;">Вероятность</div><div style="font-family:JetBrains Mono,monospace;font-size:16px;font-weight:900;color:var(--mint);">' + prob + '%</div></div>';
+    html += '<div style="background:var(--surface-hi);border-radius:10px;padding:12px;text-align:center;"><div style="font-size:10px;font-weight:700;color:var(--text-mute);text-transform:uppercase;margin-bottom:4px;">Кэф</div><div style="font-family:JetBrains Mono,monospace;font-size:16px;font-weight:900;color:var(--gold);">' + odd.toFixed(2) + '</div></div>';
     html += '</div></div>';
   });
   content.innerHTML = html;
@@ -917,8 +930,8 @@ function renderStats(data) {
   var leagues = Array.isArray(data.leagues) ? data.leagues : [];
   var html = '<div class="stats-hero"><div class="stats-big">' + acc + '%</div><div class="stats-sub">Общая точность</div></div>';
   html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">';
-  html += '<div class="league-row" style="align-items:center;padding:16px"><div style="font-size:26px;font-weight:900;color:var(--mint);font-family:JetBrains Mono">' + wins + '</div><div style="font-size:10px;color:var(--text-mute);font-weight:700">ЗАШЛО</div></div>';
-  html += '<div class="league-row" style="align-items:center;padding:16px"><div style="font-size:26px;font-weight:900;color:var(--danger);font-family:JetBrains Mono">' + loses + '</div><div style="font-size:10px;color:var(--text-mute);font-weight:700">НЕ ЗАШЛО</div></div>';
+  html += '<div class="league-row" style="align-items:center;padding:16px"><div style="font-size:26px;font-weight:900;color:var(--mint);font-family:JetBrains Mono,monospace">' + wins + '</div><div style="font-size:10px;color:var(--text-mute);font-weight:700">ЗАШЛО</div></div>';
+  html += '<div class="league-row" style="align-items:center;padding:16px"><div style="font-size:26px;font-weight:900;color:var(--danger);font-family:JetBrains Mono,monospace">' + loses + '</div><div style="font-size:10px;color:var(--text-mute);font-weight:700">НЕ ЗАШЛО</div></div>';
   html += '</div>';
   if (leagues.length) {
     html += '<div style="font-size:12px;font-weight:800;color:var(--text-dim);margin-bottom:10px;letter-spacing:1px;text-transform:uppercase;">По лигам</div>';
