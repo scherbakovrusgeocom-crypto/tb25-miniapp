@@ -29,17 +29,17 @@
   --nav-h: 66px;
 }
 body.light-theme {
-  --bg: #f8fafc;
-  --surface: #ffffff;
-  --surface-hi: #f1f5f9;
-  --border: rgba(0, 0, 0, 0.06);
-  --border-hi: rgba(16, 185, 129, 0.4);
-  --text: #0f172a;
-  --text-dim: #475569;
-  --text-mute: #94a3b8;
+  --bg: #f5f1e8;            /* тёплый беж */
+  --surface: #fffdf8;       /* почти белый с тёплым */
+  --surface-hi: #efe9dc;    /* беж для вложенных блоков */
+  --border: rgba(120, 90, 40, 0.12);
+  --border-hi: rgba(5, 150, 105, 0.4);
+  --text: #2a2418;          /* тёмно-коричневый */
+  --text-dim: #6b5d47;
+  --text-mute: #a89980;
   --mint: #059669;
-  --gold: #d97706;
-  --danger: #e11d48;
+  --gold: #b45309;
+  --danger: #be123c;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body {
@@ -58,7 +58,7 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--text-mute); border-radius: 10px; opacity: 0.5; }
 
 /* ---------- ШАПКА ---------- */
-.header { position: relative; padding: 24px 20px 18px; text-align: center; }
+.header { position: relative; padding: 24px 20px 16px; text-align: center; }
 .header-top { position: absolute; top: 16px; right: 16px; display: flex; gap: 8px; }
 .icon-btn {
   width: 40px; height: 40px;
@@ -76,15 +76,15 @@ body {
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
 .header-title {
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 900;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   line-height: 1.15;
   background: linear-gradient(135deg, var(--mint) 0%, #34d399 40%, var(--gold) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 .header-sub {
   font-size: 11px;
@@ -191,7 +191,7 @@ body {
 
 #content { padding: 16px; }
 
-/* Карточки */
+/* ---------- КАРТОЧКА МАТЧА (новая структура) ---------- */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -201,7 +201,7 @@ body {
   animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
   transition: transform 0.2s, border-color 0.2s;
 }
-.card:active { transform: scale(0.98); }
+.card:active { transform: scale(0.985); }
 @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 .card.prob-high { border-color: var(--gold); box-shadow: 0 8px 30px var(--gold-glow); }
 .card.prob-mid  { border-color: var(--border-hi); box-shadow: 0 8px 30px var(--mint-glow); }
@@ -221,54 +221,56 @@ body {
   box-shadow: 0 3px 10px var(--gold-glow);
 }
 
-.card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; padding-right: 46px; }
-.card-team { font-size: 15px; font-weight: 800; line-height: 1.3; }
-.card-team.away { color: var(--text-dim); margin-top: 3px; }
+/* Команды */
+.match-teams { display: flex; flex-direction: column; gap: 2px; margin-bottom: 12px; padding-right: 44px; }
+.team-row { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 800; line-height: 1.3; }
+.team-row.away { color: var(--text-dim); }
+.team-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--mint); flex-shrink: 0; }
+.team-row.away .team-dot { background: var(--text-mute); }
 
-.match-time-badge {
-  position: absolute;
-  top: 12px; right: 12px;
-  display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
-  font-family: 'JetBrains Mono', monospace;
-  line-height: 1.1;
-}
-.match-time-badge .md {
-  font-size: 13px; font-weight: 900; color: var(--text);
-}
-.match-time-badge .tm {
-  font-size: 11px; font-weight: 700; color: var(--mint);
-}
-.card.prob-high .match-time-badge .tm { color: var(--gold); }
-.match-time-badge .live-dot {
-  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
-  background: var(--danger);
-  margin-right: 3px;
-  animation: livePulse 1.2s ease-in-out infinite;
-}
-@keyframes livePulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-
-.card-meta { display: flex; flex-wrap: wrap; gap: 6px; font-size: 11px; color: var(--text-mute); font-weight: 600; margin-bottom: 14px; }
+/* Мета-чипы */
+.card-meta { display: flex; flex-wrap: wrap; gap: 6px; font-size: 11px; color: var(--text-mute); font-weight: 600; margin-bottom: 16px; }
 .meta-badge { display: flex; align-items: center; gap: 4px; background: var(--surface-hi); padding: 4px 9px; border-radius: 8px; }
 .meta-badge.league { color: var(--mint); }
+.meta-badge.time { color: var(--gold); font-family: 'JetBrains Mono', monospace; }
 
-.prob-container { margin-bottom: 14px; }
-.prob-top { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 6px; }
-.prob-value { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 800; line-height: 1; }
-.prob-label { font-size: 10px; color: var(--text-mute); font-weight: 700; text-transform: uppercase; }
-.prob-bar { height: 6px; background: var(--surface-hi); border-radius: 4px; overflow: hidden; }
-.prob-fill { height: 100%; border-radius: 4px; transition: width 1s cubic-bezier(0.16, 1, 0.3, 1); }
-.prob-high .prob-value { color: var(--gold); }
-.prob-high .prob-fill  { background: linear-gradient(90deg, var(--gold), #fcd34d); }
-.prob-mid .prob-value  { color: var(--mint); }
-.prob-mid .prob-fill   { background: linear-gradient(90deg, var(--mint), #34d399); }
+/* Главный блок вероятности */
+.main-prob {
+  background: var(--surface-hi);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
+.prob-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; }
+.prob-title { font-size: 12px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+.prob-big { font-family: 'JetBrains Mono', monospace; font-size: 34px; font-weight: 900; line-height: 1; }
+.prob-high .prob-big { color: var(--gold); }
+.prob-mid .prob-big  { color: var(--mint); }
+.prob-bar { height: 8px; background: var(--surface); border-radius: 5px; overflow: hidden; margin-bottom: 12px; }
+.prob-fill { height: 100%; border-radius: 5px; transition: width 1s cubic-bezier(0.16, 1, 0.3, 1); }
+.prob-high .prob-fill { background: linear-gradient(90deg, var(--gold), #fcd34d); }
+.prob-mid .prob-fill  { background: linear-gradient(90deg, var(--mint), #34d399); }
 
-.outcome-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.outcome-box { background: var(--surface-hi); border-radius: var(--radius-sm); padding: 10px; display: flex; flex-direction: column; align-items: center; }
-.outcome-box.main { background: var(--mint-glow); border: 1px solid var(--border-hi); }
-.outcome-box.double { border: 1px solid var(--border); }
-.outcome-name { font-size: 10px; color: var(--text-mute); font-weight: 700; text-transform: uppercase; margin-bottom: 3px; }
-.outcome-val { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 800; color: var(--text); }
-.outcome-box.main .outcome-val { color: var(--mint); }
+.confidence { display: flex; justify-content: space-between; align-items: center; }
+.conf-label { font-size: 10px; font-weight: 700; color: var(--text-mute); text-transform: uppercase; }
+.conf-value { font-size: 12px; font-weight: 800; }
+.prob-high .conf-value { color: var(--gold); }
+.prob-mid .conf-value  { color: var(--mint); }
+.conf-bar { display: flex; gap: 3px; margin-top: 6px; }
+.conf-seg { flex: 1; height: 4px; border-radius: 2px; background: var(--surface); }
+.prob-high .conf-seg.on { background: var(--gold); }
+.prob-mid .conf-seg.on  { background: var(--mint); }
+
+/* Нижняя подсказка */
+.hint {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px;
+  background: var(--surface-hi);
+  border-radius: var(--radius-sm);
+  font-size: 11px; font-weight: 600; color: var(--text-dim);
+  line-height: 1.4;
+}
+.hint-icon { font-size: 15px; flex-shrink: 0; }
 
 /* Лиги */
 .stats-hero { text-align: center; margin-bottom: 24px; }
@@ -350,7 +352,7 @@ body {
   z-index: 50;
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
-body.light-theme .bottom-nav { background: rgba(255, 255, 255, 0.95); }
+body.light-theme .bottom-nav { background: rgba(255, 253, 248, 0.95); }
 .nav-btn {
   flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
   padding: 6px 2px; background: none; border: none;
@@ -483,15 +485,12 @@ function formatDate(d) {
   var s = String(d).trim();
   if (!s) return '';
 
-  // Уже ISO: 2026-10-19
   var m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if (m) return m[3] + '.' + m[2] + '.' + m[1];
 
-  // Уже DD.MM.YYYY
   m = s.match(/^(\d{2})\.(\d{2})\.(\d{4})/);
   if (m) return m[1] + '.' + m[2] + '.' + m[3];
 
-  // GMT-строка → парсим
   if (/GMT[+-]\d{4}/.test(s)) {
     var parsed = new Date(s);
     if (!isNaN(parsed.getTime())) {
@@ -515,10 +514,8 @@ function tomorrowShort() { return formatShortDate(new Date(Date.now() + 864e5));
 function escapeHtml(str) {
   if (str === null || str === undefined) return '';
 
-  // Объект Date → "3:4" для счёта / "DD.MM.YYYY" для дат
   if (str instanceof Date) {
     if (isNaN(str.getTime())) return '';
-    // Если год < 1901 — Sheets отдал время как дату (счёт "3:4")
     if (str.getFullYear() < 1901) {
       return str.getHours() + ':' + str.getMinutes();
     }
@@ -529,7 +526,6 @@ function escapeHtml(str) {
 
   var s = String(str);
 
-  // Строка с GMT → парсим
   if (/GMT[+-]\d{4}/.test(s)) {
     var d = new Date(s);
     if (!isNaN(d.getTime())) {
@@ -692,7 +688,7 @@ function manualRefresh() {
   });
 }
 
-/* ---------- МАТЧИ ---------- */
+/* ---------- МАТЧИ (НОВОЕ ОТОБРАЖЕНИЕ) ---------- */
 function renderMatchesList() {
   var content = document.getElementById('content');
   var chipsEl = document.getElementById('leagueChips');
@@ -737,44 +733,57 @@ function renderMatchesList() {
     var shortDate = formatShortDate(m.date);
     var live = String(m.result || '').toLowerCase().indexOf('live') >= 0;
 
-    var o = m.outcome || { p1: 33, x: 33, p2: 34 };
-    var p1 = o.p1 || 0, px = o.x || 0, p2 = o.p2 || 0;
-    var best = Math.max(p1, px, p2);
-    var mainLabel = 'X';
-    if (best === p1) mainLabel = 'П1';
-    else if (best === p2) mainLabel = 'П2';
-    var ch1X = p1 + px, ch2X = p2 + px, ch12 = p1 + p2;
-    var doubleLabel = '1X', bestDouble = ch1X;
-    if (ch2X > bestDouble) { doubleLabel = '2X'; bestDouble = ch2X; }
-    if (ch12 > bestDouble) { doubleLabel = '12'; bestDouble = ch12; }
+    // Уровень уверенности по вероятности
+    var confLabel, confVal, confSegs;
+    if (prob >= 85) { confLabel = 'Уверенность'; confVal = 'Очень высокая'; confSegs = 4; }
+    else if (prob >= 75) { confLabel = 'Уверенность'; confVal = 'Высокая'; confSegs = 3; }
+    else if (prob >= 68) { confLabel = 'Уверенность'; confVal = 'Средняя'; confSegs = 2; }
+    else { confLabel = 'Уверенность'; confVal = 'Умеренная'; confSegs = 1; }
+
+    // Подсказка
+    var hintText;
+    if (isTop) hintText = 'Сигнал повышенной уверенности — оптимально для ставки на ТБ 2.5';
+    else if (prob >= 68) hintText = 'Хороший матч для ТБ 2.5, рекомендуем рассмотреть';
+    else hintText = 'Подходит для ТБ 2.5, но без повышенной уверенности';
 
     html += '<div class="card ' + cardClass + '" style="animation-delay:' + (i * 0.04) + 's">';
 
     if (isTop) html += '<div class="top-badge">ТОП</div>';
-    html += '<div class="match-time-badge" style="' + (isTop ? 'top: 38px;' : '') + '">';
-    html += '<div class="md">' + escapeHtml(shortDate || '—') + '</div>';
-    if (live) html += '<div class="tm"><span class="live-dot"></span>LIVE</div>';
-    else if (m.time) html += '<div class="tm">' + escapeHtml(m.time) + '</div>';
+
+    // Команды
+    html += '<div class="match-teams">';
+    html += '<div class="team-row"><span class="team-dot"></span>' + escapeHtml(m.home) + '</div>';
+    html += '<div class="team-row away"><span class="team-dot"></span>' + escapeHtml(m.away) + '</div>';
     html += '</div>';
 
-    html += '<div class="card-header"><div style="flex:1">';
-    html += '<div class="card-team">' + escapeHtml(m.home) + '</div>';
-    html += '<div class="card-team away">' + escapeHtml(m.away) + '</div>';
-    html += '</div></div>';
-
+    // Мета-информация
     html += '<div class="card-meta">';
-    html += '<div class="meta-badge league">' + escapeHtml(m.league) + '</div>';
+    html += '<div class="meta-badge league">' + escapeHtml(m.league || 'Лига') + '</div>';
+    if (shortDate) html += '<div class="meta-badge">' + escapeHtml(shortDate) + '</div>';
+    if (live) html += '<div class="meta-badge time">LIVE</div>';
+    else if (m.time) html += '<div class="meta-badge time">' + escapeHtml(m.time) + '</div>';
     html += '</div>';
 
-    html += '<div class="prob-container">';
-    html += '<div class="prob-top"><div class="prob-label">Вероятность ТБ 2.5</div><div class="prob-value">' + prob + '%</div></div>';
+    // Главный блок — вероятность ТБ 2.5
+    html += '<div class="main-prob">';
+    html += '<div class="prob-row">';
+    html += '<div class="prob-title">Вероятность ТБ 2.5</div>';
+    html += '<div class="prob-big">' + prob + '%</div>';
+    html += '</div>';
     html += '<div class="prob-bar"><div class="prob-fill" style="width:' + prob + '%"></div></div>';
+    html += '<div class="confidence">';
+    html += '<div class="conf-label">' + confLabel + '</div>';
+    html += '<div class="conf-value">' + confVal + '</div>';
+    html += '</div>';
+    html += '<div class="conf-bar">';
+    for (var s = 0; s < 4; s++) {
+      html += '<div class="conf-seg' + (s < confSegs ? ' on' : '') + '"></div>';
+    }
+    html += '</div>';
     html += '</div>';
 
-    html += '<div class="outcome-grid">';
-    html += '<div class="outcome-box main"><div class="outcome-name">Прогноз</div><div class="outcome-val">' + mainLabel + ' · ' + best + '%</div></div>';
-    html += '<div class="outcome-box double"><div class="outcome-name">Двойной шанс</div><div class="outcome-val" style="color:var(--gold)">' + doubleLabel + ' · ' + bestDouble + '%</div></div>';
-    html += '</div>';
+    // Подсказка
+    html += '<div class="hint"><span class="hint-icon">🎯</span>' + hintText + '</div>';
 
     html += '</div>';
   });
