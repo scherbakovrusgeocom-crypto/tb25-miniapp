@@ -431,7 +431,7 @@ body.light-theme .bottom-nav { background: rgba(255, 255, 255, 0.95); }
 const API_URL = 'https://script.google.com/macros/s/AKfycbxW52PKcn0Mh2L6yjQ5-5IiuCdds8FksK1XzY6F_iElSnFuAH4f5Hz9JH97pEDD1hcw/exec';
 const BOT_URL = 'https://t.me/total25_signals_bot';
 
-const CACHE_VERSION = 'v65';
+const CACHE_VERSION = 'v66';
 const CACHE_TTL = 5 * 60 * 1000;
 const MIN_PROBABILITY = 62;
 
@@ -481,10 +481,26 @@ function formatDate(d) {
     return String(d.getDate()).padStart(2,'0') + '.' + String(d.getMonth()+1).padStart(2,'0') + '.' + d.getFullYear();
   }
   var s = String(d).trim();
+  if (!s) return '';
+
+  // Уже ISO: 2026-10-19
   var m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if (m) return m[3] + '.' + m[2] + '.' + m[1];
+
+  // Уже DD.MM.YYYY
   m = s.match(/^(\d{2})\.(\d{2})\.(\d{4})/);
   if (m) return m[1] + '.' + m[2] + '.' + m[3];
+
+  // GMT-строка → парсим
+  if (/GMT[+-]\d{4}/.test(s)) {
+    var parsed = new Date(s);
+    if (!isNaN(parsed.getTime())) {
+      return String(parsed.getDate()).padStart(2,'0') + '.' +
+             String(parsed.getMonth()+1).padStart(2,'0') + '.' +
+             parsed.getFullYear();
+    }
+  }
+
   return s;
 }
 function formatShortDate(d) {
@@ -495,9 +511,36 @@ function formatShortDate(d) {
 }
 function todayShort() { return formatShortDate(new Date()); }
 function tomorrowShort() { return formatShortDate(new Date(Date.now() + 864e5)); }
+
 function escapeHtml(str) {
   if (str === null || str === undefined) return '';
-  return String(str).replace(/[&<>"']/g, function(c) {
+
+  // Объект Date → "3:4" для счёта / "DD.MM.YYYY" для дат
+  if (str instanceof Date) {
+    if (isNaN(str.getTime())) return '';
+    // Если год < 1901 — Sheets отдал время как дату (счёт "3:4")
+    if (str.getFullYear() < 1901) {
+      return str.getHours() + ':' + str.getMinutes();
+    }
+    return String(str.getDate()).padStart(2, '0') + '.' +
+           String(str.getMonth() + 1).padStart(2, '0') + '.' +
+           str.getFullYear();
+  }
+
+  var s = String(str);
+
+  // Строка с GMT → парсим
+  if (/GMT[+-]\d{4}/.test(s)) {
+    var d = new Date(s);
+    if (!isNaN(d.getTime())) {
+      if (d.getFullYear() < 1901) return d.getHours() + ':' + d.getMinutes();
+      return String(d.getDate()).padStart(2, '0') + '.' +
+             String(d.getMonth() + 1).padStart(2, '0') + '.' +
+             d.getFullYear();
+    }
+  }
+
+  return s.replace(/[&<>"']/g, function(c) {
     return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
   });
 }
