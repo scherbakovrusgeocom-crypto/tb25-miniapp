@@ -357,7 +357,7 @@ body.light-theme .bottom-nav { background: rgba(255, 253, 248, 0.95); }
 const API_URL = 'https://script.google.com/macros/s/AKfycbxW52PKcn0Mh2L6yjQ5-5IiuCdds8FksK1XzY6F_iElSnFuAH4f5Hz9JH97pEDD1hcw/exec';
 const BOT_URL = 'https://t.me/total25_signals_bot';
 
-const CACHE_VERSION = 'v69'; // Обновил версию кэша, чтобы у всех сбросились старые данные
+const CACHE_VERSION = 'v70'; // Обновил версию, чтобы сбросить старый кэш
 const CACHE_TTL = 5 * 60 * 1000;
 const MIN_PROBABILITY = 57;
 
@@ -490,11 +490,11 @@ function updateSyncLine() {
   if (!el) return;
   try {
     var iso = localStorage.getItem('tb25_last_update');
-    if (!iso) { el.innerHTML = '🕐 Новые матчи — ежедневно ~00:02 МСК'; return; }
+    if (!iso) { el.innerHTML = '🕐 Новые матчи — ежедневно ~01:00 МСК'; return; }
     var d = new Date(iso);
     var diffMin = Math.floor((new Date() - d) / 60000);
     var ago = diffMin < 1 ? 'только что' : diffMin < 60 ? diffMin + ' мин назад' : Math.floor(diffMin / 60) + ' ч назад';
-    el.innerHTML = '🕐 Обновлено: ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0') + ' (' + ago + ')<br><span style="opacity:0.6;font-size:10px;">Новые матчи — ежедневно ~00:02 МСК</span>';
+    el.innerHTML = '🕐 Обновлено: ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0') + ' (' + ago + ')<br><span style="opacity:0.6;font-size:10px;">Новые матчи — ежедневно ~01:00 МСК</span>';
   } catch(e) { el.textContent = ''; }
 }
 
@@ -502,11 +502,14 @@ function updateSyncLine() {
 function showSkeleton() {
   return '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>';
 }
+
 async function fetchAction(action) {
   var url = API_URL + '?action=' + action + '&_t=' + Date.now();
   console.log('[TB25] GET ->', url);
   var resp = await fetch(url, { cache: 'no-store' });
   var text = await resp.text();
+  console.log('[TB25] RAW Response:', text.substring(0, 500)); // Логируем первые 500 символов
+  
   var result;
   try { result = JSON.parse(text); }
   catch (e) { throw new Error('Сервер вернул не JSON'); }
@@ -534,7 +537,6 @@ async function loadData(forceNetwork) {
     setCache(key, '1', data);
     renderByNav(data);
     updateSyncLine();
-    // Убрали дублирующий вызов updateCounters(), чтобы не перезаписывать данные
   } catch (e) {
     console.error('[TB25] Error ->', e);
     if (!cached) {
@@ -543,7 +545,7 @@ async function loadData(forceNetwork) {
   }
 }
 
-// ИСПРАВЛЕННЫЙ updateCounters (не затирает todayData)
+// ИСПРАВЛЕННЫЙ updateCounters (не затирает todayData, изолирован от основного потока)
 async function updateCounters() {
   document.getElementById('cntTodayDate').textContent = todayShort();
   document.getElementById('tabDateToday').textContent = todayShort();
@@ -559,6 +561,7 @@ function renderByNav(data) {
   if (currentNav === 'matches') {
     var arr = Array.isArray(data) ? data : [];
     todayData = arr;
+    console.log('[TB25] Loaded matches:', arr.length);
     renderMatchesList();
   }
   else if (currentNav === 'leagues') renderLeagues(data);
@@ -586,6 +589,7 @@ function renderMatchesList() {
   var content = document.getElementById('content');
   var chipsEl = document.getElementById('leagueChips');
   var raw = todayData;
+  
   var filtered = raw.filter(function(m) { return (parseInt(m.probability) || 0) >= MIN_PROBABILITY; });
 
   var leagueCounts = {};
