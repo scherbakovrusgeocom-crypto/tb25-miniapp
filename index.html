@@ -95,103 +95,51 @@ body {
 }
 
 /* Счётчики */
-.counters {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 16px;
-}
+.counters { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
 .counter-chip {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text-dim);
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 100px;
+  font-size: 12px; font-weight: 700; color: var(--text-dim);
 }
-.counter-chip .label {
-  display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15;
-}
+.counter-chip .label { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15; }
 .counter-chip .label b { font-size: 12px; color: var(--text); }
 .counter-chip .label span { font-size: 10px; color: var(--text-mute); font-weight: 600; }
 .counter-chip .num {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 18px;
-  font-weight: 900;
-  color: var(--mint);
-  padding-left: 8px;
-  border-left: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 900;
+  color: var(--mint); padding-left: 8px; border-left: 1px solid var(--border);
 }
-.counter-chip .num.gold { color: var(--gold); }
 
 /* Под-вкладки */
 .sub-tabs {
   display: flex; gap: 6px; padding: 10px 16px 4px;
-  position: sticky; top: 0; z-index: 9;
-  background: var(--bg);
+  position: sticky; top: 0; z-index: 9; background: var(--bg);
 }
 .sub-tab {
   flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 8px; border-radius: 14px;
-  font-size: 13px; font-weight: 700;
+  padding: 8px; border-radius: 14px; font-size: 13px; font-weight: 700;
   color: var(--text-dim); background: var(--surface);
-  border: 1px solid var(--border);
-  cursor: pointer; transition: all 0.25s ease;
-  line-height: 1.2;
+  border: 1px solid var(--border); cursor: pointer; transition: all 0.25s ease; line-height: 1.2;
 }
-.sub-tab .tab-date {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  font-weight: 700;
-  opacity: 0.7;
-  margin-top: 2px;
-}
-.sub-tab.active {
-  background: var(--mint-glow); color: var(--mint);
-  border-color: var(--border-hi);
-}
+.sub-tab .tab-date { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; opacity: 0.7; margin-top: 2px; }
+.sub-tab.active { background: var(--mint-glow); color: var(--mint); border-color: var(--border-hi); }
 .sub-tab.active .tab-date { opacity: 1; }
 
 /* Чипы лиг */
-.league-chips {
-  display: flex; gap: 6px; overflow-x: auto;
-  padding: 8px 16px 12px;
-  scrollbar-width: none;
-}
+.league-chips { display: flex; gap: 6px; overflow-x: auto; padding: 8px 16px 12px; scrollbar-width: none; }
 .league-chips::-webkit-scrollbar { display: none; }
 .league-chip {
-  flex: 0 0 auto;
-  display: flex; align-items: center; gap: 4px;
-  padding: 7px 12px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text-dim);
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.2s ease;
+  flex: 0 0 auto; display: flex; align-items: center; gap: 4px;
+  padding: 7px 12px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 100px; font-size: 11px; font-weight: 700; color: var(--text-dim);
+  cursor: pointer; white-space: nowrap; transition: all 0.2s ease;
 }
-.league-chip.active {
-  background: var(--mint);
-  color: #fff;
-  border-color: var(--mint);
-}
-.league-chip .cnt {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  opacity: 0.85;
-  margin-left: 2px;
-}
+.league-chip.active { background: var(--mint); color: #fff; border-color: var(--mint); }
+.league-chip .cnt { font-family: 'JetBrains Mono', monospace; font-size: 10px; opacity: 0.85; margin-left: 2px; }
 
 #content { padding: 16px; }
 
-/* ---------- КАРТОЧКА МАТЧА ---------- */
+/* ---------- ОБНОВЛЕННАЯ КАРТОЧКА МАТЧА ---------- */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -199,78 +147,87 @@ body {
   padding: 18px; margin-bottom: 14px;
   position: relative; overflow: hidden;
   animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
-  transition: transform 0.2s, border-color 0.2s;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 .card:active { transform: scale(0.985); }
 @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-.card.prob-high { border-color: var(--gold); box-shadow: 0 8px 30px var(--gold-glow); }
-.card.prob-mid  { border-color: var(--border-hi); box-shadow: 0 8px 30px var(--mint-glow); }
-.card.prob-high::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gold); }
-.card.prob-mid::before  { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--mint); }
+
+/* ТОП-карточки (вероятность 75+) */
+.card.prob-high {
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.08) 0%, var(--surface) 100%);
+  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: 0 8px 30px var(--gold-glow);
+}
+.card.prob-high::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--gold), #fcd34d); }
+
+/* Обычные карточки */
+.card.prob-mid { border-color: var(--border-hi); box-shadow: 0 4px 20px rgba(16, 185, 129, 0.1); }
+.card.prob-mid::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--mint); }
 
 .top-badge {
-  position: absolute;
-  top: 12px; right: 12px;
-  padding: 3px 8px;
+  position: absolute; top: 0; right: 16px;
+  padding: 4px 10px;
   background: linear-gradient(135deg, var(--gold), #fbbf24);
-  color: #000;
-  font-size: 9px;
-  font-weight: 900;
-  letter-spacing: 0.5px;
-  border-radius: 6px;
-  box-shadow: 0 3px 10px var(--gold-glow);
+  color: #000; font-size: 10px; font-weight: 900; letter-spacing: 1px;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 10px var(--gold-glow);
+  z-index: 2;
 }
 
 /* Команды */
-.match-teams { display: flex; flex-direction: column; gap: 2px; margin-bottom: 12px; padding-right: 44px; }
-.team-row { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 800; line-height: 1.3; }
+.match-teams { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; padding-right: 40px; }
+.team-row { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 800; line-height: 1.3; }
 .team-row.away { color: var(--text-dim); }
-.team-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--mint); flex-shrink: 0; }
-.team-row.away .team-dot { background: var(--text-mute); }
+.team-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mint); flex-shrink: 0; box-shadow: 0 0 8px var(--mint-glow); }
+.team-row.away .team-dot { background: var(--text-mute); box-shadow: none; }
+.card.prob-high .team-dot { background: var(--gold); box-shadow: 0 0 8px var(--gold-glow); }
 
 /* Мета-чипы */
 .card-meta { display: flex; flex-wrap: wrap; gap: 6px; font-size: 11px; color: var(--text-mute); font-weight: 600; margin-bottom: 16px; }
-.meta-badge { display: flex; align-items: center; gap: 4px; background: var(--surface-hi); padding: 4px 9px; border-radius: 8px; }
-.meta-badge.league { color: var(--mint); }
-.meta-badge.time { color: var(--gold); font-family: 'JetBrains Mono', monospace; }
+.meta-badge { display: flex; align-items: center; gap: 4px; background: var(--surface-hi); padding: 5px 10px; border-radius: 8px; }
+.meta-badge.league { color: var(--mint); background: var(--mint-glow); }
+.meta-badge.time { color: var(--gold); font-family: 'JetBrains Mono', monospace; background: rgba(245, 158, 11, 0.1); }
 
 /* Главный блок вероятности */
 .main-prob {
   background: var(--surface-hi);
   border-radius: var(--radius-sm);
-  padding: 14px 16px;
+  padding: 16px;
   margin-bottom: 14px;
+  border: 1px solid var(--border);
 }
-.prob-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; }
-.prob-title { font-size: 12px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
-.prob-big { font-family: 'JetBrains Mono', monospace; font-size: 34px; font-weight: 900; line-height: 1; }
-.prob-high .prob-big { color: var(--gold); }
-.prob-mid .prob-big  { color: var(--mint); }
-.prob-bar { height: 8px; background: var(--surface); border-radius: 5px; overflow: hidden; margin-bottom: 12px; }
-.prob-fill { height: 100%; border-radius: 5px; transition: width 1s cubic-bezier(0.16, 1, 0.3, 1); }
-.prob-high .prob-fill { background: linear-gradient(90deg, var(--gold), #fcd34d); }
-.prob-mid .prob-fill  { background: linear-gradient(90deg, var(--mint), #34d399); }
+.prob-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px; }
+.prob-title { font-size: 11px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+.prob-big { font-family: 'JetBrains Mono', monospace; font-size: 38px; font-weight: 900; line-height: 0.9; }
+.prob-high .prob-big { color: var(--gold); text-shadow: 0 2px 10px var(--gold-glow); }
+.prob-mid .prob-big  { color: var(--mint); text-shadow: 0 2px 10px var(--mint-glow); }
 
-.confidence { display: flex; justify-content: space-between; align-items: center; }
-.conf-label { font-size: 10px; font-weight: 700; color: var(--text-mute); text-transform: uppercase; }
+.prob-bar { height: 6px; background: var(--surface); border-radius: 4px; overflow: hidden; margin-bottom: 14px; }
+.prob-fill { height: 100%; border-radius: 4px; transition: width 1s cubic-bezier(0.16, 1, 0.3, 1); }
+.prob-high .prob-fill { background: linear-gradient(90deg, #fbbf24, var(--gold)); }
+.prob-mid .prob-fill  { background: linear-gradient(90deg, #34d399, var(--mint)); }
+
+.confidence { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.conf-label { font-size: 10px; font-weight: 700; color: var(--text-mute); text-transform: uppercase; letter-spacing: 0.5px; }
 .conf-value { font-size: 12px; font-weight: 800; }
 .prob-high .conf-value { color: var(--gold); }
 .prob-mid .conf-value  { color: var(--mint); }
-.conf-bar { display: flex; gap: 3px; margin-top: 6px; }
+.conf-bar { display: flex; gap: 4px; }
 .conf-seg { flex: 1; height: 4px; border-radius: 2px; background: var(--surface); }
 .prob-high .conf-seg.on { background: var(--gold); }
 .prob-mid .conf-seg.on  { background: var(--mint); }
 
 /* Нижняя подсказка */
 .hint {
-  display: flex; align-items: center; gap: 8px;
-  padding: 10px 12px;
-  background: var(--surface-hi);
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  background: var(--surface);
   border-radius: var(--radius-sm);
   font-size: 11px; font-weight: 600; color: var(--text-dim);
   line-height: 1.4;
+  border: 1px dashed var(--border);
 }
-.hint-icon { font-size: 15px; flex-shrink: 0; }
+.hint-icon { font-size: 16px; flex-shrink: 0; }
 
 /* Лиги */
 .stats-hero { text-align: center; margin-bottom: 24px; }
@@ -287,11 +244,8 @@ body {
 .league-header { display: flex; justify-content: space-between; align-items: center; }
 .league-name { font-size: 13px; font-weight: 800; }
 .league-acc {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 13px; font-weight: 800; color: var(--mint);
-  background: var(--mint-glow);
-  padding: 3px 9px;
-  border-radius: 8px;
+  font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 800; color: var(--mint);
+  background: var(--mint-glow); padding: 3px 9px; border-radius: 8px;
 }
 .league-counts { display: flex; gap: 14px; font-size: 11px; color: var(--text-mute); font-weight: 600; }
 .league-counts b { font-family: 'JetBrains Mono', monospace; }
@@ -318,47 +272,25 @@ body {
 .empty { text-align: center; padding: 50px 20px; color: var(--text-mute); font-weight: 600; }
 .empty-icon { font-size: 44px; margin-bottom: 14px; opacity: 0.3; }
 .empty-btn {
-  margin-top: 16px; padding: 12px 24px;
-  background: var(--mint); color: #fff;
-  border: none; border-radius: 100px;
-  font-weight: 800; font-size: 14px; cursor: pointer;
-  font-family: inherit;
+  margin-top: 16px; padding: 12px 24px; background: var(--mint); color: #fff;
+  border: none; border-radius: 100px; font-weight: 800; font-size: 14px; cursor: pointer; font-family: inherit;
 }
 .empty-btn:active { transform: scale(0.96); }
-
-/* Модалки */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.3s ease; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 26px; width: 100%; max-width: 400px; animation: modalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-@keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-.modal-icon { font-size: 42px; text-align: center; margin-bottom: 10px; }
-.modal-title { font-size: 20px; font-weight: 900; text-align: center; margin-bottom: 14px; color: var(--text); }
-.modal-text { font-size: 13px; color: var(--text-dim); line-height: 1.6; margin-bottom: 14px; }
-.modal-warn { background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.2); border-radius: 12px; padding: 14px; margin-bottom: 18px; font-size: 13px; }
-.modal-warn-title { color: var(--danger); font-weight: 800; margin-bottom: 6px; }
-.modal-btn { display: block; width: 100%; padding: 14px; background: var(--mint); color: #fff; border: none; border-radius: 16px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: inherit; }
-.modal-btn:active { transform: scale(0.96); background: #059669; }
 
 .sync-line { text-align: center; font-size: 11px; color: var(--text-mute); font-weight: 600; margin-top: 16px; padding: 0 16px; line-height: 1.5; }
 
 /* Нижняя навигация */
 .bottom-nav {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  height: var(--nav-h);
-  background: rgba(18, 26, 36, 0.95);
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border);
-  display: flex; align-items: stretch;
-  z-index: 50;
+  position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-h);
+  background: rgba(18, 26, 36, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border); display: flex; align-items: stretch; z-index: 50;
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 body.light-theme .bottom-nav { background: rgba(255, 253, 248, 0.95); }
 .nav-btn {
   flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
-  padding: 6px 2px; background: none; border: none;
-  color: var(--text-mute); font-size: 9px; font-weight: 700;
-  cursor: pointer; transition: color 0.2s;
-  font-family: inherit;
+  padding: 6px 2px; background: none; border: none; color: var(--text-mute); font-size: 9px; font-weight: 700;
+  cursor: pointer; transition: color 0.2s; font-family: inherit;
 }
 .nav-btn svg { width: 20px; height: 20px; stroke-width: 2.2; }
 .nav-btn.active { color: var(--mint); }
@@ -425,7 +357,7 @@ body.light-theme .bottom-nav { background: rgba(255, 253, 248, 0.95); }
 const API_URL = 'https://script.google.com/macros/s/AKfycbxW52PKcn0Mh2L6yjQ5-5IiuCdds8FksK1XzY6F_iElSnFuAH4f5Hz9JH97pEDD1hcw/exec';
 const BOT_URL = 'https://t.me/total25_signals_bot';
 
-const CACHE_VERSION = 'v68';
+const CACHE_VERSION = 'v69'; // Обновил версию кэша, чтобы у всех сбросились старые данные
 const CACHE_TTL = 5 * 60 * 1000;
 const MIN_PROBABILITY = 57;
 
@@ -485,22 +417,10 @@ function formatDate(d) {
   }
   var s = String(d).trim();
   if (!s) return '';
-
   var m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if (m) return m[3] + '.' + m[2] + '.' + m[1];
-
   m = s.match(/^(\d{2})\.(\d{2})\.(\d{4})/);
   if (m) return m[1] + '.' + m[2] + '.' + m[3];
-
-  if (/GMT[+-]\d{4}/.test(s)) {
-    var parsed = new Date(s);
-    if (!isNaN(parsed.getTime())) {
-      return String(parsed.getDate()).padStart(2,'0') + '.' +
-             String(parsed.getMonth()+1).padStart(2,'0') + '.' +
-             parsed.getFullYear();
-    }
-  }
-
   return s;
 }
 function formatShortDate(d) {
@@ -513,30 +433,11 @@ function todayShort() { return formatShortDate(new Date()); }
 
 function escapeHtml(str) {
   if (str === null || str === undefined) return '';
-
   if (str instanceof Date) {
     if (isNaN(str.getTime())) return '';
-    if (str.getFullYear() < 1901) {
-      return str.getHours() + ':' + str.getMinutes();
-    }
-    return String(str.getDate()).padStart(2, '0') + '.' +
-           String(str.getMonth() + 1).padStart(2, '0') + '.' +
-           str.getFullYear();
+    return String(str.getDate()).padStart(2, '0') + '.' + String(str.getMonth() + 1).padStart(2, '0') + '.' + str.getFullYear();
   }
-
-  var s = String(str);
-
-  if (/GMT[+-]\d{4}/.test(s)) {
-    var d = new Date(s);
-    if (!isNaN(d.getTime())) {
-      if (d.getFullYear() < 1901) return d.getHours() + ':' + d.getMinutes();
-      return String(d.getDate()).padStart(2, '0') + '.' +
-             String(d.getMonth() + 1).padStart(2, '0') + '.' +
-             d.getFullYear();
-    }
-  }
-
-  return s.replace(/[&<>"']/g, function(c) {
+  return String(str).replace(/[&<>"']/g, function(c) {
     return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
   });
 }
@@ -612,6 +513,7 @@ async function fetchAction(action) {
   if (result.error) throw new Error(result.error);
   return result.data !== undefined ? result.data : result;
 }
+
 async function loadData(forceNetwork) {
   if (forceNetwork === undefined) forceNetwork = false;
   var content = document.getElementById('content');
@@ -626,34 +528,29 @@ async function loadData(forceNetwork) {
   } else {
     content.innerHTML = showSkeleton();
   }
+  
   try {
     var data = await fetchAction(action);
     setCache(key, '1', data);
     renderByNav(data);
     updateSyncLine();
-    updateCounters();
+    // Убрали дублирующий вызов updateCounters(), чтобы не перезаписывать данные
   } catch (e) {
     console.error('[TB25] Error ->', e);
     if (!cached) {
-      content.innerHTML =
-        '<div class="empty"><div class="empty-icon">⚠</div>' +
-        'Не удалось загрузить данные<br>' +
-        '<div style="font-size:11px;margin-top:8px;opacity:0.6;">' + escapeHtml(e.message) + '</div>' +
-        '<button class="empty-btn" onclick="manualRefresh()">Повторить</button></div>';
+      content.innerHTML = '<div class="empty"><div class="empty-icon">⚠</div>Не удалось загрузить данные<br><div style="font-size:11px;margin-top:8px;opacity:0.6;">' + escapeHtml(e.message) + '</div><button class="empty-btn" onclick="manualRefresh()">Повторить</button></div>';
     }
   }
 }
 
+// ИСПРАВЛЕННЫЙ updateCounters (не затирает todayData)
 async function updateCounters() {
   document.getElementById('cntTodayDate').textContent = todayShort();
   document.getElementById('tabDateToday').textContent = todayShort();
-
   try {
-    var results = await Promise.all([
-      fetchAction('today').catch(function() { return []; })
-    ]);
-    todayData = Array.isArray(results[0]) ? results[0] : [];
-    var cntT = todayData.filter(function(m) { return (parseInt(m.probability) || 0) >= MIN_PROBABILITY; }).length;
+    var results = await Promise.all([ fetchAction('today').catch(function() { return []; }) ]);
+    var fetchedData = Array.isArray(results[0]) ? results[0] : [];
+    var cntT = fetchedData.filter(function(m) { return (parseInt(m.probability) || 0) >= MIN_PROBABILITY; }).length;
     document.getElementById('cntToday').textContent = cntT;
   } catch(e) { console.warn('counters error', e); }
 }
@@ -669,6 +566,7 @@ function renderByNav(data) {
   else if (currentNav === 'express') renderExpress(data);
   else if (currentNav === 'stats') renderStats(data);
 }
+
 function manualRefresh() {
   haptic('medium');
   var btn = document.getElementById('refreshBtn');
@@ -679,7 +577,7 @@ function manualRefresh() {
   loadData(true).finally(function() {
     updateCounters();
     if (btn) setTimeout(function() { btn.classList.remove('spinning'); }, 500);
-    showToast('🔄 Данные перечитаны. Новые матчи — после 00:02 МСК');
+    showToast('🔄 Данные перечитаны');
   });
 }
 
@@ -721,6 +619,7 @@ function renderMatchesList() {
 
   var sorted = list.sort(function(a, b) { return (parseInt(b.probability) || 0) - (parseInt(a.probability) || 0); });
   var html = '';
+  
   sorted.forEach(function(m, i) {
     var prob = parseInt(m.probability) || 0;
     var isTop = prob >= 75;
@@ -740,7 +639,6 @@ function renderMatchesList() {
     else hintText = 'Подходит для ТБ 2.5, но без повышенной уверенности';
 
     html += '<div class="card ' + cardClass + '" style="animation-delay:' + (i * 0.04) + 's">';
-
     if (isTop) html += '<div class="top-badge">ТОП</div>';
 
     html += '<div class="match-teams">';
@@ -751,7 +649,7 @@ function renderMatchesList() {
     html += '<div class="card-meta">';
     html += '<div class="meta-badge league">' + escapeHtml(m.league || 'Лига') + '</div>';
     if (shortDate) html += '<div class="meta-badge">' + escapeHtml(shortDate) + '</div>';
-    if (live) html += '<div class="meta-badge time">LIVE</div>';
+    if (live) html += '<div class="meta-badge time">🔴 LIVE</div>';
     else if (m.time) html += '<div class="meta-badge time">' + escapeHtml(m.time) + '</div>';
     html += '</div>';
 
@@ -761,21 +659,24 @@ function renderMatchesList() {
     html += '<div class="prob-big">' + prob + '%</div>';
     html += '</div>';
     html += '<div class="prob-bar"><div class="prob-fill" style="width:' + prob + '%"></div></div>';
+    
     html += '<div class="confidence">';
     html += '<div class="conf-label">' + confLabel + '</div>';
     html += '<div class="conf-value">' + confVal + '</div>';
     html += '</div>';
+    
     html += '<div class="conf-bar">';
     for (var s = 0; s < 4; s++) {
       html += '<div class="conf-seg' + (s < confSegs ? ' on' : '') + '"></div>';
     }
     html += '</div>';
-    html += '</div>';
+    
+    html += '</div>'; // end main-prob
 
     html += '<div class="hint"><span class="hint-icon">🎯</span>' + hintText + '</div>';
-
-    html += '</div>';
+    html += '</div>'; // end card
   });
+  
   content.innerHTML = html;
 }
 
