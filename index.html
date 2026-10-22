@@ -383,10 +383,6 @@ body.light-theme .bottom-nav { background: rgba(255, 253, 248, 0.95); }
       <div class="label"><b>Сегодня</b><span id="cntTodayDate">—</span></div>
       <span class="num" id="cntToday">—</span>
     </div>
-    <div class="counter-chip">
-      <div class="label"><b>Завтра</b><span id="cntTomorrowDate">—</span></div>
-      <span class="num gold" id="cntTomorrow">—</span>
-    </div>
   </div>
 </div>
 
@@ -394,10 +390,6 @@ body.light-theme .bottom-nav { background: rgba(255, 253, 248, 0.95); }
   <div class="sub-tab active" data-sub="today" onclick="switchSubTab('today')">
     Сегодня
     <span class="tab-date" id="tabDateToday">—</span>
-  </div>
-  <div class="sub-tab" data-sub="tomorrow" onclick="switchSubTab('tomorrow')">
-    Завтра
-    <span class="tab-date" id="tabDateTomorrow">—</span>
   </div>
 </div>
 
@@ -433,15 +425,14 @@ body.light-theme .bottom-nav { background: rgba(255, 253, 248, 0.95); }
 const API_URL = 'https://script.google.com/macros/s/AKfycbxW52PKcn0Mh2L6yjQ5-5IiuCdds8FksK1XzY6F_iElSnFuAH4f5Hz9JH97pEDD1hcw/exec';
 const BOT_URL = 'https://t.me/total25_signals_bot';
 
-const CACHE_VERSION = 'v67';
+const CACHE_VERSION = 'v68';
 const CACHE_TTL = 5 * 60 * 1000;
-const MIN_PROBABILITY = 62;
+const MIN_PROBABILITY = 57;
 
 let currentNav = 'matches';
 let currentSub = 'today';
 let currentLeague = 'all';
 let todayData = [];
-let tomorrowData = [];
 
 const tg = window.Telegram ? window.Telegram.WebApp : null;
 if (tg) { tg.ready(); tg.expand(); }
@@ -519,7 +510,6 @@ function formatShortDate(d) {
   return m ? m[1] : s;
 }
 function todayShort() { return formatShortDate(new Date()); }
-function tomorrowShort() { return formatShortDate(new Date(Date.now() + 864e5)); }
 
 function escapeHtml(str) {
   if (str === null || str === undefined) return '';
@@ -656,28 +646,22 @@ async function loadData(forceNetwork) {
 
 async function updateCounters() {
   document.getElementById('cntTodayDate').textContent = todayShort();
-  document.getElementById('cntTomorrowDate').textContent = tomorrowShort();
   document.getElementById('tabDateToday').textContent = todayShort();
-  document.getElementById('tabDateTomorrow').textContent = tomorrowShort();
 
   try {
     var results = await Promise.all([
-      fetchAction('today').catch(function() { return []; }),
-      fetchAction('tomorrow').catch(function() { return []; })
+      fetchAction('today').catch(function() { return []; })
     ]);
     todayData = Array.isArray(results[0]) ? results[0] : [];
-    tomorrowData = Array.isArray(results[1]) ? results[1] : [];
     var cntT = todayData.filter(function(m) { return (parseInt(m.probability) || 0) >= MIN_PROBABILITY; }).length;
-    var cntTm = tomorrowData.filter(function(m) { return (parseInt(m.probability) || 0) >= MIN_PROBABILITY; }).length;
     document.getElementById('cntToday').textContent = cntT;
-    document.getElementById('cntTomorrow').textContent = cntTm;
   } catch(e) { console.warn('counters error', e); }
 }
 
 function renderByNav(data) {
   if (currentNav === 'matches') {
     var arr = Array.isArray(data) ? data : [];
-    if (currentSub === 'today') todayData = arr; else tomorrowData = arr;
+    todayData = arr;
     renderMatchesList();
   }
   else if (currentNav === 'leagues') renderLeagues(data);
@@ -703,7 +687,7 @@ function manualRefresh() {
 function renderMatchesList() {
   var content = document.getElementById('content');
   var chipsEl = document.getElementById('leagueChips');
-  var raw = currentSub === 'today' ? todayData : tomorrowData;
+  var raw = todayData;
   var filtered = raw.filter(function(m) { return (parseInt(m.probability) || 0) >= MIN_PROBABILITY; });
 
   var leagueCounts = {};
@@ -799,24 +783,19 @@ function renderMatchesList() {
 function renderLeagues(data) {
   var content = document.getElementById('content');
   var todayArr = Array.isArray(todayData) ? todayData : [];
-  var tomorrowArr = Array.isArray(tomorrowData) ? tomorrowData : [];
 
   var map = {};
-  var addTo = function(arr, dayLabel) {
-    arr.forEach(function(m) {
-      var prob = parseInt(m.probability) || 0;
-      if (prob < MIN_PROBABILITY) return;
-      var lg = m.league || 'Лига';
-      if (!map[lg]) map[lg] = { name: lg, today: 0, tomorrow: 0, maxProb: 0 };
-      map[lg][dayLabel]++;
-      if (prob > map[lg].maxProb) map[lg].maxProb = prob;
-    });
-  };
-  addTo(todayArr, 'today');
-  addTo(tomorrowArr, 'tomorrow');
+  todayArr.forEach(function(m) {
+    var prob = parseInt(m.probability) || 0;
+    if (prob < MIN_PROBABILITY) return;
+    var lg = m.league || 'Лига';
+    if (!map[lg]) map[lg] = { name: lg, today: 0, maxProb: 0 };
+    map[lg].today++;
+    if (prob > map[lg].maxProb) map[lg].maxProb = prob;
+  });
 
   var list = Object.keys(map).map(function(k) { return map[k]; })
-    .sort(function(a, b) { return (b.today + b.tomorrow) - (a.today + a.tomorrow); });
+    .sort(function(a, b) { return (b.today) - (a.today); });
 
   if (!list.length) {
     content.innerHTML = '<div class="empty"><div class="empty-icon">🏆</div>Пока нет лиг с матчами не ниже ' + MIN_PROBABILITY + '%<br><button class="empty-btn" onclick="manualRefresh()">Обновить</button></div>';
@@ -825,7 +804,6 @@ function renderLeagues(data) {
 
   var html = '<div class="stats-hero"><div class="stats-big" style="font-size:44px">' + list.length + '</div><div class="stats-sub">Лиг с матчами</div></div>';
   list.forEach(function(lg) {
-    var total = lg.today + lg.tomorrow;
     html += '<div class="league-row" onclick="openLeagueFromList(\'' + escapeAttr(lg.name) + '\')">';
     html += '<div class="league-header">';
     html += '<div class="league-name">' + escapeHtml(lg.name) + '</div>';
@@ -833,8 +811,7 @@ function renderLeagues(data) {
     html += '</div>';
     html += '<div class="league-counts">';
     html += '<span>Сегодня: <b style="color:var(--mint)">' + lg.today + '</b></span>';
-    html += '<span>Завтра: <b style="color:var(--gold)">' + lg.tomorrow + '</b></span>';
-    html += '<span style="margin-left:auto;">Всего: <b style="color:var(--text)">' + total + '</b></span>';
+    html += '<span style="margin-left:auto;">Всего: <b style="color:var(--text)">' + lg.today + '</b></span>';
     html += '</div>';
     html += '</div>';
   });
@@ -853,7 +830,7 @@ function openLeagueFromList(leagueName) {
   renderMatchesList();
 }
 
-/* ---------- ВЧЕРА (исправленные стили) ---------- */
+/* ---------- ВЧЕРА ---------- */
 function renderYesterday(data) {
   var content = document.getElementById('content');
   var matches = [], wins = 0, loses = 0, accuracy = 0;
@@ -892,7 +869,7 @@ function renderYesterday(data) {
   content.innerHTML = html;
 }
 
-/* ---------- ЭКСПРЕСС (исправленные стили) ---------- */
+/* ---------- ЭКСПРЕСС ---------- */
 function renderExpress(data) {
   var content = document.getElementById('content');
   if (!data || !Array.isArray(data.matches) || !data.matches.length) {
@@ -947,9 +924,7 @@ function renderStats(data) {
 document.getElementById('subTabs').style.display = 'flex';
 document.getElementById('leagueChips').style.display = 'flex';
 document.getElementById('cntTodayDate').textContent = todayShort();
-document.getElementById('cntTomorrowDate').textContent = tomorrowShort();
 document.getElementById('tabDateToday').textContent = todayShort();
-document.getElementById('tabDateTomorrow').textContent = tomorrowShort();
 loadData();
 updateCounters();
 </script>
