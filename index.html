@@ -139,7 +139,7 @@ body {
 
 #content { padding: 16px; }
 
-/* ---------- ОБНОВЛЕННАЯ КАРТОЧКА МАТЧА ---------- */
+/* ---------- КАРТОЧКА МАТЧА ---------- */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -357,7 +357,7 @@ body.light-theme .bottom-nav { background: rgba(255, 253, 248, 0.95); }
 const API_URL = 'https://script.google.com/macros/s/AKfycbxW52PKcn0Mh2L6yjQ5-5IiuCdds8FksK1XzY6F_iElSnFuAH4f5Hz9JH97pEDD1hcw/exec';
 const BOT_URL = 'https://t.me/total25_signals_bot';
 
-const CACHE_VERSION = 'v70'; // Обновил версию, чтобы сбросить старый кэш
+const CACHE_VERSION = 'v71'; // Обновил версию, чтобы сбросить старый кэш
 const CACHE_TTL = 5 * 60 * 1000;
 const MIN_PROBABILITY = 57;
 
@@ -508,7 +508,7 @@ async function fetchAction(action) {
   console.log('[TB25] GET ->', url);
   var resp = await fetch(url, { cache: 'no-store' });
   var text = await resp.text();
-  console.log('[TB25] RAW Response:', text.substring(0, 500)); // Логируем первые 500 символов
+  console.log('[TB25] RAW Response:', text.substring(0, 500));
   
   var result;
   try { result = JSON.parse(text); }
@@ -545,7 +545,6 @@ async function loadData(forceNetwork) {
   }
 }
 
-// ИСПРАВЛЕННЫЙ updateCounters (не затирает todayData, изолирован от основного потока)
 async function updateCounters() {
   document.getElementById('cntTodayDate').textContent = todayShort();
   document.getElementById('tabDateToday').textContent = todayShort();
@@ -738,6 +737,37 @@ function openLeagueFromList(leagueName) {
 /* ---------- ВЧЕРА ---------- */
 function renderYesterday(data) {
   var content = document.getElementById('content');
+  if (!data) {
+    content.innerHTML = '<div class="empty"><div class="empty-icon">📅</div>Вчера матчей не было</div>';
+    return;
+  }
+
+  // Проверяем, пришел ли новый формат с неделями или старый
+  if (data.weeks && Array.isArray(data.weeks)) {
+    // НОВЫЙ ФОРМАТ (по неделям)
+    var html = '<div class="stats-hero"><div class="stats-big" style="font-size:44px">' + (data.accuracy || 0) + '%</div><div class="stats-sub">Общая точность</div></div>';
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">';
+    html += '<div class="league-row" style="align-items:center;padding:14px"><div style="font-size:22px;font-weight:900;color:var(--mint);font-family:JetBrains Mono">' + (data.wins || 0) + '</div><div style="font-size:10px;color:var(--text-mute);font-weight:700">ЗАШЛО</div></div>';
+    html += '<div class="league-row" style="align-items:center;padding:14px"><div style="font-size:22px;font-weight:900;color:var(--danger);font-family:JetBrains Mono">' + (data.loses || 0) + '</div><div style="font-size:10px;color:var(--text-mute);font-weight:700">НЕ ЗАШЛО</div></div>';
+    html += '</div>';
+
+    data.weeks.forEach(function(wk) {
+      html += '<div style="background:var(--surface-hi);border-radius:12px;padding:14px;margin-bottom:16px;border:1px solid var(--border);">';
+      html += '<div style="font-weight:800;font-size:14px;margin-bottom:8px;color:var(--mint);">📅 ' + wk.dateRange + '</div>';
+      html += '<div style="font-size:12px;color:var(--text-dim);margin-bottom:6px;">Матчей: <b>' + wk.total + '</b> | Винрейт: <b>' + wk.accuracy + '%</b> (' + wk.wins + 'W - ' + wk.loses + 'L)</div>';
+      html += '<div style="font-size:12px;color:var(--text-dim);margin-bottom:8px;">Ср.Кэф: <b>' + wk.avgOdd + '</b> | Профит: <b>' + wk.profitStr + '</b> | ROI: <b>' + wk.roi + '%</b></div>';
+      
+      wk.matches.forEach(function(m) {
+        var emoji = m.status === 'win' ? '✅' : '❌';
+        html += '<div style="font-size:11px;color:var(--text-mute);margin-top:4px;">' + emoji + ' ' + escapeHtml(m.home) + ' — ' + escapeHtml(m.away) + ' (' + escapeHtml(m.score) + ')</div>';
+      });
+      html += '</div>';
+    });
+    content.innerHTML = html;
+    return;
+  }
+
+  // СТАРЫЙ ФОРМАТ (плоский список, на случай если сервер вернет старое)
   var matches = [], wins = 0, loses = 0, accuracy = 0;
   if (Array.isArray(data)) {
     matches = data;
@@ -748,15 +778,18 @@ function renderYesterday(data) {
     matches = data.matches;
     wins = data.wins || 0; loses = data.loses || 0; accuracy = data.accuracy || 0;
   }
+  
   if (!matches.length) {
     content.innerHTML = '<div class="empty"><div class="empty-icon">📅</div>Вчера матчей не было</div>';
     return;
   }
+
   var html = '<div class="stats-hero"><div class="stats-big" style="font-size:44px">' + accuracy + '%</div><div class="stats-sub">Точность за вчера</div></div>';
   html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">';
   html += '<div class="league-row" style="align-items:center;padding:14px"><div style="font-size:22px;font-weight:900;color:var(--mint);font-family:JetBrains Mono">' + wins + '</div><div style="font-size:10px;color:var(--text-mute);font-weight:700">ЗАШЛО</div></div>';
   html += '<div class="league-row" style="align-items:center;padding:14px"><div style="font-size:22px;font-weight:900;color:var(--danger);font-family:JetBrains Mono">' + loses + '</div><div style="font-size:10px;color:var(--text-mute);font-weight:700">НЕ ЗАШЛО</div></div>';
   html += '</div>';
+  
   matches.forEach(function(m, idx) {
     var emoji = m.status === 'win' ? '✅' : m.status === 'lose' ? '❌' : '⏳';
     var scoreColor = m.status === 'win' ? 'var(--mint)' : m.status === 'lose' ? 'var(--danger)' : 'var(--text)';
