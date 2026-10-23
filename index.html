@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Прогнозы на ТБ 2.5</title>
+<title>TB 2.5 Pro Analytics</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
@@ -11,35 +11,33 @@
 <style>
 :root {
   --bg: #0a0f16;
-  --surface: #121a24;
-  --surface-hi: #1a2535;
+  --surface: rgba(22, 30, 44, 0.7);
+  --surface-solid: #161e2c;
+  --surface-hi: rgba(30, 41, 59, 0.8);
   --border: rgba(255, 255, 255, 0.08);
-  --border-hi: rgba(16, 185, 129, 0.3);
-  --text: #f1f5f9;
+  --border-hi: rgba(16, 185, 129, 0.4);
+  --text: #f8fafc;
   --text-dim: #94a3b8;
   --text-mute: #64748b;
   --mint: #10b981;
-  --mint-glow: rgba(16, 185, 129, 0.25);
+  --mint-glow: rgba(16, 185, 129, 0.3);
   --gold: #f59e0b;
-  --gold-glow: rgba(245, 158, 11, 0.25);
+  --gold-glow: rgba(245, 158, 11, 0.3);
   --danger: #f43f5e;
-  --danger-glow: rgba(244, 63, 94, 0.25);
-  --radius: 20px;
-  --radius-sm: 12px;
-  --nav-h: 66px;
+  --danger-glow: rgba(244, 63, 94, 0.3);
+  --radius: 24px;
+  --radius-sm: 16px;
+  --nav-h: 72px;
 }
 body.light-theme {
-  --bg: #f5f1e8;
-  --surface: #fffdf8;
-  --surface-hi: #efe9dc;
-  --border: rgba(120, 90, 40, 0.12);
-  --border-hi: rgba(5, 150, 105, 0.4);
-  --text: #2a2418;
-  --text-dim: #6b5d47;
-  --text-mute: #a89980;
-  --mint: #059669;
-  --gold: #b45309;
-  --danger: #be123c;
+  --bg: #f8fafc;
+  --surface: rgba(255, 255, 255, 0.8);
+  --surface-solid: #ffffff;
+  --surface-hi: rgba(241, 245, 249, 0.9);
+  --border: rgba(0, 0, 0, 0.06);
+  --text: #0f172a;
+  --text-dim: #475569;
+  --text-mute: #94a3b8;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body {
@@ -52,247 +50,214 @@ body {
   -webkit-user-select: none;
   user-select: none;
   transition: background 0.3s ease, color 0.3s ease;
+  background-image: radial-gradient(circle at 10% 0%, rgba(16, 185, 129, 0.05) 0%, transparent 40%),
+                    radial-gradient(circle at 90% 100%, rgba(245, 158, 11, 0.05) 0%, transparent 40%);
 }
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--text-mute); border-radius: 10px; opacity: 0.5; }
+::-webkit-scrollbar-thumb { background: var(--text-mute); border-radius: 10px; opacity: 0.3; }
 
 /* ---------- ШАПКА ---------- */
-.header { position: relative; padding: 24px 20px 16px; text-align: center; }
-.header-top { position: absolute; top: 16px; right: 16px; display: flex; gap: 8px; }
+.header { position: relative; padding: 32px 20px 16px; text-align: center; }
+.header-top { position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; }
 .icon-btn {
-  width: 40px; height: 40px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  color: var(--text-dim);
-  display: flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px;
+  background: var(--surface); backdrop-filter: blur(12px);
+  border: 1px solid var(--border); border-radius: 50%;
+  color: var(--text-dim); display: flex; align-items: center; justify-content: center;
   cursor: pointer; transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 .icon-btn:active { transform: scale(0.92); color: var(--mint); border-color: var(--mint); }
-.icon-btn svg { width: 18px; height: 18px; stroke-width: 2; }
+.icon-btn svg { width: 20px; height: 20px; stroke-width: 2.5; }
 .icon-btn.spinning svg { animation: spin 0.9s linear infinite; color: var(--mint); }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
 .header-title {
-  font-size: 24px;
-  font-weight: 900;
-  letter-spacing: 0.5px;
-  line-height: 1.15;
-  background: linear-gradient(135deg, var(--mint) 0%, #34d399 40%, var(--gold) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 4px;
+  font-size: 28px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.1;
+  background: linear-gradient(135deg, var(--mint) 0%, #34d399 50%, var(--gold) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 6px;
 }
 .header-sub {
-  font-size: 11px;
-  letter-spacing: 4px;
-  color: var(--text-mute);
-  text-transform: uppercase;
-  font-weight: 800;
+  font-size: 11px; letter-spacing: 5px; color: var(--text-mute);
+  text-transform: uppercase; font-weight: 800;
 }
 
 /* Счётчики */
-.counters { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
+.counters { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
 .counter-chip {
-  display: flex; align-items: center; gap: 8px;
-  padding: 8px 12px; background: var(--surface);
-  border: 1px solid var(--border); border-radius: 100px;
-  font-size: 12px; font-weight: 700; color: var(--text-dim);
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 16px; background: var(--surface); backdrop-filter: blur(12px);
+  border: 1px solid var(--border); border-radius: 20px;
+  font-size: 13px; font-weight: 700; color: var(--text-dim);
 }
-.counter-chip .label { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15; }
-.counter-chip .label b { font-size: 12px; color: var(--text); }
+.counter-chip .label { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.2; }
+.counter-chip .label b { font-size: 13px; color: var(--text); }
 .counter-chip .label span { font-size: 10px; color: var(--text-mute); font-weight: 600; }
 .counter-chip .num {
-  font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 900;
-  color: var(--mint); padding-left: 8px; border-left: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 900;
+  color: var(--mint); padding-left: 12px; border-left: 1px solid var(--border);
 }
-
-/* Под-вкладки */
-.sub-tabs {
-  display: flex; gap: 6px; padding: 10px 16px 4px;
-  position: sticky; top: 0; z-index: 9; background: var(--bg);
-}
-.sub-tab {
-  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 8px; border-radius: 14px; font-size: 13px; font-weight: 700;
-  color: var(--text-dim); background: var(--surface);
-  border: 1px solid var(--border); cursor: pointer; transition: all 0.25s ease; line-height: 1.2;
-}
-.sub-tab .tab-date { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; opacity: 0.7; margin-top: 2px; }
-.sub-tab.active { background: var(--mint-glow); color: var(--mint); border-color: var(--border-hi); }
-.sub-tab.active .tab-date { opacity: 1; }
 
 /* Чипы лиг */
-.league-chips { display: flex; gap: 6px; overflow-x: auto; padding: 8px 16px 12px; scrollbar-width: none; }
+.league-chips { display: flex; gap: 8px; overflow-x: auto; padding: 12px 20px 16px; scrollbar-width: none; }
 .league-chips::-webkit-scrollbar { display: none; }
 .league-chip {
-  flex: 0 0 auto; display: flex; align-items: center; gap: 4px;
-  padding: 7px 12px; background: var(--surface); border: 1px solid var(--border);
-  border-radius: 100px; font-size: 11px; font-weight: 700; color: var(--text-dim);
+  flex: 0 0 auto; display: flex; align-items: center; gap: 6px;
+  padding: 8px 14px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; font-size: 12px; font-weight: 700; color: var(--text-dim);
   cursor: pointer; white-space: nowrap; transition: all 0.2s ease;
 }
-.league-chip.active { background: var(--mint); color: #fff; border-color: var(--mint); }
-.league-chip .cnt { font-family: 'JetBrains Mono', monospace; font-size: 10px; opacity: 0.85; margin-left: 2px; }
+.league-chip.active { background: var(--mint); color: #fff; border-color: var(--mint); box-shadow: 0 4px 15px var(--mint-glow); }
+.league-chip .cnt { font-family: 'JetBrains Mono', monospace; font-size: 10px; opacity: 0.9; margin-left: 4px; }
 
-#content { padding: 16px; }
+#content { padding: 0 20px 20px; }
 
 /* ---------- КАРТОЧКА МАТЧА ---------- */
 .card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px; margin-bottom: 14px;
+  background: var(--surface); backdrop-filter: blur(20px);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 20px; margin-bottom: 16px;
   position: relative; overflow: hidden;
   animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
   transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
-.card:active { transform: scale(0.985); }
-@keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.card:active { transform: scale(0.98); }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ТОП-карточки (вероятность 75+) */
 .card.prob-high {
-  background: linear-gradient(180deg, rgba(245, 158, 11, 0.08) 0%, var(--surface) 100%);
-  border-color: rgba(245, 158, 11, 0.4);
-  box-shadow: 0 8px 30px var(--gold-glow);
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.1) 0%, var(--surface) 100%);
+  border-color: rgba(245, 158, 11, 0.5);
+  box-shadow: 0 8px 30px rgba(245, 158, 11, 0.1);
 }
 .card.prob-high::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--gold), #fcd34d); }
 
-/* Обычные карточки */
-.card.prob-mid { border-color: var(--border-hi); box-shadow: 0 4px 20px rgba(16, 185, 129, 0.1); }
+.card.prob-mid { border-color: var(--border-hi); box-shadow: 0 4px 20px rgba(16, 185, 129, 0.05); }
 .card.prob-mid::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--mint); }
 
 .top-badge {
-  position: absolute; top: 0; right: 16px;
-  padding: 4px 10px;
-  background: linear-gradient(135deg, var(--gold), #fbbf24);
-  color: #000; font-size: 10px; font-weight: 900; letter-spacing: 1px;
-  border-radius: 0 0 8px 8px;
-  box-shadow: 0 4px 10px var(--gold-glow);
-  z-index: 2;
+  position: absolute; top: 0; right: 20px; padding: 5px 12px;
+  background: linear-gradient(135deg, var(--gold), #fbbf24); color: #000;
+  font-size: 10px; font-weight: 900; letter-spacing: 1.5px; border-radius: 0 0 10px 10px;
+  box-shadow: 0 4px 15px var(--gold-glow); z-index: 2;
 }
 
 /* Команды */
-.match-teams { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; padding-right: 40px; }
-.team-row { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 800; line-height: 1.3; }
+.match-teams { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; padding-right: 50px; }
+.team-row { display: flex; align-items: center; gap: 12px; font-size: 17px; font-weight: 800; line-height: 1.25; }
 .team-row.away { color: var(--text-dim); }
-.team-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mint); flex-shrink: 0; box-shadow: 0 0 8px var(--mint-glow); }
+.team-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--mint); flex-shrink: 0; box-shadow: 0 0 10px var(--mint-glow); }
 .team-row.away .team-dot { background: var(--text-mute); box-shadow: none; }
-.card.prob-high .team-dot { background: var(--gold); box-shadow: 0 0 8px var(--gold-glow); }
+.card.prob-high .team-dot { background: var(--gold); box-shadow: 0 0 10px var(--gold-glow); }
 
 /* Мета-чипы */
-.card-meta { display: flex; flex-wrap: wrap; gap: 6px; font-size: 11px; color: var(--text-mute); font-weight: 600; margin-bottom: 16px; }
-.meta-badge { display: flex; align-items: center; gap: 4px; background: var(--surface-hi); padding: 5px 10px; border-radius: 8px; }
-.meta-badge.league { color: var(--mint); background: var(--mint-glow); }
-.meta-badge.time { color: var(--gold); font-family: 'JetBrains Mono', monospace; background: rgba(245, 158, 11, 0.1); }
+.card-meta { display: flex; flex-wrap: wrap; gap: 8px; font-size: 11px; font-weight: 700; margin-bottom: 18px; }
+.meta-badge { display: flex; align-items: center; gap: 6px; background: var(--surface-hi); padding: 6px 12px; border-radius: 10px; color: var(--text-dim); }
+.meta-badge.league { color: var(--mint); background: rgba(16, 185, 129, 0.15); }
+.meta-badge.time { color: var(--gold); font-family: 'JetBrains Mono', monospace; background: rgba(245, 158, 11, 0.15); }
+.meta-badge.source { color: #818cf8; background: rgba(129, 140, 248, 0.15); }
 
 /* Главный блок вероятности */
-.main-prob {
-  background: var(--surface-hi);
-  border-radius: var(--radius-sm);
-  padding: 16px;
-  margin-bottom: 14px;
-  border: 1px solid var(--border);
-}
-.prob-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px; }
-.prob-title { font-size: 11px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
-.prob-big { font-family: 'JetBrains Mono', monospace; font-size: 38px; font-weight: 900; line-height: 0.9; }
-.prob-high .prob-big { color: var(--gold); text-shadow: 0 2px 10px var(--gold-glow); }
-.prob-mid .prob-big  { color: var(--mint); text-shadow: 0 2px 10px var(--mint-glow); }
+.main-prob { background: var(--surface-hi); border-radius: var(--radius-sm); padding: 18px; margin-bottom: 16px; border: 1px solid var(--border); }
+.prob-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 14px; }
+.prob-title { font-size: 11px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+.prob-big { font-family: 'JetBrains Mono', monospace; font-size: 42px; font-weight: 900; line-height: 0.9; }
+.prob-high .prob-big { color: var(--gold); text-shadow: 0 4px 20px var(--gold-glow); }
+.prob-mid .prob-big  { color: var(--mint); text-shadow: 0 4px 20px var(--mint-glow); }
 
-.prob-bar { height: 6px; background: var(--surface); border-radius: 4px; overflow: hidden; margin-bottom: 14px; }
+.prob-bar { height: 8px; background: var(--surface); border-radius: 4px; overflow: hidden; margin-bottom: 14px; }
 .prob-fill { height: 100%; border-radius: 4px; transition: width 1s cubic-bezier(0.16, 1, 0.3, 1); }
 .prob-high .prob-fill { background: linear-gradient(90deg, #fbbf24, var(--gold)); }
 .prob-mid .prob-fill  { background: linear-gradient(90deg, #34d399, var(--mint)); }
 
-.confidence { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-.conf-label { font-size: 10px; font-weight: 700; color: var(--text-mute); text-transform: uppercase; letter-spacing: 0.5px; }
-.conf-value { font-size: 12px; font-weight: 800; }
+.confidence { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.conf-label { font-size: 10px; font-weight: 800; color: var(--text-mute); text-transform: uppercase; letter-spacing: 1px; }
+.conf-value { font-size: 13px; font-weight: 900; }
 .prob-high .conf-value { color: var(--gold); }
 .prob-mid .conf-value  { color: var(--mint); }
-.conf-bar { display: flex; gap: 4px; }
-.conf-seg { flex: 1; height: 4px; border-radius: 2px; background: var(--surface); }
+.conf-bar { display: flex; gap: 6px; }
+.conf-seg { flex: 1; height: 6px; border-radius: 3px; background: var(--surface); }
 .prob-high .conf-seg.on { background: var(--gold); }
 .prob-mid .conf-seg.on  { background: var(--mint); }
 
-/* Нижняя подсказка */
-.hint {
-  display: flex; align-items: center; gap: 10px;
-  padding: 12px 14px;
-  background: var(--surface);
-  border-radius: var(--radius-sm);
-  font-size: 11px; font-weight: 600; color: var(--text-dim);
-  line-height: 1.4;
-  border: 1px dashed var(--border);
-}
-.hint-icon { font-size: 16px; flex-shrink: 0; }
+/* Блок коэффициентов и экспресса */
+.odds-row { display: flex; gap: 10px; margin-bottom: 16px; }
+.odds-box { flex: 1; background: var(--surface-hi); border-radius: 12px; padding: 12px; text-align: center; border: 1px solid var(--border); }
+.odds-label { font-size: 10px; font-weight: 700; color: var(--text-mute); text-transform: uppercase; margin-bottom: 4px; }
+.odds-val { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 900; }
 
-/* Лиги */
-.stats-hero { text-align: center; margin-bottom: 24px; }
-.stats-big { font-family: 'JetBrains Mono', monospace; font-size: 64px; font-weight: 900; line-height: 1; color: var(--text); }
-.stats-sub { font-size: 12px; color: var(--text-dim); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-top: 6px; }
+.hint { display: flex; align-items: center; gap: 12px; padding: 14px; background: var(--surface); border-radius: var(--radius-sm); font-size: 12px; font-weight: 600; color: var(--text-dim); line-height: 1.4; border: 1px dashed var(--border); }
+.hint-icon { font-size: 18px; flex-shrink: 0; }
+
+/* Лиги и Статистика */
+.stats-hero { text-align: center; margin: 20px 0 30px; }
+.stats-big { font-family: 'JetBrains Mono', monospace; font-size: 72px; font-weight: 900; line-height: 1; color: var(--text); }
+.stats-sub { font-size: 12px; color: var(--text-dim); font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-top: 8px; }
 
 .league-row {
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); padding: 14px; margin-bottom: 10px;
-  display: flex; flex-direction: column; gap: 8px;
+  border-radius: var(--radius-sm); padding: 16px; margin-bottom: 12px;
+  display: flex; flex-direction: column; gap: 10px;
   cursor: pointer; transition: transform 0.2s, border-color 0.2s;
 }
-.league-row:active { transform: scale(0.98); border-color: var(--border-hi); }
+.league-row:active { transform: scale(0.98); border-color: var(--mint); }
 .league-header { display: flex; justify-content: space-between; align-items: center; }
-.league-name { font-size: 13px; font-weight: 800; }
-.league-acc {
-  font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 800; color: var(--mint);
-  background: var(--mint-glow); padding: 3px 9px; border-radius: 8px;
-}
-.league-counts { display: flex; gap: 14px; font-size: 11px; color: var(--text-mute); font-weight: 600; }
-.league-counts b { font-family: 'JetBrains Mono', monospace; }
-.league-bar { height: 4px; background: var(--surface-hi); border-radius: 2px; overflow: hidden; }
-.league-fill { height: 100%; background: var(--mint); border-radius: 2px; }
+.league-name { font-size: 14px; font-weight: 800; }
+.league-acc { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 900; color: var(--mint); background: var(--mint-glow); padding: 4px 12px; border-radius: 10px; }
+.league-counts { display: flex; gap: 16px; font-size: 12px; color: var(--text-mute); font-weight: 600; }
+.league-counts b { font-family: 'JetBrains Mono', monospace; color: var(--text); }
+.league-bar { height: 6px; background: var(--surface-hi); border-radius: 3px; overflow: hidden; }
+.league-fill { height: 100%; background: var(--mint); border-radius: 3px; }
 
 /* Экспресс */
 .express-hero {
   background: linear-gradient(135deg, #1e1b4b, #312e81);
-  border-radius: var(--radius); padding: 26px 20px;
-  text-align: center; margin-bottom: 18px;
-  border: 1px solid rgba(99, 102, 241, 0.3);
-  box-shadow: 0 10px 40px rgba(99, 102, 241, 0.2);
+  border-radius: var(--radius); padding: 30px 20px; text-align: center; margin-bottom: 20px;
+  border: 1px solid rgba(99, 102, 241, 0.4); box-shadow: 0 10px 40px rgba(99, 102, 241, 0.2);
 }
-.express-title { font-size: 13px; font-weight: 800; color: #a5b4fc; letter-spacing: 2px; text-transform: uppercase; }
-.express-odd { font-family: 'JetBrains Mono', monospace; font-size: 56px; font-weight: 900; color: #fff; line-height: 1; margin: 12px 0; }
-.express-sub { font-size: 11px; color: #818cf8; font-weight: 600; }
+.express-title { font-size: 13px; font-weight: 800; color: #a5b4fc; letter-spacing: 3px; text-transform: uppercase; }
+.express-odd { font-family: 'JetBrains Mono', monospace; font-size: 64px; font-weight: 900; color: #fff; line-height: 1; margin: 14px 0; text-shadow: 0 4px 20px rgba(255,255,255,0.2); }
+.express-sub { font-size: 12px; color: #818cf8; font-weight: 700; }
+
+/* Недели (Статистика) */
+.week-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 16px; }
+.week-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.week-title { font-size: 14px; font-weight: 800; color: var(--mint); }
+.week-stats { display: flex; gap: 12px; font-size: 12px; color: var(--text-dim); margin-bottom: 12px; background: var(--surface-hi); padding: 10px; border-radius: 12px; }
+.week-stat-item { display: flex; flex-direction: column; }
+.week-stat-item span { font-size: 10px; color: var(--text-mute); font-weight: 700; text-transform: uppercase; }
+.week-stat-item b { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--text); }
+.match-mini { display: flex; justify-content: space-between; font-size: 12px; padding: 6px 0; border-bottom: 1px solid var(--border); color: var(--text-dim); }
+.match-mini:last-child { border-bottom: none; }
+.match-mini .score { font-family: 'JetBrains Mono', monospace; font-weight: 800; }
 
 /* Скелетон / пусто */
-.skeleton { background: var(--surface); border-radius: var(--radius); padding: 20px; margin-bottom: 14px; height: 180px; position: relative; overflow: hidden; }
+.skeleton { background: var(--surface); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; height: 200px; position: relative; overflow: hidden; }
 .skeleton::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent); animation: shimmer 1.5s infinite; }
 @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
-.empty { text-align: center; padding: 50px 20px; color: var(--text-mute); font-weight: 600; }
-.empty-icon { font-size: 44px; margin-bottom: 14px; opacity: 0.3; }
-.empty-btn {
-  margin-top: 16px; padding: 12px 24px; background: var(--mint); color: #fff;
-  border: none; border-radius: 100px; font-weight: 800; font-size: 14px; cursor: pointer; font-family: inherit;
-}
+.empty { text-align: center; padding: 60px 20px; color: var(--text-mute); font-weight: 600; }
+.empty-icon { font-size: 52px; margin-bottom: 16px; opacity: 0.3; }
+.empty-btn { margin-top: 20px; padding: 14px 28px; background: var(--mint); color: #fff; border: none; border-radius: 100px; font-weight: 800; font-size: 14px; cursor: pointer; font-family: inherit; }
 .empty-btn:active { transform: scale(0.96); }
 
-.sync-line { text-align: center; font-size: 11px; color: var(--text-mute); font-weight: 600; margin-top: 16px; padding: 0 16px; line-height: 1.5; }
+.sync-line { text-align: center; font-size: 11px; color: var(--text-mute); font-weight: 600; margin-top: 20px; padding: 0 20px; line-height: 1.6; }
 
 /* Нижняя навигация */
 .bottom-nav {
   position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-h);
-  background: rgba(18, 26, 36, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  background: rgba(10, 15, 22, 0.85); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
   border-top: 1px solid var(--border); display: flex; align-items: stretch; z-index: 50;
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
-body.light-theme .bottom-nav { background: rgba(255, 253, 248, 0.95); }
+body.light-theme .bottom-nav { background: rgba(255, 255, 255, 0.85); }
 .nav-btn {
-  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
-  padding: 6px 2px; background: none; border: none; color: var(--text-mute); font-size: 9px; font-weight: 700;
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  padding: 8px 2px; background: none; border: none; color: var(--text-mute); font-size: 10px; font-weight: 800;
   cursor: pointer; transition: color 0.2s; font-family: inherit;
 }
-.nav-btn svg { width: 20px; height: 20px; stroke-width: 2.2; }
+.nav-btn svg { width: 22px; height: 22px; stroke-width: 2.2; }
 .nav-btn.active { color: var(--mint); }
 </style>
 </head>
@@ -300,28 +265,21 @@ body.light-theme .bottom-nav { background: rgba(255, 253, 248, 0.95); }
 
 <div class="header">
   <div class="header-top">
-    <div class="icon-btn" id="refreshBtn" onclick="manualRefresh()" title="Перечитать данные из таблицы">
+    <div class="icon-btn" id="refreshBtn" onclick="manualRefresh()" title="Перечитать данные">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
     </div>
     <div class="icon-btn" onclick="toggleTheme()" title="Тема">
       <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
     </div>
   </div>
-  <div class="header-title">ПРОГНОЗЫ<br>НА ТБ 2.5</div>
-  <div class="header-sub">Тотал больше 2.5</div>
+  <div class="header-title">TB 2.5 PRO</div>
+  <div class="header-sub">Аналитика и Прогнозы</div>
 
   <div class="counters" id="counters">
     <div class="counter-chip">
       <div class="label"><b>Сегодня</b><span id="cntTodayDate">—</span></div>
       <span class="num" id="cntToday">—</span>
     </div>
-  </div>
-</div>
-
-<div class="sub-tabs" id="subTabs" style="display:none;">
-  <div class="sub-tab active" data-sub="today" onclick="switchSubTab('today')">
-    Сегодня
-    <span class="tab-date" id="tabDateToday">—</span>
   </div>
 </div>
 
@@ -341,28 +299,21 @@ body.light-theme .bottom-nav { background: rgba(255, 253, 248, 0.95); }
   </button>
   <button class="nav-btn" data-nav="yesterday">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-    <span>Вчера</span>
+    <span>Статистика</span>
   </button>
   <button class="nav-btn" data-nav="express">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
     <span>Экспресс</span>
   </button>
-  <button class="nav-btn" data-nav="stats">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 12l4-4 4 4 5-5"/></svg>
-    <span>Стата</span>
-  </button>
 </nav>
 
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycbxW52PKcn0Mh2L6yjQ5-5IiuCdds8FksK1XzY6F_iElSnFuAH4f5Hz9JH97pEDD1hcw/exec';
-const BOT_URL = 'https://t.me/total25_signals_bot';
-
-const CACHE_VERSION = 'v71'; // Обновил версию, чтобы сбросить старый кэш
+const CACHE_VERSION = 'v80'; // Полный сброс кэша под новый дизайн
 const CACHE_TTL = 5 * 60 * 1000;
 const MIN_PROBABILITY = 57;
 
 let currentNav = 'matches';
-let currentSub = 'today';
 let currentLeague = 'all';
 let todayData = [];
 
@@ -398,10 +349,9 @@ function haptic(s) {
   } catch(e){}
 }
 
-/* ---------- TOAST ---------- */
 function showToast(text) {
   var el = document.createElement('div');
-  el.style.cssText = 'position:fixed;bottom:calc(var(--nav-h) + 16px);left:16px;right:16px;background:var(--surface-hi);color:var(--text);padding:12px 16px;border-radius:14px;font-size:12px;font-weight:600;text-align:center;z-index:100;box-shadow:0 8px 30px rgba(0,0,0,0.3);border:1px solid var(--border);';
+  el.style.cssText = 'position:fixed;bottom:calc(var(--nav-h) + 20px);left:20px;right:20px;background:var(--surface-solid);color:var(--text);padding:14px 18px;border-radius:16px;font-size:13px;font-weight:600;text-align:center;z-index:100;box-shadow:0 8px 30px rgba(0,0,0,0.3);border:1px solid var(--border);';
   el.textContent = text;
   document.body.appendChild(el);
   setTimeout(function() { el.style.transition = 'opacity 0.3s'; el.style.opacity = '0'; }, 2700);
@@ -451,24 +401,14 @@ function switchNav(nav) {
   currentNav = nav;
   currentLeague = 'all';
   document.querySelectorAll('.nav-btn').forEach(function(n) { n.classList.toggle('active', n.dataset.nav === nav); });
-  var subTabs = document.getElementById('subTabs');
   var leagueChips = document.getElementById('leagueChips');
-  subTabs.style.display = (nav === 'matches') ? 'flex' : 'none';
   leagueChips.style.display = (nav === 'matches') ? 'flex' : 'none';
-  if (nav === 'matches') currentSub = 'today';
   loadData();
-}
-function switchSubTab(sub) {
-  haptic('light');
-  currentSub = sub;
-  currentLeague = 'all';
-  document.querySelectorAll('.sub-tab').forEach(function(t) { t.classList.toggle('active', t.dataset.sub === sub); });
-  renderMatchesList();
 }
 function switchLeague(league) {
   haptic('light');
   currentLeague = league;
-  renderMatchesList();
+  if (currentNav === 'matches') renderMatchesList();
 }
 document.getElementById('bottomNav').addEventListener('click', function(e) {
   var btn = e.target.closest('.nav-btn');
@@ -505,11 +445,8 @@ function showSkeleton() {
 
 async function fetchAction(action) {
   var url = API_URL + '?action=' + action + '&_t=' + Date.now();
-  console.log('[TB25] GET ->', url);
   var resp = await fetch(url, { cache: 'no-store' });
   var text = await resp.text();
-  console.log('[TB25] RAW Response:', text.substring(0, 500));
-  
   var result;
   try { result = JSON.parse(text); }
   catch (e) { throw new Error('Сервер вернул не JSON'); }
@@ -520,8 +457,8 @@ async function fetchAction(action) {
 async function loadData(forceNetwork) {
   if (forceNetwork === undefined) forceNetwork = false;
   var content = document.getElementById('content');
-  var key = currentNav === 'matches' ? 'matches_' + currentSub : currentNav;
-  var action = currentNav === 'matches' ? currentSub : currentNav;
+  var key = currentNav;
+  var action = currentNav;
 
   var cached = !forceNetwork ? getCache(key) : null;
   if (cached) {
@@ -538,7 +475,7 @@ async function loadData(forceNetwork) {
     renderByNav(data);
     updateSyncLine();
   } catch (e) {
-    console.error('[TB25] Error ->', e);
+    console.error('Error ->', e);
     if (!cached) {
       content.innerHTML = '<div class="empty"><div class="empty-icon">⚠</div>Не удалось загрузить данные<br><div style="font-size:11px;margin-top:8px;opacity:0.6;">' + escapeHtml(e.message) + '</div><button class="empty-btn" onclick="manualRefresh()">Повторить</button></div>';
     }
@@ -547,7 +484,6 @@ async function loadData(forceNetwork) {
 
 async function updateCounters() {
   document.getElementById('cntTodayDate').textContent = todayShort();
-  document.getElementById('tabDateToday').textContent = todayShort();
   try {
     var results = await Promise.all([ fetchAction('today').catch(function() { return []; }) ]);
     var fetchedData = Array.isArray(results[0]) ? results[0] : [];
@@ -560,13 +496,11 @@ function renderByNav(data) {
   if (currentNav === 'matches') {
     var arr = Array.isArray(data) ? data : [];
     todayData = arr;
-    console.log('[TB25] Loaded matches:', arr.length);
     renderMatchesList();
   }
   else if (currentNav === 'leagues') renderLeagues(data);
   else if (currentNav === 'yesterday') renderYesterday(data);
   else if (currentNav === 'express') renderExpress(data);
-  else if (currentNav === 'stats') renderStats(data);
 }
 
 function manualRefresh() {
@@ -612,11 +546,7 @@ function renderMatchesList() {
   var list = currentLeague === 'all' ? filtered : filtered.filter(function(m) { return (m.league || 'Лига') === currentLeague; });
 
   if (!list.length) {
-    content.innerHTML =
-      '<div class="empty"><div class="empty-icon">⚽</div>' +
-      'Нет матчей с вероятностью не ниже ' + MIN_PROBABILITY + '%<br>' +
-      '<div style="font-size:11px;margin-top:8px;opacity:0.6;">Попробуйте «Обновить» или загляните позже</div>' +
-      '<button class="empty-btn" onclick="manualRefresh()">Обновить</button></div>';
+    content.innerHTML = '<div class="empty"><div class="empty-icon">⚽</div>Нет матчей с вероятностью не ниже ' + MIN_PROBABILITY + '%<br><div style="font-size:12px;margin-top:10px;opacity:0.6;">Попробуйте «Обновить» или загляните позже</div><button class="empty-btn" onclick="manualRefresh()">Обновить</button></div>';
     return;
   }
 
@@ -641,7 +571,7 @@ function renderMatchesList() {
     else if (prob >= 68) hintText = 'Хороший матч для ТБ 2.5, рекомендуем рассмотреть';
     else hintText = 'Подходит для ТБ 2.5, но без повышенной уверенности';
 
-    html += '<div class="card ' + cardClass + '" style="animation-delay:' + (i * 0.04) + 's">';
+    html += '<div class="card ' + cardClass + '" style="animation-delay:' + (i * 0.05) + 's">';
     if (isTop) html += '<div class="top-badge">ТОП</div>';
 
     html += '<div class="match-teams">';
@@ -651,6 +581,7 @@ function renderMatchesList() {
 
     html += '<div class="card-meta">';
     html += '<div class="meta-badge league">' + escapeHtml(m.league || 'Лига') + '</div>';
+    html += '<div class="meta-badge source">' + escapeHtml(m.source || 'API') + '</div>';
     if (shortDate) html += '<div class="meta-badge">' + escapeHtml(shortDate) + '</div>';
     if (live) html += '<div class="meta-badge time">🔴 LIVE</div>';
     else if (m.time) html += '<div class="meta-badge time">' + escapeHtml(m.time) + '</div>';
@@ -673,11 +604,15 @@ function renderMatchesList() {
       html += '<div class="conf-seg' + (s < confSegs ? ' on' : '') + '"></div>';
     }
     html += '</div>';
-    
-    html += '</div>'; // end main-prob
+    html += '</div>';
+
+    html += '<div class="odds-row">';
+    html += '<div class="odds-box"><div class="odds-label">Тотал</div><div class="odds-val" style="color:var(--mint);">' + escapeHtml(m.total || '2.5') + '</div></div>';
+    html += '<div class="odds-box"><div class="odds-label">Кэф</div><div class="odds-val" style="color:var(--gold);">' + escapeHtml(m.odd || '—') + '</div></div>';
+    html += '</div>';
 
     html += '<div class="hint"><span class="hint-icon">🎯</span>' + hintText + '</div>';
-    html += '</div>'; // end card
+    html += '</div>';
   });
   
   content.innerHTML = html;
@@ -686,10 +621,10 @@ function renderMatchesList() {
 /* ---------- ЛИГИ ---------- */
 function renderLeagues(data) {
   var content = document.getElementById('content');
-  var todayArr = Array.isArray(todayData) ? todayData : [];
+  var arr = Array.isArray(data) ? data : [];
 
   var map = {};
-  todayArr.forEach(function(m) {
+  arr.forEach(function(m) {
     var prob = parseInt(m.probability) || 0;
     if (prob < MIN_PROBABILITY) return;
     var lg = m.league || 'Лига';
@@ -698,15 +633,14 @@ function renderLeagues(data) {
     if (prob > map[lg].maxProb) map[lg].maxProb = prob;
   });
 
-  var list = Object.keys(map).map(function(k) { return map[k]; })
-    .sort(function(a, b) { return (b.today) - (a.today); });
+  var list = Object.keys(map).map(function(k) { return map[k]; }).sort(function(a, b) { return (b.maxProb) - (a.maxProb); });
 
   if (!list.length) {
     content.innerHTML = '<div class="empty"><div class="empty-icon">🏆</div>Пока нет лиг с матчами не ниже ' + MIN_PROBABILITY + '%<br><button class="empty-btn" onclick="manualRefresh()">Обновить</button></div>';
     return;
   }
 
-  var html = '<div class="stats-hero"><div class="stats-big" style="font-size:44px">' + list.length + '</div><div class="stats-sub">Лиг с матчами</div></div>';
+  var html = '<div class="stats-hero"><div class="stats-big" style="font-size:52px">' + list.length + '</div><div class="stats-sub">Активных лиг</div></div>';
   list.forEach(function(lg) {
     html += '<div class="league-row" onclick="openLeagueFromList(\'' + escapeAttr(lg.name) + '\')">';
     html += '<div class="league-header">';
@@ -714,8 +648,7 @@ function renderLeagues(data) {
     html += '<div class="league-acc">' + lg.maxProb + '%</div>';
     html += '</div>';
     html += '<div class="league-counts">';
-    html += '<span>Сегодня: <b style="color:var(--mint)">' + lg.today + '</b></span>';
-    html += '<span style="margin-left:auto;">Всего: <b style="color:var(--text)">' + lg.today + '</b></span>';
+    html += '<span>Матчей сегодня: <b style="color:var(--mint)">' + lg.today + '</b></span>';
     html += '</div>';
     html += '</div>';
   });
@@ -726,84 +659,60 @@ function openLeagueFromList(leagueName) {
   haptic('medium');
   currentLeague = leagueName;
   currentNav = 'matches';
-  currentSub = 'today';
   document.querySelectorAll('.nav-btn').forEach(function(n) { n.classList.toggle('active', n.dataset.nav === 'matches'); });
-  document.getElementById('subTabs').style.display = 'flex';
   document.getElementById('leagueChips').style.display = 'flex';
-  document.querySelectorAll('.sub-tab').forEach(function(t) { t.classList.toggle('active', t.dataset.sub === 'today'); });
   renderMatchesList();
 }
 
-/* ---------- ВЧЕРА ---------- */
+/* ---------- СТАТИСТИКА (Вчера + Недели) ---------- */
 function renderYesterday(data) {
   var content = document.getElementById('content');
-  if (!data) {
-    content.innerHTML = '<div class="empty"><div class="empty-icon">📅</div>Вчера матчей не было</div>';
+  if (!data || !data.matches || data.matches.length === 0) {
+    content.innerHTML = '<div class="empty"><div class="empty-icon">📊</div>Пока нет завершенных матчей для статистики</div>';
     return;
   }
+  
+  var wins = data.wins || 0, loses = data.loses || 0, accuracy = data.accuracy || 0;
+  var html = '<div class="stats-hero"><div class="stats-big">' + accuracy + '%</div><div class="stats-sub">Общая точность</div></div>';
+  
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;">';
+  html += '<div class="league-row" style="align-items:center;padding:20px;"><div style="font-size:32px;font-weight:900;color:var(--mint);font-family:JetBrains Mono">' + wins + '</div><div style="font-size:11px;color:var(--text-mute);font-weight:800;letter-spacing:1px;margin-top:4px;">ЗАШЛО</div></div>';
+  html += '<div class="league-row" style="align-items:center;padding:20px;"><div style="font-size:32px;font-weight:900;color:var(--danger);font-family:JetBrains Mono">' + loses + '</div><div style="font-size:11px;color:var(--text-mute);font-weight:800;letter-spacing:1px;margin-top:4px;">НЕ ЗАШЛО</div></div>';
+  html += '</div>';
 
-  // Проверяем, пришел ли новый формат с неделями или старый
+  // Группировка по неделям (если сервер отдал данные по неделям)
   if (data.weeks && Array.isArray(data.weeks)) {
-    // НОВЫЙ ФОРМАТ (по неделям)
-    var html = '<div class="stats-hero"><div class="stats-big" style="font-size:44px">' + (data.accuracy || 0) + '%</div><div class="stats-sub">Общая точность</div></div>';
-    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">';
-    html += '<div class="league-row" style="align-items:center;padding:14px"><div style="font-size:22px;font-weight:900;color:var(--mint);font-family:JetBrains Mono">' + (data.wins || 0) + '</div><div style="font-size:10px;color:var(--text-mute);font-weight:700">ЗАШЛО</div></div>';
-    html += '<div class="league-row" style="align-items:center;padding:14px"><div style="font-size:22px;font-weight:900;color:var(--danger);font-family:JetBrains Mono">' + (data.loses || 0) + '</div><div style="font-size:10px;color:var(--text-mute);font-weight:700">НЕ ЗАШЛО</div></div>';
-    html += '</div>';
-
     data.weeks.forEach(function(wk) {
-      html += '<div style="background:var(--surface-hi);border-radius:12px;padding:14px;margin-bottom:16px;border:1px solid var(--border);">';
-      html += '<div style="font-weight:800;font-size:14px;margin-bottom:8px;color:var(--mint);">📅 ' + wk.dateRange + '</div>';
-      html += '<div style="font-size:12px;color:var(--text-dim);margin-bottom:6px;">Матчей: <b>' + wk.total + '</b> | Винрейт: <b>' + wk.accuracy + '%</b> (' + wk.wins + 'W - ' + wk.loses + 'L)</div>';
-      html += '<div style="font-size:12px;color:var(--text-dim);margin-bottom:8px;">Ср.Кэф: <b>' + wk.avgOdd + '</b> | Профит: <b>' + wk.profitStr + '</b> | ROI: <b>' + wk.roi + '%</b></div>';
+      html += '<div class="week-block">';
+      html += '<div class="week-header"><div class="week-title">📅 ' + wk.dateRange + '</div><div style="font-size:12px;color:var(--text-dim);">Матчей: ' + wk.total + '</div></div>';
+      html += '<div class="week-stats">';
+      html += '<div class="week-stat-item"><span>Винрейт</span><b>' + wk.accuracy + '%</b></div>';
+      html += '<div class="week-stat-item"><span>Ср.Кэф</span><b>' + wk.avgOdd + '</b></div>';
+      html += '<div class="week-stat-item"><span>Профит</span><b style="color:' + (wk.profit >= 0 ? 'var(--mint)' : 'var(--danger)') + '">' + wk.profitStr + '</b></div>';
+      html += '</div>';
       
       wk.matches.forEach(function(m) {
         var emoji = m.status === 'win' ? '✅' : '❌';
-        html += '<div style="font-size:11px;color:var(--text-mute);margin-top:4px;">' + emoji + ' ' + escapeHtml(m.home) + ' — ' + escapeHtml(m.away) + ' (' + escapeHtml(m.score) + ')</div>';
+        html += '<div class="match-mini">';
+        html += '<div>' + emoji + ' ' + escapeHtml(m.home) + ' — ' + escapeHtml(m.away) + '</div>';
+        html += '<div class="score">' + escapeHtml(m.score) + '</div>';
+        html += '</div>';
       });
       html += '</div>';
     });
-    content.innerHTML = html;
-    return;
+  } else {
+    // Если сервер вернул плоский список
+    html += '<div class="week-block"><div class="week-header"><div class="week-title">📅 Последние матчи</div></div>';
+    data.matches.forEach(function(m) {
+      var emoji = m.status === 'win' ? '✅' : '❌';
+      html += '<div class="match-mini">';
+      html += '<div>' + emoji + ' ' + escapeHtml(m.home) + ' — ' + escapeHtml(m.away) + '</div>';
+      html += '<div class="score">' + escapeHtml(m.score) + '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
   }
 
-  // СТАРЫЙ ФОРМАТ (плоский список, на случай если сервер вернет старое)
-  var matches = [], wins = 0, loses = 0, accuracy = 0;
-  if (Array.isArray(data)) {
-    matches = data;
-    matches.forEach(function(m) { if (m.status === 'win') wins++; else if (m.status === 'lose') loses++; });
-    var total = wins + loses;
-    accuracy = total > 0 ? Math.round(wins / total * 100) : 0;
-  } else if (data && Array.isArray(data.matches)) {
-    matches = data.matches;
-    wins = data.wins || 0; loses = data.loses || 0; accuracy = data.accuracy || 0;
-  }
-  
-  if (!matches.length) {
-    content.innerHTML = '<div class="empty"><div class="empty-icon">📅</div>Вчера матчей не было</div>';
-    return;
-  }
-
-  var html = '<div class="stats-hero"><div class="stats-big" style="font-size:44px">' + accuracy + '%</div><div class="stats-sub">Точность за вчера</div></div>';
-  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">';
-  html += '<div class="league-row" style="align-items:center;padding:14px"><div style="font-size:22px;font-weight:900;color:var(--mint);font-family:JetBrains Mono">' + wins + '</div><div style="font-size:10px;color:var(--text-mute);font-weight:700">ЗАШЛО</div></div>';
-  html += '<div class="league-row" style="align-items:center;padding:14px"><div style="font-size:22px;font-weight:900;color:var(--danger);font-family:JetBrains Mono">' + loses + '</div><div style="font-size:10px;color:var(--text-mute);font-weight:700">НЕ ЗАШЛО</div></div>';
-  html += '</div>';
-  
-  matches.forEach(function(m, idx) {
-    var emoji = m.status === 'win' ? '✅' : m.status === 'lose' ? '❌' : '⏳';
-    var scoreColor = m.status === 'win' ? 'var(--mint)' : m.status === 'lose' ? 'var(--danger)' : 'var(--text)';
-    html += '<div class="card" style="animation-delay:' + (idx * 0.04) + 's">';
-    html += '<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;">';
-    html += '<div style="flex:1">';
-    html += '<div class="team-row"><span class="team-dot"></span>' + escapeHtml(m.home) + '</div>';
-    html += '<div class="team-row away"><span class="team-dot"></span>' + escapeHtml(m.away) + '</div>';
-    html += '</div>';
-    html += '<div style="font-family:JetBrains Mono,monospace;font-size:20px;font-weight:900;color:' + scoreColor + ';white-space:nowrap;">' + escapeHtml(m.score || '—') + '</div>';
-    html += '</div>';
-    html += '<div class="card-meta"><div class="meta-badge league">' + escapeHtml(m.league || 'Лига') + '</div><div class="meta-badge">Голов: ' + escapeHtml(m.total) + '</div><div class="meta-badge">' + emoji + ' ' + escapeHtml(m.prediction || '') + '</div></div>';
-    html += '</div>';
-  });
   content.innerHTML = html;
 }
 
@@ -811,58 +720,43 @@ function renderYesterday(data) {
 function renderExpress(data) {
   var content = document.getElementById('content');
   if (!data || !Array.isArray(data.matches) || !data.matches.length) {
-    content.innerHTML = '<div class="empty"><div class="empty-icon">🔥</div>Экспресс ещё не собран<br><div style="font-size:11px;margin-top:8px;opacity:0.6;">Загляните позже или нажмите «Обновить»</div><button class="empty-btn" onclick="manualRefresh()">Обновить</button></div>';
+    content.innerHTML = '<div class="empty"><div class="empty-icon">🔥</div>Экспресс ещё не собран<br><div style="font-size:12px;margin-top:10px;opacity:0.6;">Загляните позже или нажмите «Обновить»</div><button class="empty-btn" onclick="manualRefresh()">Обновить</button></div>';
     return;
   }
   var items = data.matches.filter(function(m) { return (parseInt(m.probability) || 0) >= MIN_PROBABILITY; });
   if (!items.length) { content.innerHTML = '<div class="empty"><div class="empty-icon">🔥</div>Нет событий не ниже ' + MIN_PROBABILITY + '% для экспресса</div>'; return; }
+  
   var totalOdd = 1;
   items.forEach(function(m) { totalOdd *= (parseFloat(m.odd) || 1); });
   totalOdd = totalOdd.toFixed(2);
-  var html = '<div class="express-hero"><div class="express-title">Топ-экспресс дня</div><div class="express-odd">' + totalOdd + '</div><div class="express-sub">Итоговый коэффициент · ' + items.length + ' событий</div></div>';
+  
+  var html = '<div class="express-hero"><div class="express-title">ТОП-ЭКСПРЕСС ДНЯ</div><div class="express-odd">' + totalOdd + '</div><div class="express-sub">Итоговый коэффициент · ' + items.length + ' событий</div></div>';
+  
   items.forEach(function(m, i) {
     var prob = parseInt(m.probability) || 0;
     var odd = parseFloat(m.odd) || 1;
-    html += '<div class="card prob-mid" style="animation-delay:' + (i*0.04) + 's">';
-    html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">';
-    html += '<div style="width:26px;height:26px;background:var(--mint);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;flex-shrink:0;">' + (i+1) + '</div>';
-    html += '<div style="font-weight:800;font-size:14px;line-height:1.3;">' + escapeHtml(m.home) + ' — ' + escapeHtml(m.away) + '</div>';
+    html += '<div class="card prob-mid" style="animation-delay:' + (i*0.05) + 's">';
+    html += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">';
+    html += '<div style="width:32px;height:32px;background:var(--mint);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;flex-shrink:0;">' + (i+1) + '</div>';
+    html += '<div style="font-weight:800;font-size:15px;line-height:1.3;">' + escapeHtml(m.home) + ' — ' + escapeHtml(m.away) + '</div>';
     html += '</div>';
+    
     html += '<div class="card-meta"><div class="meta-badge league">' + escapeHtml(m.league || 'Лига') + '</div><div class="meta-badge">' + formatShortDate(m.date) + '</div></div>';
-    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
-    html += '<div style="background:var(--surface-hi);border-radius:10px;padding:12px;text-align:center;"><div style="font-size:10px;font-weight:700;color:var(--text-mute);text-transform:uppercase;margin-bottom:4px;">Вероятность</div><div style="font-family:JetBrains Mono,monospace;font-size:16px;font-weight:900;color:var(--mint);">' + prob + '%</div></div>';
-    html += '<div style="background:var(--surface-hi);border-radius:10px;padding:12px;text-align:center;"><div style="font-size:10px;font-weight:700;color:var(--text-mute);text-transform:uppercase;margin-bottom:4px;">Кэф</div><div style="font-family:JetBrains Mono,monospace;font-size:16px;font-weight:900;color:var(--gold);">' + odd.toFixed(2) + '</div></div>';
-    html += '</div></div>';
+    
+    html += '<div class="odds-row">';
+    html += '<div class="odds-box"><div class="odds-label">Вероятность</div><div class="odds-val" style="color:var(--mint);">' + prob + '%</div></div>';
+    html += '<div class="odds-box"><div class="odds-label">Кэф</div><div class="odds-val" style="color:var(--gold);">' + odd.toFixed(2) + '</div></div>';
+    html += '</div>';
+    
+    html += '</div>';
   });
-  content.innerHTML = html;
-}
-
-/* ---------- СТАТА ---------- */
-function renderStats(data) {
-  var content = document.getElementById('content');
-  if (!data) { content.innerHTML = '<div class="empty"><div class="empty-icon">📊</div>Статистики пока нет</div>'; return; }
-  var acc = data.accuracy || 0, wins = data.wins || 0, loses = data.loses || 0;
-  var leagues = Array.isArray(data.leagues) ? data.leagues : [];
-  var html = '<div class="stats-hero"><div class="stats-big">' + acc + '%</div><div class="stats-sub">Общая точность</div></div>';
-  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">';
-  html += '<div class="league-row" style="align-items:center;padding:16px"><div style="font-size:26px;font-weight:900;color:var(--mint);font-family:JetBrains Mono,monospace">' + wins + '</div><div style="font-size:10px;color:var(--text-mute);font-weight:700">ЗАШЛО</div></div>';
-  html += '<div class="league-row" style="align-items:center;padding:16px"><div style="font-size:26px;font-weight:900;color:var(--danger);font-family:JetBrains Mono,monospace">' + loses + '</div><div style="font-size:10px;color:var(--text-mute);font-weight:700">НЕ ЗАШЛО</div></div>';
-  html += '</div>';
-  if (leagues.length) {
-    html += '<div style="font-size:12px;font-weight:800;color:var(--text-dim);margin-bottom:10px;letter-spacing:1px;text-transform:uppercase;">По лигам</div>';
-    leagues.forEach(function(lg) {
-      var lAcc = lg.accuracy || 0;
-      html += '<div class="league-row"><div class="league-header"><div class="league-name">' + escapeHtml(lg.name) + '</div><div class="league-acc">' + lAcc + '%</div></div><div class="league-bar"><div class="league-fill" style="width:' + lAcc + '%"></div></div><div style="font-size:11px;color:var(--text-mute);font-weight:600">Зашло: ' + (lg.wins||0) + ' · Не зашло: ' + (lg.loses||0) + '</div></div>';
-    });
-  }
+  
   content.innerHTML = html;
 }
 
 /* ---------- СТАРТ ---------- */
-document.getElementById('subTabs').style.display = 'flex';
 document.getElementById('leagueChips').style.display = 'flex';
 document.getElementById('cntTodayDate').textContent = todayShort();
-document.getElementById('tabDateToday').textContent = todayShort();
 loadData();
 updateCounters();
 </script>
