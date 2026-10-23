@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>TB 2.5 Pro Analytics</title>
+<title>Прогнозы на ТБ 2.5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
@@ -73,14 +73,16 @@ body {
 .icon-btn.spinning svg { animation: spin 0.9s linear infinite; color: var(--mint); }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
+/* ДИНАМИЧЕСКИЙ ЗАГОЛОВОК */
 .header-title {
-  font-size: 28px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.1;
+  font-size: 26px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.15;
   background: linear-gradient(135deg, var(--mint) 0%, #34d399 50%, var(--gold) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  margin-bottom: 6px;
+  margin-bottom: 6px; transition: all 0.3s ease;
+  min-height: 34px;
 }
 .header-sub {
-  font-size: 11px; letter-spacing: 5px; color: var(--text-mute);
+  font-size: 11px; letter-spacing: 4px; color: var(--text-mute);
   text-transform: uppercase; font-weight: 800;
 }
 
@@ -228,7 +230,7 @@ body {
 .week-stat-item { display: flex; flex-direction: column; }
 .week-stat-item span { font-size: 10px; color: var(--text-mute); font-weight: 700; text-transform: uppercase; }
 .week-stat-item b { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--text); }
-.match-mini { display: flex; justify-content: space-between; font-size: 12px; padding: 6px 0; border-bottom: 1px solid var(--border); color: var(--text-dim); }
+.match-mini { display: flex; justify-content: space-between; font-size: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); color: var(--text-dim); }
 .match-mini:last-child { border-bottom: none; }
 .match-mini .score { font-family: 'JetBrains Mono', monospace; font-weight: 800; }
 
@@ -272,8 +274,10 @@ body.light-theme .bottom-nav { background: rgba(255, 255, 255, 0.85); }
       <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
     </div>
   </div>
-  <div class="header-title">TB 2.5 PRO</div>
-  <div class="header-sub">Аналитика и Прогнозы</div>
+  
+  <!-- ДИНАМИЧЕСКИЙ ЗАГОЛОВОК -->
+  <div class="header-title" id="dynamicTitle">МАТЧИ НА СЕГОДНЯ</div>
+  <div class="header-sub" id="dynamicSub">Прогнозы с высокой вероятностью</div>
 
   <div class="counters" id="counters">
     <div class="counter-chip">
@@ -299,7 +303,7 @@ body.light-theme .bottom-nav { background: rgba(255, 255, 255, 0.85); }
   </button>
   <button class="nav-btn" data-nav="yesterday">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-    <span>Статистика</span>
+    <span>Стата</span>
   </button>
   <button class="nav-btn" data-nav="express">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
@@ -309,7 +313,7 @@ body.light-theme .bottom-nav { background: rgba(255, 255, 255, 0.85); }
 
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycbxW52PKcn0Mh2L6yjQ5-5IiuCdds8FksK1XzY6F_iElSnFuAH4f5Hz9JH97pEDD1hcw/exec';
-const CACHE_VERSION = 'v80'; // Полный сброс кэша под новый дизайн
+const CACHE_VERSION = 'v81'; // Сброс кэша
 const CACHE_TTL = 5 * 60 * 1000;
 const MIN_PROBABILITY = 57;
 
@@ -395,21 +399,48 @@ function escapeAttr(s) {
   return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
 }
 
-/* ---------- НАВИГАЦИЯ ---------- */
+/* ---------- НАВИГАЦИЯ И ДИНАМИЧЕСКИЙ ЗАГОЛОВОК ---------- */
 function switchNav(nav) {
   haptic('medium');
   currentNav = nav;
   currentLeague = 'all';
   document.querySelectorAll('.nav-btn').forEach(function(n) { n.classList.toggle('active', n.dataset.nav === nav); });
-  var leagueChips = document.getElementById('leagueChips');
-  leagueChips.style.display = (nav === 'matches') ? 'flex' : 'none';
+  
+  // Меняем заголовок
+  var titleEl = document.getElementById('dynamicTitle');
+  var subEl = document.getElementById('dynamicSub');
+  
+  if (nav === 'matches') {
+    titleEl.innerHTML = 'МАТЧИ НА СЕГОДНЯ';
+    subEl.innerHTML = 'Прогнозы с высокой вероятностью';
+    document.getElementById('counters').style.display = 'flex';
+    document.getElementById('leagueChips').style.display = 'flex';
+  } else if (nav === 'leagues') {
+    titleEl.innerHTML = 'РЕЙТИНГ ЛИГ';
+    subEl.innerHTML = 'Лучшие турниры по вероятности';
+    document.getElementById('counters').style.display = 'none';
+    document.getElementById('leagueChips').style.display = 'none';
+  } else if (nav === 'yesterday') {
+    titleEl.innerHTML = 'СТАТИСТИКА';
+    subEl.innerHTML = 'Результаты и ROI по неделям';
+    document.getElementById('counters').style.display = 'none';
+    document.getElementById('leagueChips').style.display = 'none';
+  } else if (nav === 'express') {
+    titleEl.innerHTML = 'ТОП-ЭКСПРЕСС';
+    subEl.innerHTML = 'Купон дня с максимальным кэфом';
+    document.getElementById('counters').style.display = 'none';
+    document.getElementById('leagueChips').style.display = 'none';
+  }
+  
   loadData();
 }
+
 function switchLeague(league) {
   haptic('light');
   currentLeague = league;
   if (currentNav === 'matches') renderMatchesList();
 }
+
 document.getElementById('bottomNav').addEventListener('click', function(e) {
   var btn = e.target.closest('.nav-btn');
   if (btn) switchNav(btn.dataset.nav);
@@ -660,6 +691,9 @@ function openLeagueFromList(leagueName) {
   currentLeague = leagueName;
   currentNav = 'matches';
   document.querySelectorAll('.nav-btn').forEach(function(n) { n.classList.toggle('active', n.dataset.nav === 'matches'); });
+  document.getElementById('dynamicTitle').innerHTML = 'МАТЧИ НА СЕГОДНЯ';
+  document.getElementById('dynamicSub').innerHTML = 'Прогнозы с высокой вероятностью';
+  document.getElementById('counters').style.display = 'flex';
   document.getElementById('leagueChips').style.display = 'flex';
   renderMatchesList();
 }
