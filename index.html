@@ -10,28 +10,30 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 :root {
-  --bg: #0a0f16;
-  --surface: rgba(22, 30, 44, 0.7);
-  --surface-solid: #161e2c;
+  --bg: #06090f;
+  --surface: rgba(18, 26, 38, 0.7);
+  --surface-solid: #121a26;
   --surface-hi: rgba(30, 41, 59, 0.8);
-  --border: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.06);
   --border-hi: rgba(16, 185, 129, 0.4);
   --text: #f8fafc;
   --text-dim: #94a3b8;
   --text-mute: #64748b;
   --mint: #10b981;
-  --mint-glow: rgba(16, 185, 129, 0.3);
-  --gold: #f59e0b;
-  --gold-glow: rgba(245, 158, 11, 0.3);
-  --danger: #f43f5e;
-  --danger-glow: rgba(244, 63, 94, 0.3);
+  --mint-glow: rgba(16, 185, 129, 0.35);
+  --gold: #fbbf24;
+  --gold-glow: rgba(251, 191, 36, 0.35);
+  --danger: #fb7185;
+  --danger-glow: rgba(251, 113, 133, 0.3);
+  --purple: #a78bfa;
+  --purple-glow: rgba(167, 139, 250, 0.3);
   --radius: 24px;
   --radius-sm: 16px;
-  --nav-h: 72px;
+  --nav-h: 76px;
 }
 body.light-theme {
-  --bg: #f8fafc;
-  --surface: rgba(255, 255, 255, 0.8);
+  --bg: #f1f5f9;
+  --surface: rgba(255, 255, 255, 0.85);
   --surface-solid: #ffffff;
   --surface-hi: rgba(241, 245, 249, 0.9);
   --border: rgba(0, 0, 0, 0.06);
@@ -50,23 +52,24 @@ body {
   -webkit-user-select: none;
   user-select: none;
   transition: background 0.3s ease, color 0.3s ease;
-  background-image: radial-gradient(circle at 10% 0%, rgba(16, 185, 129, 0.05) 0%, transparent 40%),
-                    radial-gradient(circle at 90% 100%, rgba(245, 158, 11, 0.05) 0%, transparent 40%);
+  background-image: 
+    radial-gradient(circle at 15% 0%, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 85% 100%, rgba(251, 191, 36, 0.06) 0%, transparent 40%);
 }
-::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--text-mute); border-radius: 10px; opacity: 0.3; }
 
 /* ---------- ШАПКА ---------- */
-.header { position: relative; padding: 32px 20px 16px; text-align: center; }
+.header { position: relative; padding: 36px 20px 16px; text-align: center; }
 .header-top { position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; }
 .icon-btn {
   width: 44px; height: 44px;
-  background: var(--surface); backdrop-filter: blur(12px);
+  background: var(--surface); backdrop-filter: blur(20px);
   border: 1px solid var(--border); border-radius: 50%;
   color: var(--text-dim); display: flex; align-items: center; justify-content: center;
   cursor: pointer; transition: all 0.2s ease;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 .icon-btn:active { transform: scale(0.92); color: var(--mint); border-color: var(--mint); }
 .icon-btn svg { width: 20px; height: 20px; stroke-width: 2.5; }
@@ -75,11 +78,12 @@ body {
 
 /* ДИНАМИЧЕСКИЙ ЗАГОЛОВОК */
 .header-title {
-  font-size: 26px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.15;
-  background: linear-gradient(135deg, var(--mint) 0%, #34d399 50%, var(--gold) 100%);
+  font-size: 28px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.15;
+  background: linear-gradient(135deg, var(--mint) 0%, #34d399 40%, var(--gold) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   margin-bottom: 6px; transition: all 0.3s ease;
-  min-height: 34px;
+  min-height: 36px;
+  text-shadow: 0 0 30px var(--mint-glow);
 }
 .header-sub {
   font-size: 11px; letter-spacing: 4px; color: var(--text-mute);
@@ -90,16 +94,18 @@ body {
 .counters { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
 .counter-chip {
   display: flex; align-items: center; gap: 12px;
-  padding: 10px 16px; background: var(--surface); backdrop-filter: blur(12px);
+  padding: 10px 18px; background: var(--surface); backdrop-filter: blur(20px);
   border: 1px solid var(--border); border-radius: 20px;
   font-size: 13px; font-weight: 700; color: var(--text-dim);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
 .counter-chip .label { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.2; }
 .counter-chip .label b { font-size: 13px; color: var(--text); }
 .counter-chip .label span { font-size: 10px; color: var(--text-mute); font-weight: 600; }
 .counter-chip .num {
-  font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 900;
-  color: var(--mint); padding-left: 12px; border-left: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 900;
+  color: var(--mint); padding-left: 14px; border-left: 1px solid var(--border);
+  text-shadow: 0 0 15px var(--mint-glow);
 }
 
 /* Чипы лиг */
@@ -107,71 +113,77 @@ body {
 .league-chips::-webkit-scrollbar { display: none; }
 .league-chip {
   flex: 0 0 auto; display: flex; align-items: center; gap: 6px;
-  padding: 8px 14px; background: var(--surface); border: 1px solid var(--border);
-  border-radius: 12px; font-size: 12px; font-weight: 700; color: var(--text-dim);
+  padding: 9px 16px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; font-size: 12px; font-weight: 700; color: var(--text-dim);
   cursor: pointer; white-space: nowrap; transition: all 0.2s ease;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
-.league-chip.active { background: var(--mint); color: #fff; border-color: var(--mint); box-shadow: 0 4px 15px var(--mint-glow); }
-.league-chip .cnt { font-family: 'JetBrains Mono', monospace; font-size: 10px; opacity: 0.9; margin-left: 4px; }
+.league-chip.active { 
+  background: linear-gradient(135deg, var(--mint), #059669); 
+  color: #fff; border-color: transparent; 
+  box-shadow: 0 4px 20px var(--mint-glow);
+}
+.league-chip .cnt { font-family: 'JetBrains Mono', monospace; font-size: 11px; opacity: 0.9; margin-left: 4px; }
 
 #content { padding: 0 20px 20px; }
 
 /* ---------- КАРТОЧКА МАТЧА ---------- */
 .card {
-  background: var(--surface); backdrop-filter: blur(20px);
+  background: var(--surface); backdrop-filter: blur(24px);
   border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 20px; margin-bottom: 16px;
+  padding: 22px; margin-bottom: 16px;
   position: relative; overflow: hidden;
   animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
   transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
 }
 .card:active { transform: scale(0.98); }
 @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
 .card.prob-high {
-  background: linear-gradient(180deg, rgba(245, 158, 11, 0.1) 0%, var(--surface) 100%);
-  border-color: rgba(245, 158, 11, 0.5);
-  box-shadow: 0 8px 30px rgba(245, 158, 11, 0.1);
+  background: linear-gradient(180deg, rgba(251, 191, 36, 0.12) 0%, var(--surface) 100%);
+  border-color: rgba(251, 191, 36, 0.5);
+  box-shadow: 0 8px 40px rgba(251, 191, 36, 0.15);
 }
 .card.prob-high::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--gold), #fcd34d); }
 
-.card.prob-mid { border-color: var(--border-hi); box-shadow: 0 4px 20px rgba(16, 185, 129, 0.05); }
+.card.prob-mid { border-color: var(--border-hi); box-shadow: 0 4px 30px rgba(16, 185, 129, 0.1); }
 .card.prob-mid::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--mint); }
 
 .top-badge {
-  position: absolute; top: 0; right: 20px; padding: 5px 12px;
-  background: linear-gradient(135deg, var(--gold), #fbbf24); color: #000;
-  font-size: 10px; font-weight: 900; letter-spacing: 1.5px; border-radius: 0 0 10px 10px;
-  box-shadow: 0 4px 15px var(--gold-glow); z-index: 2;
+  position: absolute; top: 0; right: 20px; padding: 6px 14px;
+  background: linear-gradient(135deg, var(--gold), #f59e0b); color: #000;
+  font-size: 10px; font-weight: 900; letter-spacing: 1.5px; border-radius: 0 0 12px 12px;
+  box-shadow: 0 4px 20px var(--gold-glow); z-index: 2;
 }
 
 /* Команды */
-.match-teams { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; padding-right: 50px; }
+.match-teams { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; padding-right: 50px; }
 .team-row { display: flex; align-items: center; gap: 12px; font-size: 17px; font-weight: 800; line-height: 1.25; }
 .team-row.away { color: var(--text-dim); }
-.team-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--mint); flex-shrink: 0; box-shadow: 0 0 10px var(--mint-glow); }
+.team-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--mint); flex-shrink: 0; box-shadow: 0 0 12px var(--mint-glow); }
 .team-row.away .team-dot { background: var(--text-mute); box-shadow: none; }
-.card.prob-high .team-dot { background: var(--gold); box-shadow: 0 0 10px var(--gold-glow); }
+.card.prob-high .team-dot { background: var(--gold); box-shadow: 0 0 12px var(--gold-glow); }
 
 /* Мета-чипы */
 .card-meta { display: flex; flex-wrap: wrap; gap: 8px; font-size: 11px; font-weight: 700; margin-bottom: 18px; }
-.meta-badge { display: flex; align-items: center; gap: 6px; background: var(--surface-hi); padding: 6px 12px; border-radius: 10px; color: var(--text-dim); }
-.meta-badge.league { color: var(--mint); background: rgba(16, 185, 129, 0.15); }
-.meta-badge.time { color: var(--gold); font-family: 'JetBrains Mono', monospace; background: rgba(245, 158, 11, 0.15); }
-.meta-badge.source { color: #818cf8; background: rgba(129, 140, 248, 0.15); }
+.meta-badge { display: flex; align-items: center; gap: 6px; background: var(--surface-hi); padding: 7px 12px; border-radius: 10px; color: var(--text-dim); border: 1px solid var(--border); }
+.meta-badge.league { color: var(--mint); background: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.2); }
+.meta-badge.time { color: var(--gold); font-family: 'JetBrains Mono', monospace; background: rgba(251, 191, 36, 0.12); border-color: rgba(251, 191, 36, 0.2); }
+.meta-badge.source { color: var(--purple); background: rgba(167, 139, 250, 0.12); border-color: rgba(167, 139, 250, 0.2); }
 
 /* Главный блок вероятности */
-.main-prob { background: var(--surface-hi); border-radius: var(--radius-sm); padding: 18px; margin-bottom: 16px; border: 1px solid var(--border); }
-.prob-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 14px; }
+.main-prob { background: var(--surface-hi); border-radius: var(--radius-sm); padding: 20px; margin-bottom: 18px; border: 1px solid var(--border); }
+.prob-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 16px; }
 .prob-title { font-size: 11px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
-.prob-big { font-family: 'JetBrains Mono', monospace; font-size: 42px; font-weight: 900; line-height: 0.9; }
-.prob-high .prob-big { color: var(--gold); text-shadow: 0 4px 20px var(--gold-glow); }
-.prob-mid .prob-big  { color: var(--mint); text-shadow: 0 4px 20px var(--mint-glow); }
+.prob-big { font-family: 'JetBrains Mono', monospace; font-size: 46px; font-weight: 900; line-height: 0.9; }
+.prob-high .prob-big { color: var(--gold); text-shadow: 0 4px 25px var(--gold-glow); }
+.prob-mid .prob-big  { color: var(--mint); text-shadow: 0 4px 25px var(--mint-glow); }
 
-.prob-bar { height: 8px; background: var(--surface); border-radius: 4px; overflow: hidden; margin-bottom: 14px; }
+.prob-bar { height: 8px; background: var(--surface-solid); border-radius: 4px; overflow: hidden; margin-bottom: 16px; }
 .prob-fill { height: 100%; border-radius: 4px; transition: width 1s cubic-bezier(0.16, 1, 0.3, 1); }
-.prob-high .prob-fill { background: linear-gradient(90deg, #fbbf24, var(--gold)); }
-.prob-mid .prob-fill  { background: linear-gradient(90deg, #34d399, var(--mint)); }
+.prob-high .prob-fill { background: linear-gradient(90deg, #fcd34d, var(--gold)); box-shadow: 0 0 10px var(--gold-glow); }
+.prob-mid .prob-fill  { background: linear-gradient(90deg, #34d399, var(--mint)); box-shadow: 0 0 10px var(--mint-glow); }
 
 .confidence { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .conf-label { font-size: 10px; font-weight: 800; color: var(--text-mute); text-transform: uppercase; letter-spacing: 1px; }
@@ -179,88 +191,97 @@ body {
 .prob-high .conf-value { color: var(--gold); }
 .prob-mid .conf-value  { color: var(--mint); }
 .conf-bar { display: flex; gap: 6px; }
-.conf-seg { flex: 1; height: 6px; border-radius: 3px; background: var(--surface); }
-.prob-high .conf-seg.on { background: var(--gold); }
-.prob-mid .conf-seg.on  { background: var(--mint); }
+.conf-seg { flex: 1; height: 6px; border-radius: 3px; background: var(--surface-solid); }
+.prob-high .conf-seg.on { background: var(--gold); box-shadow: 0 0 8px var(--gold-glow); }
+.prob-mid .conf-seg.on  { background: var(--mint); box-shadow: 0 0 8px var(--mint-glow); }
 
 /* Блок коэффициентов и экспресса */
-.odds-row { display: flex; gap: 10px; margin-bottom: 16px; }
-.odds-box { flex: 1; background: var(--surface-hi); border-radius: 12px; padding: 12px; text-align: center; border: 1px solid var(--border); }
-.odds-label { font-size: 10px; font-weight: 700; color: var(--text-mute); text-transform: uppercase; margin-bottom: 4px; }
-.odds-val { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 900; }
+.odds-row { display: flex; gap: 12px; margin-bottom: 18px; }
+.odds-box { flex: 1; background: var(--surface-hi); border-radius: 14px; padding: 14px; text-align: center; border: 1px solid var(--border); }
+.odds-label { font-size: 10px; font-weight: 800; color: var(--text-mute); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
+.odds-val { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 900; }
 
-.hint { display: flex; align-items: center; gap: 12px; padding: 14px; background: var(--surface); border-radius: var(--radius-sm); font-size: 12px; font-weight: 600; color: var(--text-dim); line-height: 1.4; border: 1px dashed var(--border); }
-.hint-icon { font-size: 18px; flex-shrink: 0; }
+.hint { display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--surface); border-radius: var(--radius-sm); font-size: 12px; font-weight: 600; color: var(--text-dim); line-height: 1.5; border: 1px dashed var(--border); }
+.hint-icon { font-size: 20px; flex-shrink: 0; }
 
 /* Лиги и Статистика */
-.stats-hero { text-align: center; margin: 20px 0 30px; }
-.stats-big { font-family: 'JetBrains Mono', monospace; font-size: 72px; font-weight: 900; line-height: 1; color: var(--text); }
-.stats-sub { font-size: 12px; color: var(--text-dim); font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-top: 8px; }
+.stats-hero { text-align: center; margin: 24px 0 32px; }
+.stats-big { font-family: 'JetBrains Mono', monospace; font-size: 76px; font-weight: 900; line-height: 1; color: var(--text); text-shadow: 0 0 40px rgba(255,255,255,0.1); }
+.stats-sub { font-size: 12px; color: var(--text-dim); font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-top: 10px; }
 
 .league-row {
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); padding: 16px; margin-bottom: 12px;
-  display: flex; flex-direction: column; gap: 10px;
+  border-radius: var(--radius-sm); padding: 18px; margin-bottom: 12px;
+  display: flex; flex-direction: column; gap: 12px;
   cursor: pointer; transition: transform 0.2s, border-color 0.2s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
 .league-row:active { transform: scale(0.98); border-color: var(--mint); }
 .league-header { display: flex; justify-content: space-between; align-items: center; }
-.league-name { font-size: 14px; font-weight: 800; }
-.league-acc { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 900; color: var(--mint); background: var(--mint-glow); padding: 4px 12px; border-radius: 10px; }
+.league-name { font-size: 15px; font-weight: 800; }
+.league-acc { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 900; color: var(--mint); background: var(--mint-glow); padding: 4px 14px; border-radius: 12px; box-shadow: 0 0 15px var(--mint-glow); }
 .league-counts { display: flex; gap: 16px; font-size: 12px; color: var(--text-mute); font-weight: 600; }
 .league-counts b { font-family: 'JetBrains Mono', monospace; color: var(--text); }
 .league-bar { height: 6px; background: var(--surface-hi); border-radius: 3px; overflow: hidden; }
-.league-fill { height: 100%; background: var(--mint); border-radius: 3px; }
+.league-fill { height: 100%; background: linear-gradient(90deg, var(--mint), #34d399); border-radius: 3px; box-shadow: 0 0 10px var(--mint-glow); }
 
 /* Экспресс */
 .express-hero {
   background: linear-gradient(135deg, #1e1b4b, #312e81);
-  border-radius: var(--radius); padding: 30px 20px; text-align: center; margin-bottom: 20px;
-  border: 1px solid rgba(99, 102, 241, 0.4); box-shadow: 0 10px 40px rgba(99, 102, 241, 0.2);
+  border-radius: var(--radius); padding: 36px 20px; text-align: center; margin-bottom: 24px;
+  border: 1px solid rgba(99, 102, 241, 0.5); box-shadow: 0 15px 50px rgba(99, 102, 241, 0.3);
+  position: relative; overflow: hidden;
 }
-.express-title { font-size: 13px; font-weight: 800; color: #a5b4fc; letter-spacing: 3px; text-transform: uppercase; }
-.express-odd { font-family: 'JetBrains Mono', monospace; font-size: 64px; font-weight: 900; color: #fff; line-height: 1; margin: 14px 0; text-shadow: 0 4px 20px rgba(255,255,255,0.2); }
-.express-sub { font-size: 12px; color: #818cf8; font-weight: 700; }
+.express-hero::before {
+  content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+  background: radial-gradient(circle, rgba(99,102,241,0.2) 0%, transparent 60%);
+  animation: rotate 10s linear infinite;
+}
+@keyframes rotate { 100% { transform: rotate(360deg); } }
+.express-title { font-size: 13px; font-weight: 800; color: #a5b4fc; letter-spacing: 4px; text-transform: uppercase; position: relative; }
+.express-odd { font-family: 'JetBrains Mono', monospace; font-size: 72px; font-weight: 900; color: #fff; line-height: 1; margin: 16px 0; text-shadow: 0 4px 30px rgba(255,255,255,0.3); position: relative; }
+.express-sub { font-size: 13px; color: #818cf8; font-weight: 700; position: relative; }
 
 /* Недели (Статистика) */
-.week-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 16px; }
-.week-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.week-title { font-size: 14px; font-weight: 800; color: var(--mint); }
-.week-stats { display: flex; gap: 12px; font-size: 12px; color: var(--text-dim); margin-bottom: 12px; background: var(--surface-hi); padding: 10px; border-radius: 12px; }
+.week-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+.week-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.week-title { font-size: 15px; font-weight: 800; color: var(--mint); }
+.week-stats { display: flex; gap: 14px; font-size: 13px; color: var(--text-dim); margin-bottom: 14px; background: var(--surface-hi); padding: 12px; border-radius: 14px; border: 1px solid var(--border); }
 .week-stat-item { display: flex; flex-direction: column; }
-.week-stat-item span { font-size: 10px; color: var(--text-mute); font-weight: 700; text-transform: uppercase; }
-.week-stat-item b { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--text); }
-.match-mini { display: flex; justify-content: space-between; font-size: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); color: var(--text-dim); }
+.week-stat-item span { font-size: 10px; color: var(--text-mute); font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
+.week-stat-item b { font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--text); }
+.match-mini { display: flex; justify-content: space-between; font-size: 13px; padding: 10px 0; border-bottom: 1px solid var(--border); color: var(--text-dim); }
 .match-mini:last-child { border-bottom: none; }
-.match-mini .score { font-family: 'JetBrains Mono', monospace; font-weight: 800; }
+.match-mini .score { font-family: 'JetBrains Mono', monospace; font-weight: 800; color: var(--text); }
 
 /* Скелетон / пусто */
-.skeleton { background: var(--surface); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; height: 200px; position: relative; overflow: hidden; }
+.skeleton { background: var(--surface); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; height: 220px; position: relative; overflow: hidden; }
 .skeleton::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent); animation: shimmer 1.5s infinite; }
 @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
 .empty { text-align: center; padding: 60px 20px; color: var(--text-mute); font-weight: 600; }
-.empty-icon { font-size: 52px; margin-bottom: 16px; opacity: 0.3; }
-.empty-btn { margin-top: 20px; padding: 14px 28px; background: var(--mint); color: #fff; border: none; border-radius: 100px; font-weight: 800; font-size: 14px; cursor: pointer; font-family: inherit; }
+.empty-icon { font-size: 56px; margin-bottom: 20px; opacity: 0.3; }
+.empty-btn { margin-top: 24px; padding: 16px 32px; background: linear-gradient(135deg, var(--mint), #059669); color: #fff; border: none; border-radius: 100px; font-weight: 800; font-size: 15px; cursor: pointer; font-family: inherit; box-shadow: 0 8px 25px var(--mint-glow); }
 .empty-btn:active { transform: scale(0.96); }
 
-.sync-line { text-align: center; font-size: 11px; color: var(--text-mute); font-weight: 600; margin-top: 20px; padding: 0 20px; line-height: 1.6; }
+.sync-line { text-align: center; font-size: 11px; color: var(--text-mute); font-weight: 600; margin-top: 24px; padding: 0 20px; line-height: 1.6; }
 
 /* Нижняя навигация */
 .bottom-nav {
   position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-h);
-  background: rgba(10, 15, 22, 0.85); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  background: rgba(6, 9, 15, 0.85); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
   border-top: 1px solid var(--border); display: flex; align-items: stretch; z-index: 50;
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
-body.light-theme .bottom-nav { background: rgba(255, 255, 255, 0.85); }
+body.light-theme .bottom-nav { background: rgba(255, 255, 255, 0.9); }
 .nav-btn {
-  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
-  padding: 8px 2px; background: none; border: none; color: var(--text-mute); font-size: 10px; font-weight: 800;
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  padding: 10px 2px; background: none; border: none; color: var(--text-mute); font-size: 10px; font-weight: 800;
   cursor: pointer; transition: color 0.2s; font-family: inherit;
 }
-.nav-btn svg { width: 22px; height: 22px; stroke-width: 2.2; }
+.nav-btn svg { width: 24px; height: 24px; stroke-width: 2.2; transition: transform 0.2s; }
 .nav-btn.active { color: var(--mint); }
+.nav-btn.active svg { transform: translateY(-2px); filter: drop-shadow(0 0 8px var(--mint-glow)); }
 </style>
 </head>
 <body>
@@ -275,7 +296,6 @@ body.light-theme .bottom-nav { background: rgba(255, 255, 255, 0.85); }
     </div>
   </div>
   
-  <!-- ДИНАМИЧЕСКИЙ ЗАГОЛОВОК -->
   <div class="header-title" id="dynamicTitle">МАТЧИ НА СЕГОДНЯ</div>
   <div class="header-sub" id="dynamicSub">Прогнозы с высокой вероятностью</div>
 
@@ -313,7 +333,7 @@ body.light-theme .bottom-nav { background: rgba(255, 255, 255, 0.85); }
 
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycbxW52PKcn0Mh2L6yjQ5-5IiuCdds8FksK1XzY6F_iElSnFuAH4f5Hz9JH97pEDD1hcw/exec';
-const CACHE_VERSION = 'v81'; // Сброс кэша
+const CACHE_VERSION = 'v82'; // Сброс кэша
 const CACHE_TTL = 5 * 60 * 1000;
 const MIN_PROBABILITY = 57;
 
@@ -355,7 +375,7 @@ function haptic(s) {
 
 function showToast(text) {
   var el = document.createElement('div');
-  el.style.cssText = 'position:fixed;bottom:calc(var(--nav-h) + 20px);left:20px;right:20px;background:var(--surface-solid);color:var(--text);padding:14px 18px;border-radius:16px;font-size:13px;font-weight:600;text-align:center;z-index:100;box-shadow:0 8px 30px rgba(0,0,0,0.3);border:1px solid var(--border);';
+  el.style.cssText = 'position:fixed;bottom:calc(var(--nav-h) + 20px);left:20px;right:20px;background:var(--surface-solid);color:var(--text);padding:16px 20px;border-radius:18px;font-size:13px;font-weight:600;text-align:center;z-index:100;box-shadow:0 8px 40px rgba(0,0,0,0.4);border:1px solid var(--border);';
   el.textContent = text;
   document.body.appendChild(el);
   setTimeout(function() { el.style.transition = 'opacity 0.3s'; el.style.opacity = '0'; }, 2700);
@@ -406,7 +426,6 @@ function switchNav(nav) {
   currentLeague = 'all';
   document.querySelectorAll('.nav-btn').forEach(function(n) { n.classList.toggle('active', n.dataset.nav === nav); });
   
-  // Меняем заголовок
   var titleEl = document.getElementById('dynamicTitle');
   var subEl = document.getElementById('dynamicSub');
   
@@ -671,7 +690,7 @@ function renderLeagues(data) {
     return;
   }
 
-  var html = '<div class="stats-hero"><div class="stats-big" style="font-size:52px">' + list.length + '</div><div class="stats-sub">Активных лиг</div></div>';
+  var html = '<div class="stats-hero"><div class="stats-big" style="font-size:56px">' + list.length + '</div><div class="stats-sub">Активных лиг</div></div>';
   list.forEach(function(lg) {
     html += '<div class="league-row" onclick="openLeagueFromList(\'' + escapeAttr(lg.name) + '\')">';
     html += '<div class="league-header">';
@@ -710,8 +729,8 @@ function renderYesterday(data) {
   var html = '<div class="stats-hero"><div class="stats-big">' + accuracy + '%</div><div class="stats-sub">Общая точность</div></div>';
   
   html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;">';
-  html += '<div class="league-row" style="align-items:center;padding:20px;"><div style="font-size:32px;font-weight:900;color:var(--mint);font-family:JetBrains Mono">' + wins + '</div><div style="font-size:11px;color:var(--text-mute);font-weight:800;letter-spacing:1px;margin-top:4px;">ЗАШЛО</div></div>';
-  html += '<div class="league-row" style="align-items:center;padding:20px;"><div style="font-size:32px;font-weight:900;color:var(--danger);font-family:JetBrains Mono">' + loses + '</div><div style="font-size:11px;color:var(--text-mute);font-weight:800;letter-spacing:1px;margin-top:4px;">НЕ ЗАШЛО</div></div>';
+  html += '<div class="league-row" style="align-items:center;padding:24px;"><div style="font-size:36px;font-weight:900;color:var(--mint);font-family:JetBrains Mono">' + wins + '</div><div style="font-size:11px;color:var(--text-mute);font-weight:800;letter-spacing:1px;margin-top:6px;">ЗАШЛО</div></div>';
+  html += '<div class="league-row" style="align-items:center;padding:24px;"><div style="font-size:36px;font-weight:900;color:var(--danger);font-family:JetBrains Mono">' + loses + '</div><div style="font-size:11px;color:var(--text-mute);font-weight:800;letter-spacing:1px;margin-top:6px;">НЕ ЗАШЛО</div></div>';
   html += '</div>';
 
   // Группировка по неделям (если сервер отдал данные по неделям)
@@ -771,7 +790,7 @@ function renderExpress(data) {
     var odd = parseFloat(m.odd) || 1;
     html += '<div class="card prob-mid" style="animation-delay:' + (i*0.05) + 's">';
     html += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">';
-    html += '<div style="width:32px;height:32px;background:var(--mint);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;flex-shrink:0;">' + (i+1) + '</div>';
+    html += '<div style="width:32px;height:32px;background:var(--mint);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;flex-shrink:0;box-shadow:0 0 15px var(--mint-glow);">' + (i+1) + '</div>';
     html += '<div style="font-weight:800;font-size:15px;line-height:1.3;">' + escapeHtml(m.home) + ' — ' + escapeHtml(m.away) + '</div>';
     html += '</div>';
     
