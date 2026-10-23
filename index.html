@@ -318,7 +318,7 @@ body.light-theme .bottom-nav { background: rgba(255, 255, 255, 0.9); }
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycbxW52PKcn0Mh2L6yjQ5-5IiuCdds8FksK1XzY6F_iElSnFuAH4f5Hz9JH97pEDD1hcw/exec';
 const BONUS_URL = 'https://baltbet.ru/account/register?refpromo=1221753';
-const CACHE_VERSION = 'v96';
+const CACHE_VERSION = 'v97'; // Сброс кэша
 const CACHE_TTL = 5 * 60 * 1000;
 const MIN_PROBABILITY = 57;
 
@@ -471,7 +471,8 @@ async function loadData(forceNetwork) {
   if (forceNetwork === undefined) forceNetwork = false;
   var content = document.getElementById('content');
   var key = currentNav;
-  var action = currentNav === 'stats' ? 'yesterday' : currentNav;
+  // ✅ ИСПРАВЛЕНИЕ: для 'stats' запрашиваем 'yesterday', для 'leagues' — 'leagues'
+  var action = currentNav === 'stats' ? 'yesterday' : (currentNav === 'leagues' ? 'leagues' : currentNav);
 
   var cached = !forceNetwork ? getCache(key) : null;
   if (cached) {
@@ -631,24 +632,7 @@ function shareMatch(jsonStr) {
 /* ---------- ЛИГИ (АККОРДЕОН) ---------- */
 function renderLeagues(data) {
   var content = document.getElementById('content');
-  var arr = Array.isArray(data) ? data : [];
-
-  var map = {};
-  arr.forEach(function(m) {
-    var prob = parseInt(m.probability) || 0;
-    if (prob < MIN_PROBABILITY) return;
-    var lg = m.league || 'Лига';
-    if (!map[lg]) map[lg] = { name: lg, total: 0, maxProb: 0, matches: [] };
-    map[lg].total++;
-    if (prob > map[lg].maxProb) map[lg].maxProb = prob;
-    map[lg].matches.push({
-      home: m.home, away: m.away,
-      prob: prob, odd: m.odd,
-      time: m.time || '—'
-    });
-  });
-
-  var list = Object.keys(map).map(function(k) { return map[k]; }).sort(function(a, b) { return (b.maxProb) - (a.maxProb); });
+  var list = Array.isArray(data) ? data : [];
 
   if (!list.length) {
     content.innerHTML = '<div class="empty"><div class="empty-icon">🏆</div>Пока нет лиг с матчами не ниже ' + MIN_PROBABILITY + '%<br><button class="empty-btn" onclick="manualRefresh()">Обновить</button></div>';
@@ -668,10 +652,10 @@ function renderLeagues(data) {
     html += '</div>';
     
     html += '<div class="league-acc-content" id="content_' + idx + '">';
-    lg.matches.sort((a, b) => b.prob - a.prob).forEach(function(m) {
+    (lg.matches || []).sort((a, b) => b.prob - a.prob).forEach(function(m) {
       html += '<div class="league-acc-match">';
       html += '<div><div class="acc-match-teams">' + escapeHtml(m.home) + ' — ' + escapeHtml(m.away) + '</div><div class="acc-match-time">' + escapeHtml(m.time) + '</div></div>';
-      html += '<div style="text-align:right;"><div class="acc-match-prob">' + m.prob + '%</div><div style="font-size:11px; color:var(--gold); font-family:JetBrains Mono; font-weight:800;">' + escapeHtml(m.odd) + '</div></div>';
+      html += '<div style="text-align:right;"><div class="acc-match-prob">' + m.prob + '%</div><div style="font-size:11px; color:var(--gold); font-family:JetBrains Mono; font-weight:800;">' + escapeHtml(m.odd || '—') + '</div></div>';
       html += '</div>';
     });
     html += '</div>';
@@ -698,7 +682,7 @@ function toggleLeagueAccordion(idx) {
 /* ---------- СТАТИСТИКА ---------- */
 function renderStats(data) {
   var content = document.getElementById('content');
-  if (!data || !data.matches || data.matches.length === 0) {
+  if (!data || (!data.matches && !data.weeks)) {
     content.innerHTML = '<div class="empty"><div class="empty-icon">📊</div>Пока нет завершенных матчей для статистики</div>';
     return;
   }
