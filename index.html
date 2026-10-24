@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>TOTAL 2.5 PRO — AI Analytics</title>
+<title>TOTAL 2.5 PRO</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,31 +11,22 @@
 <style>
   :root {
     --bg-base: #030712;
-    --bg-surface: rgba(17, 24, 39, 0.7);
-    --bg-surface-elevated: rgba(31, 41, 55, 0.75);
-    --border-subtle: rgba(255, 255, 255, 0.07);
-    --border-glow: rgba(0, 245, 155, 0.35);
+    --bg-surface: rgba(17, 24, 39, 0.75);
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-focus: rgba(0, 245, 155, 0.4);
     
     --text-primary: #F9FAFB;
     --text-muted: #9CA3AF;
-    --text-dim: #6B7280;
 
     --neon-mint: #00F59B;
     --neon-cyan: #06B6D4;
     --neon-gold: #F59E0B;
     --neon-rose: #F43F5E;
-    --neon-indigo: #6366F1;
 
-    --radius-card: 22px;
-    --radius-sm: 12px;
+    --radius-card: 20px;
   }
 
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    -webkit-tap-highlight-color: transparent;
-  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
   body {
     font-family: 'Plus Jakarta Sans', sans-serif;
@@ -45,153 +36,134 @@
     padding-bottom: 96px;
     background-image: 
       radial-gradient(circle at 10% 0%, rgba(0, 245, 155, 0.12) 0%, transparent 45%),
-      radial-gradient(circle at 90% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
-      radial-gradient(circle at 50% 90%, rgba(245, 158, 11, 0.06) 0%, transparent 50%);
+      radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.08) 0%, transparent 40%);
     background-attachment: fixed;
-    letter-spacing: -0.2px;
   }
 
-  /* Экран загрузки */
   #loader {
     position: fixed; inset: 0; background: var(--bg-base);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 14px; z-index: 9999; transition: opacity 0.3s;
+    gap: 12px; z-index: 9999; transition: opacity 0.3s;
   }
   .ring-loader {
-    width: 44px; height: 44px; border: 3px solid rgba(0, 245, 155, 0.12);
+    width: 40px; height: 40px; border: 3px solid rgba(0, 245, 155, 0.15);
     border-top-color: var(--neon-mint); border-radius: 50%;
-    animation: spin 0.75s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
-    box-shadow: 0 0 20px rgba(0, 245, 155, 0.2);
+    animation: spin 0.8s linear infinite;
   }
   @keyframes spin { 100% { transform: rotate(360deg); } }
 
-  /* Шапка */
-  header {
-    padding: 20px 20px 10px;
-  }
-  .top-meta {
-    display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
-  }
+  header { padding: 18px 18px 8px; }
+  .top-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
   .badge-ai {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 10px; font-weight: 800; letter-spacing: 1.2px;
-    color: var(--neon-mint); background: rgba(0, 245, 155, 0.08);
-    padding: 5px 12px; border-radius: 100px; border: 1px solid rgba(0, 245, 155, 0.25);
+    display: inline-flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 800;
+    color: var(--neon-mint); background: rgba(0, 245, 155, 0.08); padding: 5px 12px;
+    border-radius: 100px; border: 1px solid rgba(0, 245, 155, 0.25);
   }
-  .pulse-dot {
-    width: 6px; height: 6px; background: var(--neon-mint); border-radius: 50%;
-    box-shadow: 0 0 10px var(--neon-mint);
-  }
-  .share-header-btn {
+  .pulse-dot { width: 6px; height: 6px; background: var(--neon-mint); border-radius: 50%; box-shadow: 0 0 10px var(--neon-mint); }
+  
+  .header-actions { display: flex; gap: 8px; }
+  .btn-header-act {
     background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-subtle);
     color: var(--text-primary); padding: 6px 12px; border-radius: 12px; font-size: 11px;
-    font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;
-    backdrop-filter: blur(8px);
+    font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px;
+    text-decoration: none;
   }
-  .share-header-btn:active { transform: scale(0.95); }
+  .btn-header-act:active { transform: scale(0.95); }
 
   h1 {
-    font-size: 26px; font-weight: 900; letter-spacing: -0.8px;
-    background: linear-gradient(135deg, #FFFFFF 40%, var(--neon-mint) 100%);
+    font-size: 26px; font-weight: 900; letter-spacing: -0.6px;
+    background: linear-gradient(135deg, #FFF 50%, var(--neon-mint) 100%);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
 
-  /* Стеклянный дашборд */
+  /* HUD */
   .stats-hud {
     display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
-    margin: 8px 18px 14px; padding: 12px 14px;
-    background: var(--bg-surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--border-subtle); border-radius: 18px;
+    margin: 8px 18px 12px; padding: 12px;
+    background: var(--bg-surface); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-subtle); border-radius: 16px;
   }
   .hud-col { text-align: center; }
   .hud-num { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 900; }
   .hud-tag { font-size: 9px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-top: 2px; }
 
-  /* Фильтры лиг */
+  /* Поиск и фильтры */
+  .search-container {
+    padding: 0 18px 10px;
+    display: flex; gap: 8px;
+  }
+  .search-input-box {
+    flex: 1; position: relative; display: flex; align-items: center;
+  }
+  .search-input {
+    width: 100%; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-subtle);
+    border-radius: 12px; padding: 8px 12px 8px 34px; color: var(--text-primary);
+    font-size: 12px; font-family: inherit; font-weight: 600; outline: none; transition: border-color 0.2s;
+  }
+  .search-input:focus { border-color: var(--border-focus); }
+  .search-icon { position: absolute; left: 11px; width: 14px; height: 14px; stroke: var(--text-muted); fill: none; stroke-width: 2; }
+  
+  .sort-toggle-btn {
+    background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-subtle);
+    color: var(--text-muted); border-radius: 12px; padding: 0 12px; font-size: 11px;
+    font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px;
+    flex-shrink: 0;
+  }
+  .sort-toggle-btn.active { color: var(--neon-mint); border-color: var(--neon-mint); }
+
+  /* Статусные чипсы (Все / Live / Скоро / Value) */
+  .status-chips-bar {
+    display: flex; gap: 6px; padding: 0 18px 10px; overflow-x: auto; scrollbar-width: none;
+  }
+  .status-chips-bar::-webkit-scrollbar { display: none; }
+  .status-chip {
+    flex-shrink: 0; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-subtle);
+    color: var(--text-muted); padding: 5px 12px; border-radius: 100px; font-size: 10px;
+    font-weight: 800; cursor: pointer; transition: all 0.2s; text-transform: uppercase;
+  }
+  .status-chip.active { background: rgba(255, 255, 255, 0.12); color: #fff; border-color: rgba(255,255,255,0.3); }
+
+  /* Скролл лиг со счётчиками */
   .league-scroll {
-    display: flex; gap: 8px; padding: 0 18px 14px; overflow-x: auto; scrollbar-width: none;
+    display: flex; gap: 6px; padding: 0 18px 14px; overflow-x: auto; scrollbar-width: none;
   }
   .league-scroll::-webkit-scrollbar { display: none; }
   .pill-chip {
     flex-shrink: 0; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-subtle);
-    color: var(--text-muted); padding: 7px 14px; border-radius: 100px; font-size: 11px;
-    font-weight: 700; cursor: pointer; transition: all 0.2s;
+    color: var(--text-muted); padding: 6px 12px; border-radius: 100px; font-size: 11px;
+    font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+  }
+  .pill-chip .count {
+    background: rgba(255, 255, 255, 0.08); font-size: 10px; font-weight: 800;
+    padding: 1px 6px; border-radius: 10px; font-family: 'JetBrains Mono', monospace;
   }
   .pill-chip.active {
     background: rgba(0, 245, 155, 0.12); border-color: var(--neon-mint); color: var(--neon-mint);
-    box-shadow: 0 0 16px rgba(0, 245, 155, 0.15);
   }
+  .pill-chip.active .count { background: var(--neon-mint); color: #030712; }
 
-  /* Реферальный промо-баннер */
-  .promo-glow-card {
-    display: flex; align-items: center; justify-content: space-between;
-    margin: 0 18px 16px; padding: 14px 18px;
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(245, 158, 11, 0.04));
-    border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 18px;
-    text-decoration: none; color: #fff; position: relative; overflow: hidden;
-  }
-  .promo-glow-card::after {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
-    transform: translateX(-100%); animation: shimmer 3s infinite;
-  }
-  @keyframes shimmer { 100% { transform: translateX(100%); } }
-  .promo-title { font-size: 13px; font-weight: 900; color: var(--neon-gold); }
-  .promo-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-  .promo-btn-tag {
-    background: var(--neon-gold); color: #030712; font-size: 11px; font-weight: 900;
-    padding: 7px 12px; border-radius: 10px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-  }
+  main { padding: 0 18px; display: flex; flex-direction: column; gap: 12px; }
 
-  /* Основной контейнер */
-  main {
-    padding: 0 18px; display: flex; flex-direction: column; gap: 14px;
-  }
-
-  /* Карточка Hero (Матч дня) */
-  .match-card.hero {
-    background: linear-gradient(145deg, rgba(31, 41, 55, 0.8), rgba(17, 24, 39, 0.95));
-    border-color: var(--border-glow);
-    box-shadow: 0 10px 32px rgba(0, 245, 155, 0.15);
-  }
-  .hero-ribbon {
-    position: absolute; top: 0; right: 0;
-    background: linear-gradient(135deg, var(--neon-mint), #00ba78);
-    color: #030712; font-size: 9px; font-weight: 900; letter-spacing: 0.5px;
-    padding: 4px 12px; border-bottom-left-radius: 12px;
-  }
-
-  /* Карточка события */
   .match-card {
-    background: var(--bg-surface);
-    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    background: var(--bg-surface); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--border-subtle); border-radius: var(--radius-card);
     padding: 16px; position: relative; overflow: hidden;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-    animation: fadeIn 0.35s ease both;
+    transition: opacity 0.2s;
   }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+  .match-card.finished { opacity: 0.65; }
 
-  .card-header-line {
-    display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
-  }
+  .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
   .league-label {
     font-size: 11px; font-weight: 700; color: var(--text-muted);
     background: rgba(255, 255, 255, 0.04); padding: 4px 10px; border-radius: 8px;
   }
   .badges-group { display: flex; gap: 5px; align-items: center; }
-  
-  .badge-tag {
-    font-size: 9px; font-weight: 800; padding: 3px 7px; border-radius: 6px;
-  }
+  .badge-tag { font-size: 9px; font-weight: 800; padding: 3px 7px; border-radius: 6px; }
   .badge-val { background: rgba(6, 182, 212, 0.15); border: 1px solid var(--neon-cyan); color: var(--neon-cyan); }
   .badge-drop { background: rgba(244, 63, 94, 0.15); border: 1px solid var(--neon-rose); color: var(--neon-rose); }
-  .badge-live { background: rgba(244, 63, 94, 0.2); border: 1px solid var(--neon-rose); color: var(--neon-rose); animation: liveFlash 1.5s infinite; }
+  .badge-live { background: rgba(244, 63, 94, 0.2); border: 1px solid var(--neon-rose); color: var(--neon-rose); }
   .badge-won { background: rgba(0, 245, 155, 0.2); border: 1px solid var(--neon-mint); color: var(--neon-mint); }
-  @keyframes liveFlash { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
   .teams-matchup {
     display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; margin-bottom: 14px;
@@ -199,34 +171,22 @@
   .team-name { font-size: 14px; font-weight: 800; line-height: 1.25; }
   .team-name.home { text-align: left; }
   .team-name.away { text-align: right; }
-
   .match-indicator {
     font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 900;
-    padding: 5px 10px; border-radius: 10px;
-    background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-subtle);
-    color: var(--neon-gold); text-align: center;
+    padding: 5px 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-subtle); color: var(--neon-gold); text-align: center;
   }
-  .match-indicator.live {
-    color: var(--neon-mint); border-color: var(--neon-mint); background: rgba(0, 245, 155, 0.12);
-  }
+  .match-indicator.live { color: var(--neon-mint); border-color: var(--neon-mint); background: rgba(0, 245, 155, 0.12); }
 
-  /* Прогресс-бар */
   .prob-meter { margin-bottom: 14px; }
   .prob-meta {
     display: flex; justify-content: space-between; font-size: 10px; font-weight: 800; color: var(--text-muted);
     margin-bottom: 6px;
   }
-  .prob-meter-bg {
-    height: 6px; background: rgba(255, 255, 255, 0.06); border-radius: 100px; overflow: hidden;
-  }
-  .prob-meter-fill {
-    height: 100%; border-radius: 100px;
-    background: linear-gradient(90deg, #059669, var(--neon-mint));
-    transition: width 0.8s ease;
-  }
+  .prob-meter-bg { height: 6px; background: rgba(255, 255, 255, 0.06); border-radius: 100px; overflow: hidden; }
+  .prob-meter-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, #059669, var(--neon-mint)); }
 
-  /* Футер карточки */
-  .card-footer-action {
+  .card-footer {
     display: flex; justify-content: space-between; align-items: center;
     padding-top: 12px; border-top: 1px solid var(--border-subtle);
   }
@@ -235,12 +195,10 @@
   .kef-figure { font-family: 'JetBrains Mono', monospace; font-size: 19px; font-weight: 900; color: var(--neon-mint); }
 
   .actions-cluster { display: flex; gap: 8px; align-items: center; }
-  
   .btn-bet-ref {
     background: linear-gradient(135deg, var(--neon-mint), #00c77b);
     color: #030712; font-size: 11px; font-weight: 900; padding: 7px 14px; border-radius: 10px;
     text-decoration: none; display: flex; align-items: center; gap: 5px;
-    box-shadow: 0 4px 14px rgba(0, 245, 155, 0.25);
   }
   .btn-bet-ref:active { transform: scale(0.95); }
 
@@ -256,15 +214,9 @@
   .express-ticket {
     background: linear-gradient(145deg, rgba(31, 41, 55, 0.9), rgba(17, 24, 39, 0.95));
     border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 24px; padding: 20px;
-    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
   }
-  .ticket-top-banner {
-    text-align: center; border-bottom: 1px dashed rgba(255, 255, 255, 0.15); padding-bottom: 14px;
-  }
-  .ticket-kef-hero {
-    font-family: 'JetBrains Mono', monospace; font-size: 42px; font-weight: 900; color: #fff;
-    text-shadow: 0 0 24px rgba(0, 245, 155, 0.3);
-  }
+  .ticket-top { text-align: center; border-bottom: 1px dashed rgba(255, 255, 255, 0.15); padding-bottom: 14px; }
+  .ticket-kef-hero { font-family: 'JetBrains Mono', monospace; font-size: 42px; font-weight: 900; color: #fff; }
 
   .calc-payout-box {
     margin: 14px 0; background: rgba(0, 0, 0, 0.35); padding: 12px; border-radius: 14px;
@@ -277,10 +229,10 @@
   }
   .chip-amount.active { background: var(--neon-mint); color: #030712; border-color: var(--neon-mint); }
 
-  /* Нижний навигационный бар */
+  /* Док навигации */
   .dock-nav {
     position: fixed; bottom: 0; left: 0; right: 0;
-    background: rgba(3, 7, 18, 0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    background: rgba(3, 7, 18, 0.94); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
     border-top: 1px solid var(--border-subtle); display: flex; padding: 8px 12px 22px; z-index: 100;
   }
   .dock-btn {
@@ -291,13 +243,11 @@
   .dock-btn.active { color: var(--neon-mint); }
   .dock-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; }
 
-  /* Уведомление Toast */
   #toast {
     position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-100px);
     background: #111827; border: 1px solid var(--neon-mint); color: #fff;
     padding: 9px 20px; border-radius: 100px; font-size: 11px; font-weight: 800;
-    z-index: 10000; transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 8px 24px rgba(0, 245, 155, 0.25);
+    z-index: 10000; transition: transform 0.25s ease;
   }
   #toast.show { transform: translateX(-50%) translateY(0); }
 
@@ -311,20 +261,25 @@
   <div style="font-size: 11px; font-weight: 800; color: var(--text-muted);">ПОЛУЧЕНИЕ AI-СИГНАЛОВ...</div>
 </div>
 
-<div id="toast">✅ Прогноз скопирован в буфер!</div>
+<div id="toast">✅ Скопировано в буфер!</div>
 
 <header>
   <div class="top-meta">
     <div class="badge-ai"><div class="pulse-dot"></div> AI PREDICTION HUB</div>
-    <button class="share-header-btn" onclick="shareApp()">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-      Поделиться
-    </button>
+    <div class="header-actions">
+      <a href="https://baltbet.ru/account/register?refpromo=1221753" target="_blank" class="btn-header-act" style="color: var(--neon-gold); border-color: rgba(245,158,11,0.3);">
+        🎁 10 000 ₽
+      </a>
+      <button class="btn-header-act" onclick="shareApp()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Поделиться
+      </button>
+    </div>
   </div>
   <h1>ТОТАЛ БОЛЬШЕ 2.5</h1>
 </header>
 
-<!-- HUD Сводка дня -->
+<!-- HUD -->
 <div class="stats-hud">
   <div class="hud-col">
     <div class="hud-num" id="hud-matches">—</div>
@@ -344,24 +299,33 @@
   </div>
 </div>
 
-<!-- Фильтр лиг -->
-<div class="league-scroll" id="leagues-container">
-  <button class="pill-chip active" onclick="selectLeague('ALL')">Все лиги</button>
+<!-- Поиск и переключатель сортировки -->
+<div class="search-container" id="search-box-wrap">
+  <div class="search-input-box">
+    <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    <input type="text" class="search-input" id="match-search" placeholder="Поиск по команде..." oninput="handleSearch(this.value)">
+  </div>
+  <button class="sort-toggle-btn" id="sort-btn" onclick="toggleSort()">
+    <span id="sort-label">⚡ Топ %</span>
+  </button>
 </div>
 
-<!-- Реферальный баннер -->
-<a href="https://baltbet.ru/account/register?refpromo=1221753" target="_blank" class="promo-glow-card">
-  <div>
-    <div class="promo-title">🎁 ФРИБЕТ ДО 10 000 ₽</div>
-    <div class="promo-desc">Бонус к депозиту для ставок на ТБ 2.5</div>
-  </div>
-  <div class="promo-btn-tag">ЗАБРАТЬ</div>
-</a>
+<!-- Статусные чипсы -->
+<div class="status-chips-bar" id="status-chips-wrap">
+  <button class="status-chip active" onclick="setStatusFilter('ALL')">Все</button>
+  <button class="status-chip" onclick="setStatusFilter('LIVE')">🔴 Live</button>
+  <button class="status-chip" onclick="setStatusFilter('UPCOMING')">⏳ Скоро</button>
+  <button class="status-chip" onclick="setStatusFilter('VALUE')">💎 Value</button>
+</div>
 
-<!-- Список матчей -->
+<!-- Скролл лиг -->
+<div class="league-scroll" id="leagues-container">
+  <button class="pill-chip active" onclick="selectLeague('ALL')">Все лиги <span class="count">0</span></button>
+</div>
+
 <main id="app"></main>
 
-<!-- Нижняя навигация -->
+<!-- Док навигации -->
 <nav class="dock-nav">
   <button class="dock-btn active" data-tab="today" onclick="switchView('today')">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
@@ -384,6 +348,9 @@ const REF_LINK = 'https://baltbet.ru/account/register?refpromo=1221753';
 let activeTab = 'today';
 let cachedMatches = [];
 let activeLeague = 'ALL';
+let activeStatusFilter = 'ALL';
+let currentSearch = '';
+let currentSort = 'PROB'; // 'PROB' | 'TIME' | 'ODD'
 let currentStake = 1000;
 
 const tg = window.Telegram?.WebApp;
@@ -401,7 +368,6 @@ function triggerToast(text) {
   setTimeout(() => t.classList.remove('show'), 2000);
 }
 
-// Универсальный шеринг
 async function sharePrediction(home, away, odd, prob) {
   if (tg) tg.HapticFeedback?.impactOccurred('light');
   const text = `⚽ ${home} — ${away}\n🎯 Сигнал: Тотал Больше 2.5\n📊 Вероятность: ${prob}% | Кэф: ${odd}\n\nСмотри в TOTAL 2.5 PRO:`;
@@ -420,7 +386,7 @@ async function sharePrediction(home, away, odd, prob) {
 
 async function shareApp() {
   if (tg) tg.HapticFeedback?.impactOccurred('medium');
-  const text = '🔥 Рекомендую приложение с математической аналитикой на ТБ 2.5 по Пуассону:';
+  const text = '🔥 Рекомендую приложение с математической аналитикой на ТБ 2.5:';
   const url = 'https://t.me/total25_signals_bot/app';
 
   if (navigator.share) {
@@ -442,16 +408,16 @@ async function fetchData() {
   try {
     const res = await fetch(`${API_URL}?action=${action}&_t=${Date.now()}`);
     const json = await res.json();
-    const data = json.data !== undefined ? json.data : json;
+    const data = (json && json.data !== undefined) ? json.data : json;
 
     if (activeTab === 'today') {
       cachedMatches = Array.isArray(data) ? data : [];
-      renderLeagues(cachedMatches);
       renderHUD(cachedMatches);
+      renderLeagues(cachedMatches);
     }
     renderView(data);
   } catch(e) {
-    app.innerHTML = '<div class="state-empty">⚠️ Не удалось связаться с базой. Попробуйте обновить страницу.</div>';
+    app.innerHTML = '<div class="state-empty">⚠️ Не удалось связаться с базой. Проверьте развёртывание веб-приложения.</div>';
   }
 }
 
@@ -466,12 +432,17 @@ function renderHUD(matches) {
 
 function renderLeagues(matches) {
   const container = document.getElementById('leagues-container');
-  const set = new Set();
-  matches.forEach(m => { if (m.league) set.add(m.league.trim()); });
+  const map = new Map();
 
-  let html = `<button class="pill-chip ${activeLeague === 'ALL' ? 'active' : ''}" onclick="selectLeague('ALL')">Все лиги</button>`;
-  set.forEach(lg => {
-    html += `<button class="pill-chip ${activeLeague === lg ? 'active' : ''}" onclick="selectLeague('${lg}')">${lg}</button>`;
+  matches.forEach(m => {
+    const lg = (m.league || 'Лига').trim();
+    map.set(lg, (map.get(lg) || 0) + 1);
+  });
+
+  let html = `<button class="pill-chip ${activeLeague === 'ALL' ? 'active' : ''}" onclick="selectLeague('ALL')">Все лиги <span class="count">${matches.length}</span></button>`;
+  
+  map.forEach((count, lg) => {
+    html += `<button class="pill-chip ${activeLeague === lg ? 'active' : ''}" onclick="selectLeague('${lg}')">${lg} <span class="count">${count}</span></button>`;
   });
   container.innerHTML = html;
 }
@@ -483,26 +454,94 @@ function selectLeague(lg) {
   renderView(cachedMatches);
 }
 
+function setStatusFilter(status) {
+  if (tg) tg.HapticFeedback?.selectionChanged();
+  activeStatusFilter = status;
+  document.querySelectorAll('.status-chip').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.includes(status) || (status === 'ALL' && btn.textContent === 'Все'));
+  });
+  renderView(cachedMatches);
+}
+
+function handleSearch(val) {
+  currentSearch = (val || '').toLowerCase().trim();
+  renderView(cachedMatches);
+}
+
+function toggleSort() {
+  if (tg) tg.HapticFeedback?.impactOccurred('light');
+  const label = document.getElementById('sort-label');
+  if (currentSort === 'PROB') {
+    currentSort = 'TIME';
+    label.textContent = '⏰ По времени';
+  } else if (currentSort === 'TIME') {
+    currentSort = 'ODD';
+    label.textContent = '💰 По кэфу';
+  } else {
+    currentSort = 'PROB';
+    label.textContent = '⚡ Топ %';
+  }
+  renderView(cachedMatches);
+}
+
 function renderView(data) {
   const app = document.getElementById('app');
 
+  const searchBox = document.getElementById('search-box-wrap');
+  const statusChips = document.getElementById('status-chips-wrap');
+  const leaguesScroll = document.getElementById('leagues-container');
+
+  if (activeTab !== 'today') {
+    if (searchBox) searchBox.style.display = 'none';
+    if (statusChips) statusChips.style.display = 'none';
+    if (leaguesScroll) leaguesScroll.style.display = 'none';
+  } else {
+    if (searchBox) searchBox.style.display = 'flex';
+    if (statusChips) statusChips.style.display = 'flex';
+    if (leaguesScroll) leaguesScroll.style.display = 'flex';
+  }
+
   if (activeTab === 'today') {
     let list = Array.isArray(data) ? data : [];
+
+    // Фильтр лиги
     if (activeLeague !== 'ALL') {
       list = list.filter(m => (m.league || '').trim() === activeLeague);
     }
+
+    // Фильтр статуса
+    if (activeStatusFilter === 'LIVE') {
+      list = list.filter(m => String(m.status || m.result || '').includes('Live'));
+    } else if (activeStatusFilter === 'UPCOMING') {
+      list = list.filter(m => !String(m.status || m.result || '').includes('Live') && !String(m.status || m.result || '').includes('Зашёл') && !String(m.status || m.result || '').includes('Не зашёл'));
+    } else if (activeStatusFilter === 'VALUE') {
+      list = list.filter(m => String(m.prediction || '').includes('💎'));
+    }
+
+    // Живой поиск
+    if (currentSearch) {
+      list = list.filter(m => (m.home || '').toLowerCase().includes(currentSearch) || (m.away || '').toLowerCase().includes(currentSearch));
+    }
+
     if (!list.length) {
-      app.innerHTML = '<div class="state-empty">На сегодня событий в выбранной категории не найдено.</div>';
+      app.innerHTML = '<div class="state-empty">Подходящих событий не найдено. Попробуйте сбросить фильтры.</div>';
       return;
     }
 
-    list.sort((a, b) => (parseInt(b.probability) || 0) - (parseInt(a.probability) || 0));
+    // Сортировка
+    list.sort((a, b) => {
+      if (currentSort === 'PROB') return (parseInt(b.probability) || 0) - (parseInt(a.probability) || 0);
+      if (currentSort === 'ODD') return (parseFloat(b.odd) || 0) - (parseFloat(a.odd) || 0);
+      if (currentSort === 'TIME') return String(a.time || '').localeCompare(String(b.time || ''));
+      return 0;
+    });
 
     let html = '';
-    list.forEach((m, idx) => {
+    list.forEach(m => {
       const prob = parseInt(m.probability) || 60;
       const isLive = String(m.status || m.result || '').includes('Live');
       const isWon = String(m.status || m.result || '').includes('Зашёл');
+      const isLost = String(m.status || m.result || '').includes('Не зашёл');
       const hasValue = String(m.prediction || '').includes('💎');
       const hasDrop = String(m.prediction || '').includes('📉');
 
@@ -511,16 +550,14 @@ function renderView(data) {
         centerBox = `<div class="match-indicator live">${m.score || '0:0'}</div>`;
       }
 
-      const isHero = (idx === 0 && activeLeague === 'ALL' && !isLive);
-
       html += `
-        <div class="match-card ${isHero ? 'hero' : ''}">
-          ${isHero ? '<div class="hero-ribbon">МАТЧ ДНЯ</div>' : ''}
-          <div class="card-header-line">
+        <div class="match-card ${isWon || isLost ? 'finished' : ''}">
+          <div class="card-top">
             <span class="league-label">${m.league || 'Турнир'}</span>
             <div class="badges-group">
               ${isLive ? '<span class="badge-tag badge-live">🔴 LIVE</span>' : ''}
               ${isWon ? '<span class="badge-tag badge-won">✅ ЗАШЁЛ</span>' : ''}
+              ${isLost ? '<span class="badge-tag badge-drop">❌ МИМО</span>' : ''}
               ${hasValue ? '<span class="badge-tag badge-val">💎 VALUE</span>' : ''}
               ${hasDrop ? '<span class="badge-tag badge-drop">📉 ПРОГРУЗ</span>' : ''}
             </div>
@@ -539,7 +576,7 @@ function renderView(data) {
               <div class="prob-meter-fill" style="width: ${prob}%;"></div>
             </div>
           </div>
-          <div class="card-footer-action">
+          <div class="card-footer">
             <div class="kef-stack">
               <span class="kef-caption">КЭФ:</span>
               <span class="kef-figure">${m.odd || '1.80'}</span>
@@ -572,7 +609,7 @@ function renderView(data) {
 
     app.innerHTML = `
       <div class="express-ticket">
-        <div class="ticket-top-banner">
+        <div class="ticket-top">
           <div style="font-size: 11px; font-weight: 800; color: var(--neon-gold); letter-spacing: 1.2px;">КУПОН ДНЯ (ТБ 2.5)</div>
           <div class="ticket-kef-hero">${totalOdd.toFixed(2)}</div>
           <div style="font-size: 11px; color: var(--text-muted);">Математический экспресс системы</div>
@@ -618,11 +655,11 @@ function renderView(data) {
   }
 
   else if (activeTab === 'stats') {
-    const wins = data.wins || 18;
-    const loses = data.loses || 6;
-    const acc = data.accuracy || Math.round((wins / (wins + loses)) * 100);
-    const profit = data.profit || '+12 400 ₽';
-    const roi = data.roi || '+18.4%';
+    const wins = data.wins || 0;
+    const loses = data.loses || 0;
+    const acc = data.accuracy || (wins + loses > 0 ? Math.round((wins / (wins + loses)) * 100) : 0);
+    const profit = data.profit || '0 ₽';
+    const roi = data.roi || '0%';
 
     app.innerHTML = `
       <div class="match-card" style="text-align:center; padding:22px 16px;">
