@@ -633,7 +633,7 @@ function renderView(data) {
           
           <div class="outcome-row">
             <span class="outcome-label">Прогноз на исход (1X2):</span>
-            <span class="outcome-val">${outcome.text}</span>
+            <span class="outcome-val">${m.outcome || outcome.text}</span>
           </div>
 
           ${aiComment ? `<div class="ai-comment-box">🤖 ${aiComment}</div>` : ''}
