@@ -277,11 +277,11 @@
     <div class="hud-tag">Live 🔴</div>
   </div>
   <div class="hud-col">
-    <div class="hud-num" style="color: var(--neon-mint);" id="hud-winrate">68%</div>
+    <div class="hud-num" style="color: var(--neon-mint);" id="hud-winrate">—</div>
     <div class="hud-tag">Винрейт</div>
   </div>
   <div class="hud-col">
-    <div class="hud-num" style="color: var(--neon-gold);" id="hud-roi">+14%</div>
+    <div class="hud-num" style="color: var(--neon-gold);" id="hud-roi">—</div>
     <div class="hud-tag">ROI</div>
   </div>
 </div>
@@ -338,12 +338,26 @@ let currentSearch = '';
 let currentSort = 'AI_PRIORITY';
 let currentStake = 1000;
 
-const tg = window.Telegram?.WebApp;
-if (tg) {
-  tg.ready();
-  tg.expand();
-  if (tg.setHeaderColor) tg.setHeaderColor('#030712');
-  if (tg.setBackgroundColor) tg.setBackgroundColor('#030712');
+// УЛУЧШЕНО: Telegram WebApp инициализируется безопасно
+let tg = null;
+try {
+  tg = window.Telegram?.WebApp || null;
+  if (tg) {
+    tg.ready();
+    tg.expand();
+    if (tg.setHeaderColor) tg.setHeaderColor('#030712');
+    if (tg.setBackgroundColor) tg.setBackgroundColor('#030712');
+  }
+} catch (e) { console.warn('Telegram WebApp init:', e); }
+
+// УЛУЧШЕНО: экранирование HTML для защиты от XSS
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function triggerToast(text) {
@@ -351,6 +365,30 @@ function triggerToast(text) {
   t.textContent = text;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function copyToClipboard(text) {
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text);
+      triggerToast('📋 Скопировано в буфер!');
+      return true;
+    }
+  } catch (e) {}
+  // fallback
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    triggerToast('📋 Скопировано!');
+    return true;
+  } catch (e) {
+    triggerToast('⚠️ Не удалось скопировать');
+    return false;
+  }
 }
 
 async function sharePrediction(home, away, odd, prob) {
@@ -365,8 +403,7 @@ async function sharePrediction(home, away, odd, prob) {
     tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`);
     return;
   }
-  navigator.clipboard.writeText(`${text}\n${url}`);
-  triggerToast('📋 Скопировано в буфер!');
+  copyToClipboard(`${text}\n${url}`);
 }
 
 async function shareApp() {
@@ -380,8 +417,14 @@ async function shareApp() {
     tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`);
     return;
   }
-  navigator.clipboard.writeText(`${text}\n${url}`);
-  triggerToast('📋 Ссылка скопирована!');
+  copyToClipboard(`${text}\n${url}`);
+}
+
+function hideLoader() {
+  const l = document.getElementById('loader');
+  if (!l) return;
+  l.style.opacity = '0';
+  setTimeout(() => { try { l.remove(); } catch(e){} }, 250);
 }
 
 async function fetchData(forceRefresh) {
@@ -398,6 +441,8 @@ async function fetchData(forceRefresh) {
 
   try {
     const res = await fetch(`${API_URL}?action=${action}&_t=${Date.now()}`);
+    // УЛУЧШЕНО: проверка HTTP-статуса
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     const json = await res.json();
     const data = (json && json.data !== undefined) ? json.data : json;
 
@@ -415,8 +460,11 @@ async function fetchData(forceRefresh) {
     }
 
     renderView(activeTab === 'express' ? generateClientExpress(cachedMatches) : data);
+    hideLoader();
   } catch(e) {
+    // УЛУЧШЕНО: кэш не подменяется, показываем ошибку
     app.innerHTML = '<div class="state-empty">⚠️ Не удалось связаться с базой. Проверьте развёртывание веб-приложения.</div>';
+    hideLoader();
   }
 }
 
@@ -432,17 +480,21 @@ function generateClientExpress(matches) {
 
   valid.sort((a, b) => (parseInt(b.probability) || 0) - (parseInt(a.probability) || 0));
 
+  // УЛУЧШЕНО: сначала уникальные лиги, потом добор
   const selected = [];
   const usedLeagues = new Set();
-  for (let m of valid) {
-    if (!usedLeagues.has(m.league) || selected.length >= 2) {
+  for (const m of valid) {
+    if (!usedLeagues.has(m.league)) {
       selected.push(m);
       usedLeagues.add(m.league);
     }
     if (selected.length >= 3) break;
   }
-  if (selected.length < 2 && valid.length >= 2) {
-    return { matches: valid.slice(0, 3) };
+  if (selected.length < 2) {
+    for (const m of valid) {
+      if (!selected.includes(m)) selected.push(m);
+      if (selected.length >= 2) break;
+    }
   }
   return { matches: selected };
 }
@@ -459,16 +511,15 @@ function renderHUD(matches) {
 function renderLeagues(matches) {
   const container = document.getElementById('leagues-container');
   const map = new Map();
-
   matches.forEach(m => {
     const lg = (m.league || 'Лига').trim();
     map.set(lg, (map.get(lg) || 0) + 1);
   });
 
-  let html = `<button class="pill-chip ${activeLeague === 'ALL' ? 'active' : ''}" onclick="selectLeague('ALL')">Все лиги <span class="count">${matches.length}</span></button>`;
-  
+  let html = `<button class="pill-chip ${activeLeague === 'ALL' ? 'active' : ''}" data-league="ALL" onclick="selectLeague('ALL')">Все лиги <span class="count">${matches.length}</span></button>`;
   map.forEach((count, lg) => {
-    html += `<button class="pill-chip ${activeLeague === lg ? 'active' : ''}" onclick="selectLeague('${lg.replace(/'/g, "\\'")}')">${lg} <span class="count">${count}</span></button>`;
+    // УЛУЧШЕНО: экранирование и data-атрибут вместо inline onclick
+    html += `<button class="pill-chip ${activeLeague === lg ? 'active' : ''}" data-league="${esc(lg)}" onclick="selectLeague(this.dataset.league)">${esc(lg)} <span class="count">${count}</span></button>`;
   });
   container.innerHTML = html;
 }
@@ -497,19 +548,10 @@ function handleSearch(val) {
 function toggleSort() {
   if (tg) tg.HapticFeedback?.impactOccurred('light');
   const label = document.getElementById('sort-label');
-  if (currentSort === 'AI_PRIORITY') {
-    currentSort = 'PROB';
-    label.textContent = '⚡ Топ %';
-  } else if (currentSort === 'PROB') {
-    currentSort = 'TIME';
-    label.textContent = '⏰ По времени';
-  } else if (currentSort === 'TIME') {
-    currentSort = 'ODD';
-    label.textContent = '💰 По кэфу';
-  } else {
-    currentSort = 'AI_PRIORITY';
-    label.textContent = '🤖 ИИ + %';
-  }
+  if (currentSort === 'AI_PRIORITY') { currentSort = 'PROB'; label.textContent = '⚡ Топ %'; }
+  else if (currentSort === 'PROB') { currentSort = 'TIME'; label.textContent = '⏰ По времени'; }
+  else if (currentSort === 'TIME') { currentSort = 'ODD'; label.textContent = '💰 По кэфу'; }
+  else { currentSort = 'AI_PRIORITY'; label.textContent = '🤖 ИИ + %'; }
   renderView(cachedMatches);
 }
 
@@ -520,12 +562,13 @@ function getAiPriority_(pred) {
   return 1;
 }
 
+// УЛУЧШЕНО: убраны фейковые проценты, честные диапазоны
 function estimateOutcome(prob) {
   const p = parseInt(prob) || 60;
-  if (p >= 72) return { text: 'П1 (62%)', type: 'home' };
-  if (p >= 67) return { text: '1Х (68%)', type: 'double' };
-  if (p <= 59) return { text: 'П2 (58%)', type: 'away' };
-  return { text: '1Х (64%)', type: 'double' };
+  if (p >= 72) return { text: 'П1', type: 'home' };
+  if (p >= 67) return { text: '1Х', type: 'double' };
+  if (p <= 59) return { text: 'П2', type: 'away' };
+  return { text: '1Х', type: 'double' };
 }
 
 function renderView(data) {
@@ -584,12 +627,13 @@ function renderView(data) {
     });
 
     let html = '';
-    list.forEach(m => {
+    list.forEach((m, idx) => {
       const prob = parseInt(m.probability) || 60;
       const predStr = String(m.prediction || '');
-      const isLive = String(m.status || m.result || '').includes('Live');
-      const isWon = String(m.status || m.result || '').includes('Зашёл');
-      const isLost = String(m.status || m.result || '').includes('Не зашёл');
+      const statusStr = String(m.status || m.result || '');
+      const isLive = statusStr.includes('Live');
+      const isWon = statusStr.includes('Зашёл');
+      const isLost = statusStr.includes('Не зашёл');
       const hasValue = predStr.includes('💎');
       const hasDrop = predStr.includes('📉');
       const isAiGreen = predStr.includes('🟢');
@@ -600,20 +644,29 @@ function renderView(data) {
       const aiComment = commentParts.length > 1 ? commentParts[commentParts.length - 1].trim() : '';
       const outcome = estimateOutcome(prob);
 
-      let centerBox = `<div class="match-indicator">${m.time || '18:00'}</div>`;
-      if (isLive || m.score) {
-        centerBox = `<div class="match-indicator live">${m.score || '0:0'}</div>`;
+      // УЛУЧШЕНО: проверка m.score !== ''
+      let centerBox = `<div class="match-indicator">${esc(m.time || '18:00')}</div>`;
+      if (isLive || (m.score !== undefined && m.score !== '')) {
+        centerBox = `<div class="match-indicator live">${esc(m.score || '0:0')}</div>`;
       }
 
-      let kefDisplay = m.odd || '1.80';
-      if (m.openOdd && parseFloat(m.openOdd) > parseFloat(m.odd)) {
-        kefDisplay = `${m.openOdd} ➔ ${m.odd} <span class="kef-drop-arrow">📉</span>`;
+      // УЛУЧШЕНО: защита от NaN при сравнении openOdd
+      let kefDisplay = esc(m.odd || '1.80');
+      const oddNum = parseFloat(m.odd);
+      const openNum = parseFloat(m.openOdd);
+      if (isFinite(openNum) && isFinite(oddNum) && openNum > oddNum) {
+        kefDisplay = `${esc(m.openOdd)} ➔ ${esc(m.odd)} <span class="kef-drop-arrow">📉</span>`;
       }
+
+      // УЛУЧШЕНО: данные в data-атрибутах вместо inline onclick (защита от апострофов)
+      const sharePayload = encodeURIComponent(JSON.stringify({
+        home: m.home, away: m.away, odd: m.odd || '1.80', prob: prob
+      }));
 
       html += `
         <div class="match-card ${isWon || isLost ? 'finished' : ''} ${isAiGreen ? 'ai-green' : (isAiRed ? 'ai-red' : '')}">
           <div class="card-top">
-            <span class="league-label">${m.league || 'Турнир'} · xG ${m.totalDisplay || '2.5'}</span>
+            <span class="league-label">${esc(m.league || 'Турнир')} · xG ${esc(m.totalDisplay || '2.5')}</span>
             <div class="badges-group">
               ${isLive ? '<span class="badge-tag badge-live">🔴 LIVE</span>' : ''}
               ${isWon ? '<span class="badge-tag badge-won">✅ ЗАШЁЛ</span>' : ''}
@@ -626,20 +679,20 @@ function renderView(data) {
             </div>
           </div>
           <div class="teams-matchup">
-            <div class="team-name home">${m.home}</div>
+            <div class="team-name home">${esc(m.home)}</div>
             ${centerBox}
-            <div class="team-name away">${m.away}</div>
+            <div class="team-name away">${esc(m.away)}</div>
           </div>
           
           <div class="outcome-row">
             <span class="outcome-label">Прогноз на исход (1X2):</span>
-            <span class="outcome-val">${m.outcome || outcome.text}</span>
+            <span class="outcome-val">${esc(m.outcome || outcome.text)}</span>
           </div>
 
-          ${aiComment ? `<div class="ai-comment-box">🤖 ${aiComment}</div>` : ''}
+          ${aiComment ? `<div class="ai-comment-box">🤖 ${esc(aiComment)}</div>` : ''}
           <div class="prob-meter">
             <div class="prob-meta">
-              <span>Вероятность ТБ 2.5 ${m.stars || '⭐⭐⭐'}</span>
+              <span>Вероятность ТБ 2.5 ${esc(m.stars || '⭐⭐⭐')}</span>
               <span style="color:var(--neon-mint); font-family:'JetBrains Mono';">${prob}%</span>
             </div>
             <div class="prob-meter-bg">
@@ -655,7 +708,7 @@ function renderView(data) {
               <a href="${REF_LINK}" target="_blank" class="btn-bet-ref">
                 ПОСТАВИТЬ ⚡
               </a>
-              <button class="btn-icon-share" onclick="sharePrediction('${m.home}', '${m.away}', '${m.odd || '1.80'}', '${prob}')">
+              <button class="btn-icon-share" data-share="${sharePayload}" onclick="handleShareClick(this)">
                 <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
               </button>
             </div>
@@ -705,10 +758,10 @@ function renderView(data) {
         ${list.map((m, i) => `
           <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border-subtle);">
             <div>
-              <div style="font-size:13px; font-weight:800;">${i+1}. ${m.home} — ${m.away}</div>
-              <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">${m.league || 'Лига'} · ТБ 2.5</div>
+              <div style="font-size:13px; font-weight:800;">${i+1}. ${esc(m.home)} — ${esc(m.away)}</div>
+              <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">${esc(m.league || 'Лига')} · ТБ 2.5</div>
             </div>
-            <div style="font-family:'JetBrains Mono'; font-weight:900; color:var(--neon-mint); font-size:15px;">${m.odd}</div>
+            <div style="font-family:'JetBrains Mono'; font-weight:900; color:var(--neon-mint); font-size:15px;">${esc(m.odd)}</div>
           </div>
         `).join('')}
 
@@ -725,11 +778,11 @@ function renderView(data) {
   }
 
   else if (activeTab === 'stats') {
-    const wins = data.wins || 49;
-    const loses = data.loses || 25;
-    const acc = data.accuracy || 66;
-    const profit = data.profit || '+14 200 ₽';
-    const roi = data.roi || '+19.2%';
+    const wins = data.wins || 0;
+    const loses = data.loses || 0;
+    const acc = data.accuracy || 0;
+    const profit = data.profit || '0 ₽';
+    const roi = data.roi || '0%';
     const recent = Array.isArray(data.recent) ? data.recent : [];
 
     let recentHtml = '';
@@ -739,11 +792,11 @@ function renderView(data) {
         ${recent.map(r => `
           <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border-subtle); font-size:12px;">
             <div>
-              <div style="font-weight:700;">${r.home} — ${r.away}</div>
-              <div style="font-size:10px; color:var(--text-muted);">${r.league} · Кэф ${r.odd}</div>
+              <div style="font-weight:700;">${esc(r.home)} — ${esc(r.away)}</div>
+              <div style="font-size:10px; color:var(--text-muted);">${esc(r.league)} · Кэф ${esc(r.odd)}</div>
             </div>
             <div style="text-align:right; font-family:'JetBrains Mono'; font-weight:800; color:${String(r.result).includes('✅') ? 'var(--neon-mint)' : 'var(--neon-rose)'};">
-              ${r.score || '—'} ${String(r.result).includes('✅') ? '✅' : '❌'}
+              ${esc(r.score || '—')} ${String(r.result).includes('✅') ? '✅' : '❌'}
             </div>
           </div>
         `).join('')}
@@ -765,13 +818,13 @@ function renderView(data) {
             <div style="font-size:9px; font-weight:800; color:var(--text-muted);">МИМО</div>
           </div>
           <div style="background:rgba(6,182,212,0.08); border:1px solid rgba(6,182,212,0.2); padding:12px; border-radius:12px;">
-            <div style="font-size:16px; font-weight:900; font-family:'JetBrains Mono'; color:var(--neon-cyan);">${roi}</div>
+            <div style="font-size:16px; font-weight:900; font-family:'JetBrains Mono'; color:var(--neon-cyan);">${esc(roi)}</div>
             <div style="font-size:9px; font-weight:800; color:var(--text-muted);">ROI</div>
           </div>
         </div>
 
         <div style="margin-top:16px; padding:12px; background:rgba(255,255,255,0.03); border-radius:12px; font-size:12px; font-weight:700; color:var(--text-muted);">
-          Чистый профит флэтом (1 000 ₽): <b style="color:var(--neon-gold);">${profit}</b>
+          Чистый профит флэтом (1 000 ₽): <b style="color:var(--neon-gold);">${esc(profit)}</b>
         </div>
         ${recentHtml}
       </div>
@@ -779,10 +832,22 @@ function renderView(data) {
   }
 }
 
+function handleShareClick(btn) {
+  try {
+    const payload = JSON.parse(decodeURIComponent(btn.dataset.share));
+    sharePrediction(payload.home, payload.away, payload.odd, payload.prob);
+  } catch (e) {
+    triggerToast('⚠️ Ошибка share');
+  }
+}
+
 function setBetStake(val) {
   if (tg) tg.HapticFeedback?.selectionChanged();
   currentStake = val;
-  renderView(generateClientExpress(cachedMatches));
+  // УЛУЧШЕНО: перерисовка только если мы на вкладке «Экспресс»
+  if (activeTab === 'express') {
+    renderView(generateClientExpress(cachedMatches));
+  }
 }
 
 async function shareExpressTicket(totalOdd, count) {
@@ -797,13 +862,23 @@ async function shareExpressTicket(totalOdd, count) {
     tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`);
     return;
   }
-  navigator.clipboard.writeText(`${text}\n${url}`);
-  triggerToast('📋 Скопировано в буфер!');
+  copyToClipboard(`${text}\n${url}`);
 }
 
 function switchView(tab) {
   if (tg) tg.HapticFeedback?.impactOccurred('light');
   activeTab = tab;
+  // УЛУЧШЕНО: сбрасываем фильтры при переходе на другую вкладку
+  if (tab !== 'today') {
+    activeLeague = 'ALL';
+    activeStatusFilter = 'ALL';
+    currentSearch = '';
+    const searchInput = document.getElementById('match-search');
+    if (searchInput) searchInput.value = '';
+    document.querySelectorAll('.status-chip').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.status === 'ALL');
+    });
+  }
   document.querySelectorAll('.dock-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.tab === tab);
   });
@@ -811,11 +886,6 @@ function switchView(tab) {
 }
 
 window.addEventListener('load', () => {
-  setTimeout(() => {
-    const l = document.getElementById('loader');
-    l.style.opacity = '0';
-    setTimeout(() => l.remove(), 250);
-  }, 350);
   fetchData(true);
 });
 </script>
