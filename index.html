@@ -14,7 +14,7 @@
     --bg-surface: rgba(15, 23, 42, 0.85);
     --border-subtle: rgba(255, 255, 255, 0.07);
     --border-focus: rgba(0, 245, 155, 0.4);
-    
+
     --text-primary: #F9FAFB;
     --text-muted: #9CA3AF;
 
@@ -34,7 +34,7 @@
     color: var(--text-primary);
     min-height: 100vh;
     padding-bottom: 105px;
-    background-image: 
+    background-image:
       radial-gradient(circle at 10% 0%, rgba(0, 245, 155, 0.08) 0%, transparent 50%),
       radial-gradient(circle at 90% 90%, rgba(6, 182, 212, 0.06) 0%, transparent 45%);
     background-attachment: fixed;
@@ -60,7 +60,7 @@
     border-radius: 100px; border: 1px solid rgba(0, 245, 155, 0.25);
   }
   .pulse-dot { width: 6px; height: 6px; background: var(--neon-mint); border-radius: 50%; box-shadow: 0 0 10px var(--neon-mint); }
-  
+
   .header-actions { display: flex; gap: 6px; }
   .btn-header-act {
     background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-subtle);
@@ -96,7 +96,7 @@
   }
   .search-input:focus { border-color: var(--border-focus); }
   .search-icon { position: absolute; left: 11px; width: 14px; height: 14px; stroke: var(--text-muted); fill: none; stroke-width: 2; }
-  
+
   .sort-toggle-btn {
     background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-subtle);
     color: var(--text-muted); border-radius: 12px; padding: 0 12px; font-size: 11px;
@@ -137,7 +137,7 @@
   }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-  .match-card.ai-green { border-color: rgba(0, 245, 155, 0.3); }
+  .match-card.ai-green { border-color: rgba(0, 245, 155, 0.35); }
   .match-card.ai-red { border-color: rgba(244, 63, 94, 0.3); }
 
   .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 6px; }
@@ -146,6 +146,7 @@
   .badge-tag { font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 6px; letter-spacing: 0.3px; }
   .badge-val { background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.3); color: var(--neon-cyan); }
   .badge-drop { background: rgba(244, 63, 94, 0.12); border: 1px solid rgba(244, 63, 94, 0.3); color: var(--neon-rose); }
+  .badge-push { background: rgba(156, 163, 175, 0.14); border: 1px solid rgba(156, 163, 175, 0.3); color: #D1D5DB; }
   .badge-live { background: rgba(244, 63, 94, 0.18); border: 1px solid var(--neon-rose); color: var(--neon-rose); }
   .badge-won { background: rgba(0, 245, 155, 0.15); border: 1px solid rgba(0, 245, 155, 0.3); color: var(--neon-mint); }
   .badge-ai-green { background: rgba(0, 245, 155, 0.15); border: 1px solid rgba(0, 245, 155, 0.3); color: var(--neon-mint); }
@@ -298,7 +299,7 @@
 
 <div class="status-chips-bar" id="status-chips-wrap">
   <button class="status-chip active" data-status="ALL" onclick="setStatusFilter('ALL')">Все</button>
-  <button class="status-chip" data-status="AI_TOP" onclick="setStatusFilter('AI_TOP')">🟢 ИИ За</button>
+  <button class="status-chip" data-status="AI_TOP" onclick="setStatusFilter('AI_TOP')">💎/🟢 ИИ За</button>
   <button class="status-chip" data-status="LIVE" onclick="setStatusFilter('LIVE')">🔴 Live</button>
   <button class="status-chip" data-status="UPCOMING" onclick="setStatusFilter('UPCOMING')">⏳ Скоро</button>
   <button class="status-chip" data-status="VALUE" onclick="setStatusFilter('VALUE')">💎 Value</button>
@@ -338,7 +339,6 @@ let currentSearch = '';
 let currentSort = 'AI_PRIORITY';
 let currentStake = 1000;
 
-// УЛУЧШЕНО: Telegram WebApp инициализируется безопасно
 let tg = null;
 try {
   tg = window.Telegram?.WebApp || null;
@@ -350,7 +350,6 @@ try {
   }
 } catch (e) { console.warn('Telegram WebApp init:', e); }
 
-// УЛУЧШЕНО: экранирование HTML для защиты от XSS
 function esc(s) {
   return String(s == null ? '' : s)
     .replace(/&/g, '&amp;')
@@ -375,7 +374,6 @@ function copyToClipboard(text) {
       return true;
     }
   } catch (e) {}
-  // fallback
   try {
     const ta = document.createElement('textarea');
     ta.value = text;
@@ -441,7 +439,6 @@ async function fetchData(forceRefresh) {
 
   try {
     const res = await fetch(`${API_URL}?action=${action}&_t=${Date.now()}`);
-    // УЛУЧШЕНО: проверка HTTP-статуса
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const json = await res.json();
     const data = (json && json.data !== undefined) ? json.data : json;
@@ -462,7 +459,6 @@ async function fetchData(forceRefresh) {
     renderView(activeTab === 'express' ? generateClientExpress(cachedMatches) : data);
     hideLoader();
   } catch(e) {
-    // УЛУЧШЕНО: кэш не подменяется, показываем ошибку
     app.innerHTML = '<div class="state-empty">⚠️ Не удалось связаться с базой. Проверьте развёртывание веб-приложения.</div>';
     hideLoader();
   }
@@ -475,12 +471,15 @@ function generateClientExpress(matches) {
     const isPending = st.includes('Ожидание') || st.includes('Live') || !st;
     const isAiOk = !pr.includes('🔴') && !pr.includes('НЕ ВЕРИТ');
     const odd = parseFloat(m.odd || 1.6);
-    return isPending && isAiOk && odd >= 1.35 && odd <= 2.30;
+    return isPending && isAiOk && odd >= 1.35 && odd <= 2.35;
   });
 
-  valid.sort((a, b) => (parseInt(b.probability) || 0) - (parseInt(a.probability) || 0));
+  valid.sort((a, b) => {
+    const pDiff = getAiPriority_(b.prediction) - getAiPriority_(a.prediction);
+    if (pDiff !== 0) return pDiff;
+    return (parseInt(b.probability) || 0) - (parseInt(a.probability) || 0);
+  });
 
-  // УЛУЧШЕНО: сначала уникальные лиги, потом добор
   const selected = [];
   const usedLeagues = new Set();
   for (const m of valid) {
@@ -488,7 +487,7 @@ function generateClientExpress(matches) {
       selected.push(m);
       usedLeagues.add(m.league);
     }
-    if (selected.length >= 3) break;
+    if (selected.length >= 2) break;
   }
   if (selected.length < 2) {
     for (const m of valid) {
@@ -518,7 +517,6 @@ function renderLeagues(matches) {
 
   let html = `<button class="pill-chip ${activeLeague === 'ALL' ? 'active' : ''}" data-league="ALL" onclick="selectLeague('ALL')">Все лиги <span class="count">${matches.length}</span></button>`;
   map.forEach((count, lg) => {
-    // УЛУЧШЕНО: экранирование и data-атрибут вместо inline onclick
     html += `<button class="pill-chip ${activeLeague === lg ? 'active' : ''}" data-league="${esc(lg)}" onclick="selectLeague(this.dataset.league)">${esc(lg)} <span class="count">${count}</span></button>`;
   });
   container.innerHTML = html;
@@ -557,18 +555,28 @@ function toggleSort() {
 
 function getAiPriority_(pred) {
   const s = String(pred || '');
+  if (s.includes('💎')) return 3;
   if (s.includes('🟢')) return 2;
-  if (s.includes('🔴')) return 0;
+  if (s.includes('🔴') || s.includes('НЕ ВЕРИТ')) return 0;
   return 1;
 }
 
-// УЛУЧШЕНО: убраны фейковые проценты, честные диапазоны
 function estimateOutcome(prob) {
   const p = parseInt(prob) || 60;
-  if (p >= 72) return { text: 'П1', type: 'home' };
-  if (p >= 67) return { text: '1Х', type: 'double' };
-  if (p <= 59) return { text: 'П2', type: 'away' };
+  if (p >= 70) return { text: 'П1', type: 'home' };
+  if (p >= 65) return { text: '1Х', type: 'double' };
+  if (p <= 58) return { text: 'Х2', type: 'away' };
   return { text: '1Х', type: 'double' };
+}
+
+function extractAiComment_(predStr) {
+  const s = String(predStr || '');
+  const lines = s.split('\n');
+  if (lines.length > 1) {
+    return lines.slice(1).join(' ').replace(/^(🧠\s*Claude|🤖\s*Qwen\s*\(резерв\)|📐\s*Авто-анализ|📰\s*Tavily[^:]*)\s*:\s*/i, '').trim();
+  }
+  const dashIdx = s.lastIndexOf('—');
+  return dashIdx > 0 ? s.slice(dashIdx + 1).trim() : '';
 }
 
 function renderView(data) {
@@ -595,13 +603,13 @@ function renderView(data) {
     }
 
     if (activeStatusFilter === 'AI_TOP') {
-      list = list.filter(m => String(m.prediction || '').includes('🟢'));
+      list = list.filter(m => String(m.prediction || '').includes('🟢') || String(m.prediction || '').includes('💎'));
     } else if (activeStatusFilter === 'LIVE') {
       list = list.filter(m => String(m.status || m.result || '').includes('Live'));
     } else if (activeStatusFilter === 'UPCOMING') {
-      list = list.filter(m => !String(m.status || m.result || '').includes('Live') && !String(m.status || m.result || '').includes('Зашёл') && !String(m.status || m.result || '').includes('Не зашёл'));
+      list = list.filter(m => !String(m.status || m.result || '').includes('Live') && !String(m.status || m.result || '').includes('Зашёл') && !String(m.status || m.result || '').includes('Не зашёл') && !String(m.status || m.result || '').includes('Возврат'));
     } else if (activeStatusFilter === 'VALUE') {
-      list = list.filter(m => String(m.prediction || '').includes('💎'));
+      list = list.filter(m => String(m.prediction || '').includes('💎') || String(m.prediction || '').includes('Прогруз'));
     }
 
     if (currentSearch) {
@@ -627,30 +635,28 @@ function renderView(data) {
     });
 
     let html = '';
-    list.forEach((m, idx) => {
+    list.forEach(m => {
       const prob = parseInt(m.probability) || 60;
       const predStr = String(m.prediction || '');
       const statusStr = String(m.status || m.result || '');
       const isLive = statusStr.includes('Live');
       const isWon = statusStr.includes('Зашёл');
-      const isLost = statusStr.includes('Не зашёл');
-      const hasValue = predStr.includes('💎');
-      const hasDrop = predStr.includes('📉');
+      const isPush = statusStr.includes('Возврат') || statusStr.includes('♻️');
+      const isLost = !isWon && !isPush && statusStr.includes('Не зашёл');
+      const isDiamond = predStr.includes('💎') || Boolean(m.isDiamond);
+      const hasDrop = predStr.includes('📉') || predStr.includes('Прогруз');
       const isAiGreen = predStr.includes('🟢');
-      const isAiRed = predStr.includes('🔴');
-      const isAiYellow = predStr.includes('🟡');
+      const isAiRed = predStr.includes('🔴') || predStr.includes('НЕ ВЕРИТ');
+      const isAiYellow = !isDiamond && !isAiGreen && !isAiRed && (predStr.includes('🟡') || predStr.includes('СТРАХОВКА'));
 
-      const commentParts = predStr.split('—');
-      const aiComment = commentParts.length > 1 ? commentParts[commentParts.length - 1].trim() : '';
+      const aiComment = extractAiComment_(predStr);
       const outcome = estimateOutcome(prob);
 
-      // УЛУЧШЕНО: проверка m.score !== ''
       let centerBox = `<div class="match-indicator">${esc(m.time || '18:00')}</div>`;
-      if (isLive || (m.score !== undefined && m.score !== '')) {
+      if (isLive || (m.score !== undefined && m.score !== '' && m.score !== '—')) {
         centerBox = `<div class="match-indicator live">${esc(m.score || '0:0')}</div>`;
       }
 
-      // УЛУЧШЕНО: защита от NaN при сравнении openOdd
       let kefDisplay = esc(m.odd || '1.80');
       const oddNum = parseFloat(m.odd);
       const openNum = parseFloat(m.openOdd);
@@ -658,23 +664,22 @@ function renderView(data) {
         kefDisplay = `${esc(m.openOdd)} ➔ ${esc(m.odd)} <span class="kef-drop-arrow">📉</span>`;
       }
 
-      // УЛУЧШЕНО: данные в data-атрибутах вместо inline onclick (защита от апострофов)
       const sharePayload = encodeURIComponent(JSON.stringify({
         home: m.home, away: m.away, odd: m.odd || '1.80', prob: prob
       }));
 
       html += `
-        <div class="match-card ${isWon || isLost ? 'finished' : ''} ${isAiGreen ? 'ai-green' : (isAiRed ? 'ai-red' : '')}">
+        <div class="match-card ${isWon || isLost ? 'finished' : ''} ${(isAiGreen || isDiamond) ? 'ai-green' : (isAiRed ? 'ai-red' : '')}">
           <div class="card-top">
             <span class="league-label">${esc(m.league || 'Турнир')} · xG ${esc(m.totalDisplay || '2.5')}</span>
             <div class="badges-group">
               ${isLive ? '<span class="badge-tag badge-live">🔴 LIVE</span>' : ''}
               ${isWon ? '<span class="badge-tag badge-won">✅ ЗАШЁЛ</span>' : ''}
+              ${isPush ? '<span class="badge-tag badge-push">♻️ ВОЗВРАТ</span>' : ''}
               ${isLost ? '<span class="badge-tag badge-drop">❌ МИМО</span>' : ''}
-              ${isAiGreen ? '<span class="badge-tag badge-ai-green">🟢 ИИ ЗА</span>' : ''}
-              ${isAiYellow ? '<span class="badge-tag badge-ai-yellow">🟡 РИСК</span>' : ''}
-              ${isAiRed ? '<span class="badge-tag badge-ai-red">🔴 ИИ ПРОТИВ</span>' : ''}
-              ${hasValue ? '<span class="badge-tag badge-val">💎 VALUE</span>' : ''}
+              ${isDiamond ? '<span class="badge-tag badge-ai-green">💎 АЛМАЗ 3/3</span>' : (isAiGreen ? '<span class="badge-tag badge-ai-green">🟢 ИИ ЗА</span>' : '')}
+              ${isAiYellow ? '<span class="badge-tag badge-ai-yellow">🟡 СТРАХОВКА</span>' : ''}
+              ${isAiRed ? '<span class="badge-tag badge-ai-red">🔴 ПРОПУСК</span>' : ''}
               ${hasDrop ? '<span class="badge-tag badge-drop">📉 ПРОГРУЗ</span>' : ''}
             </div>
           </div>
@@ -683,7 +688,7 @@ function renderView(data) {
             ${centerBox}
             <div class="team-name away">${esc(m.away)}</div>
           </div>
-          
+
           <div class="outcome-row">
             <span class="outcome-label">Прогноз на исход (1X2):</span>
             <span class="outcome-val">${esc(m.outcome || outcome.text)}</span>
@@ -789,17 +794,23 @@ function renderView(data) {
     if (recent.length > 0) {
       recentHtml = `<div style="margin-top:16px; text-align:left;">
         <div style="font-size:11px; font-weight:800; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase;">Последние завершенные матчи:</div>
-        ${recent.map(r => `
+        ${recent.map(r => {
+          const rStr = String(r.result || '');
+          const icon = rStr.includes('✅') ? '✅' : (rStr.includes('♻️') ? '♻️' : '❌');
+          const clr = rStr.includes('✅') ? 'var(--neon-mint)' : (rStr.includes('♻️') ? 'var(--neon-gold)' : 'var(--neon-rose)');
+          const clvM = rStr.match(/CLV:\s*([+\-]?\d+(?:\.\d+)?%)/i);
+          const clvTxt = clvM ? ` · CLV ${clvM[1]}` : '';
+          return `
           <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border-subtle); font-size:12px;">
             <div>
               <div style="font-weight:700;">${esc(r.home)} — ${esc(r.away)}</div>
-              <div style="font-size:10px; color:var(--text-muted);">${esc(r.league)} · Кэф ${esc(r.odd)}</div>
+              <div style="font-size:10px; color:var(--text-muted);">${esc(r.league)} · Кэф ${esc(r.odd)}${esc(clvTxt)}</div>
             </div>
-            <div style="text-align:right; font-family:'JetBrains Mono'; font-weight:800; color:${String(r.result).includes('✅') ? 'var(--neon-mint)' : 'var(--neon-rose)'};">
-              ${esc(r.score || '—')} ${String(r.result).includes('✅') ? '✅' : '❌'}
+            <div style="text-align:right; font-family:'JetBrains Mono'; font-weight:800; color:${clr};">
+              ${esc(r.score || '—')} ${icon}
             </div>
-          </div>
-        `).join('')}
+          </div>`;
+        }).join('')}
       </div>`;
     }
 
@@ -844,7 +855,6 @@ function handleShareClick(btn) {
 function setBetStake(val) {
   if (tg) tg.HapticFeedback?.selectionChanged();
   currentStake = val;
-  // УЛУЧШЕНО: перерисовка только если мы на вкладке «Экспресс»
   if (activeTab === 'express') {
     renderView(generateClientExpress(cachedMatches));
   }
@@ -868,7 +878,6 @@ async function shareExpressTicket(totalOdd, count) {
 function switchView(tab) {
   if (tg) tg.HapticFeedback?.impactOccurred('light');
   activeTab = tab;
-  // УЛУЧШЕНО: сбрасываем фильтры при переходе на другую вкладку
   if (tab !== 'today') {
     activeLeague = 'ALL';
     activeStatusFilter = 'ALL';
